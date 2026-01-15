@@ -1,42 +1,36 @@
 ---
 /**
- * Interactive: drag x along the curve f(x) = x^2, watch the tangent tilt.
- * The tangent's steepness IS the derivative (2x). (Lesson 0.3.)
+ * Interactive: drag the dot along the curve f(x) = x^2; the tangent line tilts and the
+ * slope readout updates. Direct manipulation, no slider. (Lesson 0.3.)
  */
-const W = 340, H = 220, pad = 26;
+const W = 360, H = 230, pad = 28;
 const sx = (x: number) => pad + ((x + 3) / 6) * (W - 2 * pad);
 const sy = (y: number) => (H - pad) - (y / 9) * (H - 2 * pad);
 const pts: string[] = [];
 for (let x = -3; x <= 3.0001; x += 0.2) pts.push(`${sx(x).toFixed(1)},${sy(x * x).toFixed(1)}`);
 const curve = pts.join(' ');
-const x0 = 1;
+const x0 = 1.4;
 ---
 
-<div class="mt-slope-demo my-6 bg-white border border-mt-border rounded-2xl p-6"
-     data-w={W} data-h={H} data-pad={pad}>
-    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-4 text-center">Drag <span class="font-mono">x</span> &mdash; watch the slope of <span class="font-mono">x&sup2;</span></p>
+<div class="mt-slope-demo my-6 bg-white border border-mt-border rounded-2xl p-6" data-w={W} data-h={H} data-pad={pad}>
+    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-1 text-center">Drag the dot along the curve <span class="font-mono">x&sup2;</span></p>
+    <p class="text-center text-xs text-mt-muted mb-3">the straight line is the slope right where you are</p>
 
-    <svg viewBox={`0 0 ${W} ${H}`} class="w-full max-w-md mx-auto block" role="img" aria-label="parabola with a movable tangent line">
-        <!-- x-axis -->
-        <line x1={pad} y1={sy(0)} x2={W - pad} y2={sy(0)} stroke="#E8E4DF" stroke-width="1" />
-        <!-- the curve -->
+    <svg viewBox={`0 0 ${W} ${H}`} class="w-full max-w-md mx-auto block touch-none" role="img" aria-label="parabola with a draggable point and its tangent line">
+        <line x1={pad} y1={sy(0)} x2={W - pad} y2={sy(0)} stroke="#F0EDE9" stroke-width="1" />
         <polyline points={curve} fill="none" stroke="#C2A4CD" stroke-width="2.5" stroke-linecap="round" />
-        <!-- tangent line -->
-        <line data-tangent x1={sx(x0 - 1.3)} y1={sy(x0 * x0 - 2 * x0 * 1.3)} x2={sx(x0 + 1.3)} y2={sy(x0 * x0 + 2 * x0 * 1.3)}
-              stroke="#C96F5A" stroke-width="2.5" stroke-linecap="round" />
-        <!-- point on the curve -->
-        <circle data-point cx={sx(x0)} cy={sy(x0 * x0)} r="6" fill="#C96F5A" stroke="#fff" stroke-width="2" />
+        <line data-tangent x1={sx(x0 - 1.3)} y1={sy(x0 * x0 - 2 * x0 * 1.3)} x2={sx(x0 + 1.3)} y2={sy(x0 * x0 + 2 * x0 * 1.3)} stroke="#C96F5A" stroke-width="2.5" stroke-linecap="round" />
+        <!-- draggable point: a soft halo to say "grab me" -->
+        <circle data-halo cx={sx(x0)} cy={sy(x0 * x0)} r="14" fill="#C96F5A" opacity="0.15" />
+        <circle data-point cx={sx(x0)} cy={sy(x0 * x0)} r="8" fill="#C96F5A" stroke="#fff" stroke-width="2.5" class="cursor-grab" />
     </svg>
 
-    <div class="flex items-center justify-center gap-4 font-mono text-sm mt-4 mb-3">
-        <span class="px-3 py-1 rounded-lg bg-stone-100 text-mt-muted">x = <span data-x>1.00</span></span>
-        <span class="px-3 py-1 rounded-lg bg-mt-lavLight text-mt-lav">f(x) = <span data-fx>1.00</span></span>
-        <span class="px-3 py-1 rounded-lg bg-mt-accentLight text-mt-accent font-semibold">slope = <span data-slope>2.00</span></span>
+    <div class="flex items-center justify-center gap-3 font-mono text-sm mt-3">
+        <span class="px-3 py-1 rounded-lg bg-stone-100 text-mt-muted">x = <span data-x>1.40</span></span>
+        <span class="px-3 py-1 rounded-lg bg-mt-lavLight text-mt-lav">f(x) = <span data-fx>1.96</span></span>
+        <span class="px-3 py-1 rounded-lg bg-mt-accentLight text-mt-accent font-semibold">slope = <span data-slope>2.80</span></span>
     </div>
-
-    <input type="range" min="-3" max="3" step="0.05" value="1" data-slider class="w-full accent-mt-accent cursor-pointer" aria-label="value of x" />
-
-    <p class="text-center text-xs text-mt-muted mt-3">the slope here is <span class="font-mono">2x</span> &mdash; flat at the bottom, steeper the further out you drag</p>
+    <p class="text-center text-xs text-mt-muted mt-3">flat at the bottom (slope 0), steeper and steeper as you drag outward &mdash; the slope here is <span class="font-mono">2x</span></p>
 </div>
 
 <script>
@@ -47,31 +41,42 @@ const x0 = 1;
         const W = Number(root.dataset.w), H = Number(root.dataset.h), pad = Number(root.dataset.pad);
         const sx = (x: number) => pad + ((x + 3) / 6) * (W - 2 * pad);
         const sy = (y: number) => (H - pad) - (y / 9) * (H - 2 * pad);
+        const invX = (px: number) => -3 + ((px - pad) / (W - 2 * pad)) * 6;
 
-        const slider = root.querySelector<HTMLInputElement>('[data-slider]')!;
+        const svg = root.querySelector<SVGSVGElement>('svg')!;
         const point = root.querySelector<SVGCircleElement>('[data-point]')!;
+        const halo = root.querySelector<SVGCircleElement>('[data-halo]')!;
         const tangent = root.querySelector<SVGLineElement>('[data-tangent]')!;
         const xEl = root.querySelector<HTMLElement>('[data-x]')!;
         const fxEl = root.querySelector<HTMLElement>('[data-fx]')!;
         const slopeEl = root.querySelector<HTMLElement>('[data-slope]')!;
-        const dur = reduce ? 0 : 0.25;
 
-        function update() {
-            const x = Number(slider.value);
-            const y = x * x;
-            const m = 2 * x; // the derivative of x^2
-            xEl.textContent = x.toFixed(2);
-            fxEl.textContent = y.toFixed(2);
-            slopeEl.textContent = m.toFixed(2);
-            gsap.to(point, { attr: { cx: sx(x), cy: sy(y) }, duration: dur, overwrite: true });
-            gsap.to(tangent, {
-                attr: {
-                    x1: sx(x - 1.3), y1: sy(y - m * 1.3),
-                    x2: sx(x + 1.3), y2: sy(y + m * 1.3),
-                }, duration: dur, overwrite: true,
-            });
+        let x = 1.4;
+        function render(animate = false) {
+            const d = animate && !reduce ? 0.25 : 0;
+            const y = x * x, m = 2 * x;
+            xEl.textContent = x.toFixed(2); fxEl.textContent = y.toFixed(2); slopeEl.textContent = m.toFixed(2);
+            gsap.to([point, halo], { attr: { cx: sx(x), cy: sy(y) }, duration: d, overwrite: true });
+            gsap.to(tangent, { attr: { x1: sx(x - 1.3), y1: sy(y - m * 1.3), x2: sx(x + 1.3), y2: sy(y + m * 1.3) }, duration: d, overwrite: true });
         }
-        slider.addEventListener('input', update);
-        update();
+
+        // gentle pulse hint until first interaction
+        let hinted = false;
+        const hint = reduce ? null : gsap.to(halo, { attr: { r: 18 }, duration: 0.9, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+        const stopHint = () => { if (!hinted) { hinted = true; hint?.kill(); gsap.set(halo, { attr: { r: 14 } }); } };
+
+        let on = false;
+        const pt = svg.createSVGPoint();
+        const toX = (e: PointerEvent) => {
+            pt.x = e.clientX; pt.y = e.clientY;
+            const p = pt.matrixTransform(svg.getScreenCTM()!.inverse());
+            return Math.max(-3, Math.min(3, invX(p.x)));
+        };
+        point.addEventListener('pointerdown', (e) => { on = true; point.setPointerCapture(e.pointerId); point.classList.add('cursor-grabbing'); stopHint(); });
+        point.addEventListener('pointermove', (e) => { if (on) { x = toX(e); render(false); } });
+        point.addEventListener('pointerup', () => { on = false; point.classList.remove('cursor-grabbing'); });
+        // also let a tap anywhere on the svg move the point
+        svg.addEventListener('pointerdown', (e) => { if (e.target !== point) { x = toX(e); stopHint(); render(true); } });
+        render(false);
     });
 </script>

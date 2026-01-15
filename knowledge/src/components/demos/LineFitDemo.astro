@@ -1,0 +1,122 @@
+---
+/**
+ * Interactive: drag the two ends of the line to fit the points. Residual segments
+ * and the loss (mean squared error) update live; an auto-fit button animates to the
+ * least-squares solution. Direct manipulation. (Lesson 0.2.)
+ */
+const W = 380, H = 250, pad = 30;
+const xmin = 0, xmax = 10, ymin = -1, ymax = 10;
+const sx = (x: number) => pad + ((x - xmin) / (xmax - xmin)) * (W - 2 * pad);
+const sy = (y: number) => (H - pad) - ((y - ymin) / (ymax - ymin)) * (H - 2 * pad);
+// fixed scatter, roughly y = 0.7x + 1.2
+const pts: [number, number][] = [
+  [0.5, 1.6], [1.2, 1.9], [2.0, 2.7], [2.8, 2.9], [3.5, 3.8], [4.3, 4.1],
+  [5.1, 4.9], [6.0, 5.2], [6.8, 6.3], [7.6, 6.4], [8.4, 7.3], [9.2, 7.6],
+];
+const yL0 = 6, yR0 = 2; // start deliberately wrong so there's something to fix
+---
+
+<div class="mt-linefit-demo my-6 bg-white border border-mt-border rounded-2xl p-6"
+     data-w={W} data-h={H} data-pad={pad} data-xmin={xmin} data-xmax={xmax} data-ymin={ymin} data-ymax={ymax}
+     data-pts={JSON.stringify(pts)} data-yl0={yL0} data-yr0={yR0}>
+    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-1 text-center">Drag the two ends of the line to fit the dots</p>
+    <p class="text-center text-xs text-mt-muted mb-4">the red sticks are the errors; the loss adds up their squares</p>
+
+    <svg viewBox={`0 0 ${W} ${H}`} class="w-full max-w-md mx-auto block touch-none" role="img" aria-label="scatter of points with a draggable best-fit line">
+        <line x1={pad} y1={sy(0)} x2={W - pad} y2={sy(0)} stroke="#F0EDE9" stroke-width="1" />
+        <!-- residual sticks (one per point, updated live) -->
+        <g>
+            {pts.map(([x, y]) => <line data-residual data-px={x} data-py={y} x1={sx(x)} y1={sy(y)} x2={sx(x)} y2={sy(yL0 + ((yR0 - yL0) / 10) * x)} stroke="#C96F5A" stroke-width="1.5" opacity="0.5" />)}
+        </g>
+        <!-- the line -->
+        <line data-line x1={sx(0)} y1={sy(yL0)} x2={sx(10)} y2={sy(yR0)} stroke="#5E80C9" stroke-width="2.5" stroke-linecap="round" />
+        <!-- points -->
+        <g>
+            {pts.map(([x, y]) => <circle cx={sx(x)} cy={sy(y)} r="4" fill="#7E7FBC" />)}
+        </g>
+        <!-- draggable endpoint handles -->
+        <circle data-handle="L" cx={sx(0)} cy={sy(yL0)} r="9" fill="#fff" stroke="#5E80C9" stroke-width="3" class="cursor-ns-resize" />
+        <circle data-handle="R" cx={sx(10)} cy={sy(yR0)} r="9" fill="#fff" stroke="#5E80C9" stroke-width="3" class="cursor-ns-resize" />
+    </svg>
+
+    <div class="flex items-center justify-center gap-3 mt-3 mb-4">
+        <span class="px-3 py-1.5 rounded-lg bg-mt-accentLight text-mt-accent font-mono text-sm font-semibold">loss = <span data-loss>0.00</span></span>
+        <button data-fit class="px-4 py-2 rounded-lg bg-mt-blue text-white text-sm font-semibold hover:opacity-90 transition">Auto-fit</button>
+        <button data-reset class="px-4 py-2 rounded-lg bg-stone-100 text-mt-muted text-sm hover:bg-stone-200 transition">Reset</button>
+    </div>
+    <p class="text-center text-xs text-mt-muted">drag the line down to the dots and watch the loss fall &mdash; that downhill is what training does automatically</p>
+</div>
+
+<script>
+    import { gsap } from 'gsap';
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    document.querySelectorAll<HTMLElement>('.mt-linefit-demo').forEach((root) => {
+        const W = Number(root.dataset.w), H = Number(root.dataset.h), pad = Number(root.dataset.pad);
+        const xmin = Number(root.dataset.xmin), xmax = Number(root.dataset.xmax);
+        const ymin = Number(root.dataset.ymin), ymax = Number(root.dataset.ymax);
+        const pts: [number, number][] = JSON.parse(root.dataset.pts!);
+        const sx = (x: number) => pad + ((x - xmin) / (xmax - xmin)) * (W - 2 * pad);
+        const sy = (y: number) => (H - pad) - ((y - ymin) / (ymax - ymin)) * (H - 2 * pad);
+        const invY = (py: number) => ymin + ((H - pad - py) / (H - 2 * pad)) * (ymax - ymin);
+
+        const svg = root.querySelector<SVGSVGElement>('svg')!;
+        const line = root.querySelector<SVGLineElement>('[data-line]')!;
+        const hL = root.querySelector<SVGCircleElement>('[data-handle="L"]')!;
+        const hR = root.querySelector<SVGCircleElement>('[data-handle="R"]')!;
+        const residuals = Array.from(root.querySelectorAll<SVGLineElement>('[data-residual]'));
+        const lossEl = root.querySelector<HTMLElement>('[data-loss]')!;
+
+        let yL = Number(root.dataset.yl0), yR = Number(root.dataset.yr0);
+        const lineY = (x: number) => yL + ((yR - yL) / 10) * x;
+
+        function render(animate = false) {
+            const d = animate && !reduce ? 0.5 : 0;
+            gsap.to(line, { attr: { y1: sy(yL), y2: sy(yR) }, duration: d, overwrite: true });
+            gsap.to(hL, { attr: { cy: sy(yL) }, duration: d, overwrite: true });
+            gsap.to(hR, { attr: { cy: sy(yR) }, duration: d, overwrite: true });
+            let sse = 0;
+            residuals.forEach((seg) => {
+                const x = Number(seg.dataset.px), y = Number(seg.dataset.py);
+                const yhat = lineY(x);
+                sse += (y - yhat) ** 2;
+                gsap.to(seg, { attr: { y2: sy(yhat) }, duration: d, overwrite: true });
+            });
+            const mse = sse / pts.length;
+            if (animate && !reduce) {
+                gsap.to({ v: Number(lossEl.textContent) }, { v: mse, duration: d, onUpdate() { lossEl.textContent = this.targets()[0].v.toFixed(2); } });
+            } else {
+                lossEl.textContent = mse.toFixed(2);
+            }
+        }
+
+        // drag a handle vertically -> sets that end's y
+        function drag(handle: SVGCircleElement, set: (y: number) => void) {
+            let on = false;
+            const pt = svg.createSVGPoint();
+            const toData = (e: PointerEvent) => {
+                pt.x = e.clientX; pt.y = e.clientY;
+                const p = pt.matrixTransform(svg.getScreenCTM()!.inverse());
+                return Math.max(ymin, Math.min(ymax, invY(p.y)));
+            };
+            handle.addEventListener('pointerdown', (e) => { on = true; handle.setPointerCapture(e.pointerId); });
+            handle.addEventListener('pointermove', (e) => { if (on) { set(toData(e)); render(false); } });
+            handle.addEventListener('pointerup', () => { on = false; });
+        }
+        drag(hL, (y) => (yL = y));
+        drag(hR, (y) => (yR = y));
+
+        root.querySelector('[data-fit]')!.addEventListener('click', () => {
+            const n = pts.length;
+            const mx = pts.reduce((s, p) => s + p[0], 0) / n;
+            const my = pts.reduce((s, p) => s + p[1], 0) / n;
+            const m = pts.reduce((s, p) => s + (p[0] - mx) * (p[1] - my), 0) / pts.reduce((s, p) => s + (p[0] - mx) ** 2, 0);
+            const b = my - m * mx;
+            yL = b; yR = m * 10 + b; render(true);
+        });
+        root.querySelector('[data-reset]')!.addEventListener('click', () => {
+            yL = Number(root.dataset.yl0); yR = Number(root.dataset.yr0); render(true);
+        });
+        render(false);
+    });
+</script>

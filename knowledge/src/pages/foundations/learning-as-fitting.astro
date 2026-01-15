@@ -4,8 +4,8 @@ import LessonLayout from '../../layouts/LessonLayout.astro';
 import LessonHeader from '../../components/LessonHeader.astro';
 import LessonNav from '../../components/LessonNav.astro';
 import InsightBox from '../../components/InsightBox.astro';
-import ExerciseBox from '../../components/ExerciseBox.astro';
 import TagBadge from '../../components/TagBadge.astro';
+import LineFitDemo from '../../components/demos/LineFitDemo.astro';
 ---
 
 <LessonLayout title="Learning Is Just Fitting a Function" lessonNumber="0.2" section="Foundations">
@@ -59,6 +59,8 @@ import TagBadge from '../../components/TagBadge.astro';
         <div class="bg-white border border-mt-border rounded-xl p-5 mb-4 text-center font-mono">
             prediction = w &times; x + b
         </div>
+
+        <LineFitDemo />
         <p class="text-mt-muted leading-relaxed mb-4">
             Pick <span class="font-mono">w = 0, b = 0</span> and the line is flat on the floor — terrible fit, high
             loss. Nudge <span class="font-mono">w</span> up and the line tilts to follow the points; the loss drops.
