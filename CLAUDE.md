@@ -26,14 +26,20 @@ from first principles. Built in two stages — a readable scalar engine (v1), th
 ## Repository layout
 
 ```
-monktensor/
-├── knowledge/     the learning course — Astro site, deployed to GitHub Pages (concepts, not implementation)
-├── src/           the framework source (written by hand in v1)
-├── tests/         tests, including the gradient check against numerical derivatives
-├── docs/          roadmap and, later, the hosted documentation
-│   └── roadmap/   phased plan: index + per-phase files
-└── public/        brand assets (logo, wordmark)
+monktensor/                a uv workspace; root pyproject holds shared dev tooling
+├── packages/
+│   ├── scalar/            monktensor-scalar — v1 engine, pure Python, ZERO runtime deps
+│   │   └── src/monktensor_scalar/   (written by hand; starts empty)
+│   └── monktensor/        monktensor — v2 production framework (numpy; added later)
+├── examples/              demos using the engines (make_moons); example-only deps live here
+├── knowledge/             the learning course — Astro site, deployed to GitHub Pages
+├── docs/roadmap/          phased plan: index + per-phase files
+└── public/                brand assets (logo, wordmark)
 ```
+
+Two engines, two packages, one repo: v1 (`monktensor-scalar`) stays dependency-free so
+every step is visible; v2 (`monktensor`) carries numpy. The make_moons dataset and plots
+(scikit-learn, matplotlib) live only in `examples/`, never in either engine.
 
 ## Quality bars
 
@@ -60,5 +66,7 @@ interactive, reduced-motion safe).
 ## Stack
 
 - **Knowledge site:** Astro + Tailwind + GSAP, built with bun.
-- **Framework:** Python for v1 (pure-Python scalar engine; numpy only for the toy dataset and plots). The
-  implementation stack is being finalized before v1 coding begins.
+- **Framework:** Python, managed as a uv workspace. v1 (`monktensor-scalar`) is pure Python with zero
+  runtime dependencies; v2 (`monktensor`) will use numpy. Dev tooling: uv, pytest, ruff. Run from the
+  repo root: `uv sync`, `uv run pytest`, `uv run ruff check`.
+- **Examples:** scikit-learn (`make_moons`) and matplotlib, isolated in `examples/`.

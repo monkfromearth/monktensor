@@ -1,0 +1,19 @@
+[project]
+name = "monktensor-scalar"
+version = "0.1.0"
+description = "The from-scratch scalar autograd engine behind monktensor (v1, learning edition). Pure Python, zero runtime dependencies."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Sameer Khan" }]
+keywords = ["autograd", "automatic-differentiation", "backpropagation", "deep-learning", "from-scratch"]
+
+# Pure Python, on purpose: every operation must be visible. No runtime dependencies.
+dependencies = []
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/monktensor_scalar"]

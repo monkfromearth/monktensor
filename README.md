@@ -47,9 +47,12 @@ Full detail: [docs/roadmap/](./docs/roadmap/index.md).
 
 | Part | Stack |
 |------|-------|
-| **Framework (v1)** | Python. The scalar autograd engine is pure Python so every step is visible; numpy is used only for the toy dataset and plotting. *(Implementation stack is being finalized before v1 coding begins.)* |
-| **Framework (v2)** | Python with numpy for tensors; later a lazy graph and a fusing compiler backend. |
-| **Knowledge course** | [Astro](https://astro.build) + [Tailwind CSS](https://tailwindcss.com) + [GSAP](https://gsap.com) for the interactive demos, built with [bun](https://bun.sh). Deployed to GitHub Pages. |
+| **`monktensor-scalar` (v1)** | Pure Python, **zero runtime dependencies** — the scalar autograd engine, every step visible. Dev tooling: [uv](https://docs.astral.sh/uv/), pytest, ruff. |
+| **`monktensor` (v2)** | Python + numpy for tensors, then a lazy graph and a fusing compiler backend. The production, pip-installable package. |
+| **Examples** | scikit-learn (`make_moons`) and matplotlib, isolated in `examples/` so the engines stay dependency-free. |
+| **Knowledge course** | [Astro](https://astro.build) + [Tailwind CSS](https://tailwindcss.com) + [GSAP](https://gsap.com) for the demos, built with [bun](https://bun.sh). Deployed to GitHub Pages. |
+
+The two engines are separate packages in one [uv workspace](https://docs.astral.sh/uv/concepts/workspaces/), so v1 stays pure while v2 carries numpy — neither contaminates the other.
 
 ## Learn it: the course
 
@@ -72,12 +75,22 @@ animation policy).
 
 ```
 monktensor/
-├── knowledge/     the interactive course (Astro site) — concepts, not implementation
-├── src/           the framework source
-├── tests/         tests, including the gradient check against numerical derivatives
-├── docs/          roadmap, and later the hosted documentation
-│   └── roadmap/   phased plan: index + per-phase files
-└── public/        brand assets (logo, wordmark)
+├── packages/
+│   ├── scalar/        monktensor-scalar — v1 autograd engine (pure Python, zero deps)
+│   └── monktensor/    monktensor — v2 production framework (numpy; added later)
+├── examples/          demos that use the engines (make_moons); example-only deps
+├── knowledge/         the interactive course (Astro site) — concepts, not implementation
+├── docs/roadmap/      phased plan: index + per-phase files
+├── public/            brand assets (logo, wordmark)
+└── pyproject.toml     uv workspace root + shared dev tooling (pytest, ruff)
+```
+
+Develop the framework:
+
+```bash
+uv sync            # create the env + install the workspace and dev tools
+uv run pytest      # tests (the gradient check lives here once written)
+uv run ruff check  # lint
 ```
 
 ## Status

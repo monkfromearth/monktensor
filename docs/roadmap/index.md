@@ -13,6 +13,20 @@ everything works, then climb to the version that is fast and genuinely original.
 | [v1 — Autograd Engine](./v1-autograd-engine.md) | A scalar automatic-differentiation engine plus a tiny neural-net library, trained on the two-moons dataset. Small in lines, deep in ideas. | In progress |
 | [v2 — Tensor Framework](./v2-tensor-framework.md) | Climb from scalars to tensors, then to lazy evaluation and kernel fusion — the parts that make a real framework. | Planned |
 
+## Packaging & structure
+
+One repository, two Python packages in a [uv workspace](https://docs.astral.sh/uv/concepts/workspaces/),
+with deliberately separate dependency sets:
+
+- **`monktensor-scalar`** (`packages/scalar/`) — v1, pure Python, **zero runtime dependencies**. The
+  readable learning engine, kept permanently.
+- **`monktensor`** (`packages/monktensor/`, added at v2) — the production framework: numpy, then lazy
+  evaluation and kernel fusion. This is what `pip install monktensor` will provide.
+
+Keeping them as separate packages means v1 never has to install numpy and v2's dependencies never leak into
+the learning engine. Example-only dependencies (scikit-learn, matplotlib) live in `examples/`. Version line:
+`0.x` while v1 is in development, `1.0` for the first production (v2) release.
+
 ## Principles
 
 1. **Beginner-first, then advanced.** v1 is the textbook version built to learn the fundamentals. v2 is

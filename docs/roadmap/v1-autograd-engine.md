@@ -44,11 +44,19 @@ never shows the implementation (see [AUTHORING.md](../../knowledge/AUTHORING.md)
 The net separates make_moons; the gradient check passes; the README explains backprop in plain English;
 and a notebook shows the decision boundary. Tests + a benchmark/plot + a real README = the senior-repo bar.
 
-## Stack (provisional, pending the stack discussion)
+## Stack
 
-- **Language:** Python. The scalar engine stays pure Python so every operation is visible; numpy is allowed
-  only for the toy dataset and plotting.
-- This will be confirmed in the dedicated stack discussion before implementation begins.
+- **Package:** `monktensor-scalar`, a member of the repo's uv workspace (`packages/scalar/`). Import name
+  `monktensor_scalar`.
+- **Language:** Python, **pure, with zero runtime dependencies** — the scalar engine must keep every
+  operation visible, so no numpy inside it.
+- **Tooling:** uv (env + workspace), pytest (tests, including the gradient check), ruff (lint + format).
+  From the repo root: `uv sync`, `uv run pytest`, `uv run ruff check`.
+- **Dataset & plots:** scikit-learn's `make_moons` and matplotlib, kept in the repo's `examples/`, never
+  inside the engine.
+- **Relationship to v2:** v1 is the readable learning package and is kept permanently. The separate
+  `monktensor` (v2) package is the production framework (numpy, then lazy evaluation and fusion) and is what
+  `pip install monktensor` will eventually provide. See [v2](./v2-tensor-framework.md).
 
 ## How the course maps to this
 
