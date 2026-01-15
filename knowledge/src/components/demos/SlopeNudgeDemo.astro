@@ -1,0 +1,77 @@
+---
+/**
+ * Interactive: drag x along the curve f(x) = x^2, watch the tangent tilt.
+ * The tangent's steepness IS the derivative (2x). (Lesson 0.3.)
+ */
+const W = 340, H = 220, pad = 26;
+const sx = (x: number) => pad + ((x + 3) / 6) * (W - 2 * pad);
+const sy = (y: number) => (H - pad) - (y / 9) * (H - 2 * pad);
+const pts: string[] = [];
+for (let x = -3; x <= 3.0001; x += 0.2) pts.push(`${sx(x).toFixed(1)},${sy(x * x).toFixed(1)}`);
+const curve = pts.join(' ');
+const x0 = 1;
+---
+
+<div class="mt-slope-demo my-6 bg-white border border-mt-border rounded-2xl p-6"
+     data-w={W} data-h={H} data-pad={pad}>
+    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-4 text-center">Drag <span class="font-mono">x</span> &mdash; watch the slope of <span class="font-mono">x&sup2;</span></p>
+
+    <svg viewBox={`0 0 ${W} ${H}`} class="w-full max-w-md mx-auto block" role="img" aria-label="parabola with a movable tangent line">
+        <!-- x-axis -->
+        <line x1={pad} y1={sy(0)} x2={W - pad} y2={sy(0)} stroke="#E8E4DF" stroke-width="1" />
+        <!-- the curve -->
+        <polyline points={curve} fill="none" stroke="#C2A4CD" stroke-width="2.5" stroke-linecap="round" />
+        <!-- tangent line -->
+        <line data-tangent x1={sx(x0 - 1.3)} y1={sy(x0 * x0 - 2 * x0 * 1.3)} x2={sx(x0 + 1.3)} y2={sy(x0 * x0 + 2 * x0 * 1.3)}
+              stroke="#C96F5A" stroke-width="2.5" stroke-linecap="round" />
+        <!-- point on the curve -->
+        <circle data-point cx={sx(x0)} cy={sy(x0 * x0)} r="6" fill="#C96F5A" stroke="#fff" stroke-width="2" />
+    </svg>
+
+    <div class="flex items-center justify-center gap-4 font-mono text-sm mt-4 mb-3">
+        <span class="px-3 py-1 rounded-lg bg-stone-100 text-mt-muted">x = <span data-x>1.00</span></span>
+        <span class="px-3 py-1 rounded-lg bg-mt-lavLight text-mt-lav">f(x) = <span data-fx>1.00</span></span>
+        <span class="px-3 py-1 rounded-lg bg-mt-accentLight text-mt-accent font-semibold">slope = <span data-slope>2.00</span></span>
+    </div>
+
+    <input type="range" min="-3" max="3" step="0.05" value="1" data-slider class="w-full accent-mt-accent cursor-pointer" aria-label="value of x" />
+
+    <p class="text-center text-xs text-mt-muted mt-3">the slope here is <span class="font-mono">2x</span> &mdash; flat at the bottom, steeper the further out you drag</p>
+</div>
+
+<script>
+    import { gsap } from 'gsap';
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    document.querySelectorAll<HTMLElement>('.mt-slope-demo').forEach((root) => {
+        const W = Number(root.dataset.w), H = Number(root.dataset.h), pad = Number(root.dataset.pad);
+        const sx = (x: number) => pad + ((x + 3) / 6) * (W - 2 * pad);
+        const sy = (y: number) => (H - pad) - (y / 9) * (H - 2 * pad);
+
+        const slider = root.querySelector<HTMLInputElement>('[data-slider]')!;
+        const point = root.querySelector<SVGCircleElement>('[data-point]')!;
+        const tangent = root.querySelector<SVGLineElement>('[data-tangent]')!;
+        const xEl = root.querySelector<HTMLElement>('[data-x]')!;
+        const fxEl = root.querySelector<HTMLElement>('[data-fx]')!;
+        const slopeEl = root.querySelector<HTMLElement>('[data-slope]')!;
+        const dur = reduce ? 0 : 0.25;
+
+        function update() {
+            const x = Number(slider.value);
+            const y = x * x;
+            const m = 2 * x; // the derivative of x^2
+            xEl.textContent = x.toFixed(2);
+            fxEl.textContent = y.toFixed(2);
+            slopeEl.textContent = m.toFixed(2);
+            gsap.to(point, { attr: { cx: sx(x), cy: sy(y) }, duration: dur, overwrite: true });
+            gsap.to(tangent, {
+                attr: {
+                    x1: sx(x - 1.3), y1: sy(y - m * 1.3),
+                    x2: sx(x + 1.3), y2: sy(y + m * 1.3),
+                }, duration: dur, overwrite: true,
+            });
+        }
+        slider.addEventListener('input', update);
+        update();
+    });
+</script>

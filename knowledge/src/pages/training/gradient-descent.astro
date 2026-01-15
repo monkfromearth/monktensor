@@ -1,0 +1,78 @@
+---
+import '../../styles/global.css';
+import LessonLayout from '../../layouts/LessonLayout.astro';
+import LessonHeader from '../../components/LessonHeader.astro';
+import LessonNav from '../../components/LessonNav.astro';
+import InsightBox from '../../components/InsightBox.astro';
+import TagBadge from '../../components/TagBadge.astro';
+import GradientDescentDemo from '../../components/demos/GradientDescentDemo.astro';
+---
+
+<LessonLayout title="Gradient Descent & SGD" lessonNumber="4.3" section="Training">
+
+    <LessonHeader lessonNumber="4.3" title="Gradient Descent & SGD" description="The act of learning itself: take the gradient, step the parameters downhill, repeat. Simple to state, but the step size makes or breaks it, and one easy-to-forget reset causes the most common training bug.">
+        <TagBadge variant="math">math</TagBadge>
+        <TagBadge variant="default">10 min read</TagBadge>
+    </LessonHeader>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Step downhill, repeat.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            You have a loss and, thanks to backprop, its gradient for every parameter. The gradient points uphill
+            (lesson 0.4), so to lower the loss you step each parameter a little in the opposite direction. Do it again.
+            And again. That's <strong>gradient descent</strong> — the entire learning algorithm in one move:
+        </p>
+        <div class="bg-white border border-mt-border rounded-xl p-5 mb-4 text-center font-mono text-sm">
+            w &larr; w &minus; (learning rate) &times; w.grad
+        </div>
+        <p class="text-mt-muted leading-relaxed">Drag the learning rate and step the ball down the bowl:</p>
+
+        <GradientDescentDemo />
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">The learning rate is the knob you'll fight most.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            The <strong>learning rate</strong> is the step size, and the demo shows its whole personality. Too small and
+            it crawls — correct direction, glacial progress. Just right and it slides smoothly to the bottom. Too big and
+            it overshoots, bouncing across the valley; past a point it diverges entirely, flying uphill. Most of the
+            practical art of training is finding a learning rate that's brisk but stable.
+        </p>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Zero the gradients first (or else).</h2>
+        <InsightBox>
+            <p class="text-sm">Remember from Unit 2 that gradients <strong>accumulate</strong> (each backward pass adds
+            with <span class="font-mono">+=</span>). So before every backward pass you must <strong>reset every
+            gradient to 0</strong>. Skip it and this step's gradients pile on top of last step's leftovers, and the model
+            lurches around or stalls. The training loop is: zero the grads, backward, step. Forgetting the zero is one of
+            the most common training bugs there is — and nothing crashes to warn you.</p>
+        </InsightBox>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Why "stochastic" (SGD).</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            Computing the loss over the <em>entire</em> dataset for every step is exact but slow. <strong>Stochastic
+            gradient descent</strong> uses a small random batch of examples each step instead. The gradient is noisier,
+            but you take far more steps per second, and the noise can even help escape bad spots. For a dataset as small
+            as make_moons you can use all of it each step; the principle scales to the batches big models depend on.
+        </p>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Key takeaways</h2>
+        <div class="space-y-3">
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">1</span></div><p class="text-sm">Gradient descent steps each parameter opposite its gradient: w &larr; w &minus; lr &times; grad, repeated.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">2</span></div><p class="text-sm">The learning rate sets the step size: too small crawls, too big overshoots or diverges.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">3</span></div><p class="text-sm">Zero the gradients before each backward pass (they accumulate); SGD uses small batches to step faster.</p></div>
+        </div>
+    </section>
+
+    <LessonNav
+        prevHref="/training/loss-functions" prevLabel="Prev: Loss Functions"
+        nextHref="/training/initialization-and-regularization" nextLabel="Next: Initialization & Regularization"
+    />
+
+</LessonLayout>

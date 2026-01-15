@@ -1,0 +1,65 @@
+---
+import '../../styles/global.css';
+import LessonLayout from '../../layouts/LessonLayout.astro';
+import LessonHeader from '../../components/LessonHeader.astro';
+import LessonNav from '../../components/LessonNav.astro';
+import InsightBox from '../../components/InsightBox.astro';
+import TagBadge from '../../components/TagBadge.astro';
+---
+
+<LessonLayout title="Initialization & Regularization" lessonNumber="4.4" section="Training">
+
+    <LessonHeader lessonNumber="4.4" title="Initialization & Regularization" description="Two short but decisive choices: where the knobs start, and how to stop the network from just memorizing. Get these wrong and a perfectly correct engine still won't learn well.">
+        <TagBadge variant="concepts">concepts</TagBadge>
+        <TagBadge variant="default">8 min read</TagBadge>
+    </LessonHeader>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Where the knobs start matters.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            Before the first step, every weight needs a starting value. The tempting choice — set them all to zero (or
+            all the same) — quietly breaks the network. If every neuron in a layer starts identical, they all compute
+            the same thing, all receive the same gradient, and so update identically forever. They stay clones; the
+            layer never spreads out to learn different features. This is the <strong>symmetry</strong> problem.
+        </p>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            The fix is to start weights <strong>small and random</strong>. Random breaks the symmetry so neurons can
+            specialize; small keeps the early activations away from the flat, saturated tails (lesson 3.3) where
+            gradients vanish. Too large and neurons saturate or the loss explodes from step one.
+        </p>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Stop it from memorizing.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            A network with enough knobs can memorize the training points exactly — drawing a wildly wiggly boundary that
+            threads every dot — and then fail on new points. That's <strong>overfitting</strong>: great on training data,
+            poor on the held-out set. The tell is the validation loss creeping up while the training loss keeps falling.
+        </p>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            <strong>Regularization</strong> pushes back. The common form, <strong>L2</strong> (weight decay), adds a
+            small penalty for large weights to the loss. The network now has to justify big weights with real reduction
+            in error, so it prefers smaller weights and smoother, simpler boundaries — the kind that generalize.
+        </p>
+        <InsightBox>
+            <p class="text-sm">For make_moons: start weights small and random, and add a little L2. That combination
+            gives a network that actually learns (symmetry broken, gradients flowing) and draws a clean curve between
+            the moons instead of a jagged line that memorizes the dots.</p>
+        </InsightBox>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Key takeaways</h2>
+        <div class="space-y-3">
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">1</span></div><p class="text-sm">Don't start all weights equal — neurons would stay clones (the symmetry problem). Start small and random.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">2</span></div><p class="text-sm">Overfitting is memorizing the training data; the sign is validation loss rising while training loss falls.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">3</span></div><p class="text-sm">L2 regularization penalizes large weights, favoring smoother boundaries that generalize.</p></div>
+        </div>
+    </section>
+
+    <LessonNav
+        prevHref="/training/gradient-descent" prevLabel="Prev: Gradient Descent & SGD"
+        nextHref="/training/the-training-loop" nextLabel="Next: The Training Loop"
+    />
+
+</LessonLayout>

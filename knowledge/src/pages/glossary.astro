@@ -1,0 +1,97 @@
+---
+import '../styles/global.css';
+import LessonLayout from '../layouts/LessonLayout.astro';
+import LessonHeader from '../components/LessonHeader.astro';
+import LessonNav from '../components/LessonNav.astro';
+import TagBadge from '../components/TagBadge.astro';
+
+const groups = [
+  {
+    title: 'The big ideas',
+    terms: [
+      ['Derivative', 'How much a function’s output moves when you nudge its input a hair. Sign = direction, size = how fast. The answer to the "nudge question."'],
+      ['Gradient', 'The list of derivatives, one per parameter. It points uphill (toward higher loss); learning steps the opposite way.'],
+      ['Partial derivative', 'The derivative with respect to one input while holding the others fixed. The gradient is a bundle of these.'],
+      ['Chain rule', 'The slope through a chain of functions is the product of the local slopes. When a value reaches the output by several paths, add across paths.'],
+      ['Loss', 'A single number measuring how wrong the model’s predictions are. Training minimizes it.'],
+    ],
+  },
+  {
+    title: 'The graph & autograd',
+    terms: [
+      ['Computation graph', 'The wiring of a calculation: nodes are values, edges are "feeds into." The framework’s memory of how each value was made.'],
+      ['Node / leaf', 'A node is a value produced by an operation. A leaf has no inputs — the data and the parameters.'],
+      ['Forward pass', 'Evaluating the graph from leaves to output, recording each operation as it goes.'],
+      ['Backward pass', 'Walking the graph in reverse, seeding the output gradient at 1 and computing every node’s gradient.'],
+      ['Automatic differentiation (autograd)', 'Computing exact gradients automatically by remembering the forward steps and applying the chain rule backward.'],
+      ['Backpropagation', 'Autograd for neural nets: topological sort + reverse walk applying local gradients and accumulating.'],
+      ['Local gradient', 'One operation’s "if my input wiggles, how does my output move?" — ignoring the rest of the graph.'],
+      ['Fan-out / accumulation', 'When one value feeds multiple operations, gradient comes back from each and must be added (+=), never overwritten.'],
+      ['Topological sort', 'An ordering where every node comes after what it depends on. Backprop walks it in reverse so each node’s gradient is complete before use.'],
+      ['Finite difference', 'Estimating a derivative with arithmetic by nudging the input. Slow but simple — used to check backprop.'],
+      ['Gradient checking', 'Verifying backprop’s gradients against finite-difference nudges. The most important test of the engine.'],
+    ],
+  },
+  {
+    title: 'Numbers & networks',
+    terms: [
+      ['Scalar', 'A single number. monktensor v1 runs on scalars so every step is visible.'],
+      ['Tensor', 'An n-dimensional array of numbers treated as one value. Lets one operation process many numbers at once (v2).'],
+      ['Parameter (weight, bias)', 'A learnable number — the knobs the optimizer adjusts. A weight scales an input; a bias is a baseline lean.'],
+      ['Activation', 'Two meanings: (1) an intermediate value computed in the forward pass; (2) the squashing function inside a neuron.'],
+      ['Neuron', 'A weighted sum of inputs plus a bias, passed through an activation.'],
+      ['Layer / MLP', 'A layer is several neurons sharing inputs. A multi-layer perceptron stacks layers so each feeds the next.'],
+      ['ReLU / tanh / sigmoid', 'Common activations. ReLU is max(0, x); tanh is an S-curve from -1 to 1; sigmoid an S-curve from 0 to 1.'],
+      ['Saturation / vanishing gradient', 'Where an activation goes flat, its slope is ~0, so almost no gradient flows back and learning stalls.'],
+    ],
+  },
+  {
+    title: 'Training',
+    terms: [
+      ['Gradient descent', 'Step each parameter opposite its gradient to lower the loss: w ← w − lr × grad. Repeat.'],
+      ['SGD', 'Stochastic gradient descent: each step uses a small random batch instead of all the data — faster, noisier.'],
+      ['Learning rate', 'The step size. Too small crawls; too big overshoots or diverges.'],
+      ['Epoch / batch', 'An epoch is one full pass over the data. A batch is the subset of examples used in one step.'],
+      ['Initialization', 'The starting values of the weights. Start small and random to break symmetry and avoid saturation.'],
+      ['Regularization (L2 / weight decay)', 'A penalty on large weights added to the loss, favoring smoother boundaries that generalize.'],
+      ['Overfitting / generalization', 'Overfitting is memorizing the training data; generalization is doing well on unseen data. The goal is the latter.'],
+      ['Decision boundary', 'The curve where a classifier switches its answer between classes.'],
+      ['Features / label', 'Features are the inputs (e.g. a point’s coordinates); the label is the correct answer (which class).'],
+    ],
+  },
+  {
+    title: 'Beyond v1',
+    terms: [
+      ['Define-by-run', 'Building the graph as you compute (dynamic), the way PyTorch and monktensor v1 work.'],
+      ['Eager vs lazy', 'Eager runs each operation immediately; lazy records the op graph and computes only on demand (.realize()).'],
+      ['Kernel fusion', 'Combining many small operations into one pass over memory, once the whole graph is known. Where a clone becomes a real framework.'],
+    ],
+  },
+];
+---
+
+<LessonLayout title="Glossary" lessonNumber="·" section="Glossary">
+
+    <LessonHeader lessonNumber="" title="Glossary" description="Every term in the course, in plain English first, then the precise meaning. Skim it any time a word stops being obvious.">
+        <TagBadge variant="glossary">reference</TagBadge>
+    </LessonHeader>
+
+    {groups.map((g) => (
+        <section class="mb-12">
+            <h2 class="text-xl font-bold mb-4">{g.title}</h2>
+            <dl class="space-y-3">
+                {g.terms.map(([term, def]) => (
+                    <div class="bg-white border border-mt-border rounded-xl px-5 py-4">
+                        <dt class="font-semibold text-sm text-mt-ink">{term}</dt>
+                        <dd class="text-mt-muted text-sm mt-1 leading-relaxed">{def}</dd>
+                    </div>
+                ))}
+            </dl>
+        </section>
+    ))}
+
+    <LessonNav
+        prevHref="/beyond/lazy-eval-and-fusion" prevLabel="Prev: Lazy Evaluation & Fusion"
+    />
+
+</LessonLayout>

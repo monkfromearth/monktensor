@@ -1,0 +1,110 @@
+---
+import '../../styles/global.css';
+import LessonLayout from '../../layouts/LessonLayout.astro';
+import LessonHeader from '../../components/LessonHeader.astro';
+import LessonNav from '../../components/LessonNav.astro';
+import InsightBox from '../../components/InsightBox.astro';
+import ExerciseBox from '../../components/ExerciseBox.astro';
+import TagBadge from '../../components/TagBadge.astro';
+---
+
+<LessonLayout title="Learning Is Just Fitting a Function" lessonNumber="0.2" section="Foundations">
+
+    <LessonHeader lessonNumber="0.2" title="Learning Is Just Fitting a Function" description="The word 'learning' sounds mysterious. Underneath, it's an ordinary idea: turn some knobs until a machine's answers stop being wrong. Here's that idea, made concrete.">
+        <TagBadge variant="intuition">intuition</TagBadge>
+        <TagBadge variant="default">9 min read</TagBadge>
+    </LessonHeader>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">A machine with knobs on the side.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            Imagine a machine with a few knobs on it. You feed something in, it spits a number out. Right now the
+            knobs are set randomly, so the output is nonsense. But you have a stack of examples where you know the
+            <em>right</em> answer. So you play a game: feed in an example, look at how far the output is from the right
+            answer, then turn the knobs a little to make it closer. Do that thousands of times and the machine starts
+            producing good answers on its own.
+        </p>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            That's the whole of "learning" in this course. The machine is a <strong>function</strong>. The knobs are
+            its <strong>parameters</strong> (also called weights). "Learning" is just searching for knob settings that
+            make the function fit your examples. Nothing is being understood or memorized — numbers are being tuned.
+        </p>
+        <InsightBox>
+            <p class="text-sm"><strong>Function:</strong> a rule that takes an input and produces an output.
+            <strong>Parameters:</strong> the adjustable numbers inside that rule. A child learning to throw a ball is
+            adjusting parameters too — every miss tells the arm which way to correct next time.</p>
+        </InsightBox>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Measuring "wrong" with a single number.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            To turn the knobs sensibly, you need to know how wrong you currently are — as one number. That number is
+            the <strong>loss</strong>. High loss means bad predictions; low loss means good ones. Learning is the hunt
+            for knob settings that make the loss small.
+        </p>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            A simple loss: take each example, find the gap between your prediction and the true answer, square it so
+            misses in either direction count as bad, and average over all examples. One example off by 2 contributes
+            4; off by 0 contributes nothing. Add them up — that's your score for the current knob settings.
+        </p>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Fitting a line, by feel.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            Say your machine has two knobs, <span class="font-mono">w</span> and <span class="font-mono">b</span>, and
+            predicts with the rule below. The data is a cloud of points you want the line to pass through.
+        </p>
+        <div class="bg-white border border-mt-border rounded-xl p-5 mb-4 text-center font-mono">
+            prediction = w &times; x + b
+        </div>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            Pick <span class="font-mono">w = 0, b = 0</span> and the line is flat on the floor — terrible fit, high
+            loss. Nudge <span class="font-mono">w</span> up and the line tilts to follow the points; the loss drops.
+            Overshoot and it climbs again. If you plotted the loss against <span class="font-mono">w</span>, you'd see
+            a <strong>valley</strong>: learning is walking downhill to the bottom of that valley.
+        </p>
+        <InsightBox>
+            <p class="text-sm">This reframes the scary phrase "the AI learns" into something plain:
+            <strong>learning is minimizing a function</strong> (the loss) by adjusting its inputs (the parameters).
+            The entire rest of this course is about doing that walk-downhill <em>efficiently</em> — which is exactly
+            what gradients are for.</p>
+        </InsightBox>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">What learning is NOT.</h2>
+        <div class="space-y-3">
+            <div class="flex items-start gap-3 bg-white border border-mt-border rounded-xl px-5 py-4">
+                <svg class="w-5 h-5 text-mt-muted flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                <div>
+                    <p class="font-semibold text-sm">Not memorizing the examples.</p>
+                    <p class="text-mt-muted text-xs">The goal is to do well on inputs it has never seen. A machine that only parrots the training data has failed. We'll return to this as "generalization" in Unit 4.</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-3 bg-white border border-mt-border rounded-xl px-5 py-4">
+                <svg class="w-5 h-5 text-mt-muted flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                <div>
+                    <p class="font-semibold text-sm">Not magic, and not search-by-luck.</p>
+                    <p class="text-mt-muted text-xs">We don't try random knob settings and hope. We compute exactly which way each knob should move. That's the next three lessons.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Key takeaways</h2>
+        <div class="space-y-3">
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">1</span></div><p class="text-sm">A model is a function with adjustable numbers (parameters). Learning means choosing parameters that fit your examples.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">2</span></div><p class="text-sm">The loss is a single number measuring how wrong the predictions are. Learning is making the loss small.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">3</span></div><p class="text-sm">Training is minimizing a function by adjusting its inputs. Gradients are how we know which way to adjust.</p></div>
+        </div>
+    </section>
+
+    <LessonNav
+        prevHref="/foundations/what-is-a-dl-framework" prevLabel="Prev: What a Framework Is"
+        nextHref="/foundations/derivatives" nextLabel="Next: Derivatives, Intuitively"
+    />
+
+</LessonLayout>

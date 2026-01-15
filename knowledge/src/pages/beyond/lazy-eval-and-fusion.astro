@@ -1,0 +1,72 @@
+---
+import '../../styles/global.css';
+import LessonLayout from '../../layouts/LessonLayout.astro';
+import LessonHeader from '../../components/LessonHeader.astro';
+import LessonNav from '../../components/LessonNav.astro';
+import InsightBox from '../../components/InsightBox.astro';
+import TagBadge from '../../components/TagBadge.astro';
+---
+
+<LessonLayout title="Lazy Evaluation & Fusion" lessonNumber="5.2" section="Beyond v1">
+
+    <LessonHeader lessonNumber="5.2" title="Lazy Evaluation & Kernel Fusion" description="The step that turns a clone into a real framework. Instead of computing each operation the instant you write it, record the plan and optimize the whole thing before running it once, fast.">
+        <TagBadge variant="concepts">concepts</TagBadge>
+        <TagBadge variant="default">8 min read</TagBadge>
+    </LessonHeader>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Eager vs lazy.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            v1 is <strong>eager</strong>: each operation runs the moment you write it. Simple and great for debugging —
+            it's how PyTorch works by default. But computing every small step immediately means lots of separate trips
+            to memory and no chance to see the bigger plan.
+        </p>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            <strong>Lazy evaluation</strong> flips it: writing an operation only <em>records</em> it; nothing computes
+            until you actually ask for a result (tinygrad spells this <span class="font-mono">.realize()</span>). Now the
+            framework holds the entire plan — the whole op graph — before running anything.
+        </p>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Why holding the plan is powerful.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            Once a compiler can see the whole graph, it can optimize it. The big win is <strong>kernel fusion</strong>:
+            instead of running ten small operations as ten separate passes over memory, fuse them into one combined
+            operation that does the whole chain in a single pass. Fewer trips to memory, no throwaway intermediate
+            arrays, and one tight routine the GPU can run flat out. The same trick optimizes the backward pass too.
+        </p>
+        <InsightBox>
+            <p class="text-sm">This is the genuinely senior, least-cloned part. Plenty of people write a micrograd clone;
+            far fewer build a lazy graph and a fusing compiler. It's also the line where monktensor stops being an
+            educational toy and becomes a real framework — the same idea behind tinygrad, <span class="font-mono">torch.compile</span>,
+            and JAX.</p>
+        </InsightBox>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">The arc, end to end.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            That's the whole climb: <strong>v1 (scalars)</strong> to understand how learning works, <strong>tensors</strong>
+            to make it practical, <strong>lazy evaluation and fusion</strong> to make it fast and genuinely original. The
+            deeper research bets in this body of work — vector search and quantization — build on exactly this
+            understanding. You started with one number and a nudge; you end with a real framework and the judgment to
+            push it further.
+        </p>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Key takeaways</h2>
+        <div class="space-y-3">
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">1</span></div><p class="text-sm">Eager runs each op immediately (simple); lazy records the op graph and computes only on demand.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">2</span></div><p class="text-sm">Seeing the whole graph lets a compiler fuse many ops into one fast pass — kernel fusion.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">3</span></div><p class="text-sm">Fusion is the senior, least-cloned part — where monktensor becomes a real framework, not a toy.</p></div>
+        </div>
+    </section>
+
+    <LessonNav
+        prevHref="/beyond/scalars-to-tensors" prevLabel="Prev: Scalars to Tensors"
+        nextHref="/glossary" nextLabel="Next: Glossary"
+    />
+
+</LessonLayout>

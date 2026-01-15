@@ -1,0 +1,130 @@
+---
+import '../../styles/global.css';
+import LessonLayout from '../../layouts/LessonLayout.astro';
+import LessonHeader from '../../components/LessonHeader.astro';
+import LessonNav from '../../components/LessonNav.astro';
+import InsightBox from '../../components/InsightBox.astro';
+import ExerciseBox from '../../components/ExerciseBox.astro';
+import Formula from '../../components/Formula.astro';
+import TagBadge from '../../components/TagBadge.astro';
+import SlopeNudgeDemo from '../../components/demos/SlopeNudgeDemo.astro';
+---
+
+<LessonLayout title="Derivatives, Intuitively" lessonNumber="0.3" section="Foundations">
+
+    <LessonHeader lessonNumber="0.3" title="Derivatives, Intuitively" description="A derivative is one number that answers the nudge question from lesson 0.1: wiggle the input a hair, how much does the output move? No heavy calculus — just the few ideas the framework needs.">
+        <TagBadge variant="math">math</TagBadge>
+        <TagBadge variant="default">11 min read</TagBadge>
+    </LessonHeader>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Standing on a hill in the fog.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            You're on a hillside, fog everywhere, can't see a thing. But you can feel the ground under your feet
+            tilt. That tilt tells you two things: which way is downhill, and how steep it is. That's a derivative —
+            the steepness of a function at the exact spot you're standing.
+        </p>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            More precisely: the derivative of a function at a point is <strong>how much the output changes per tiny
+            change in the input</strong>. If a small step right makes the output rise twice as fast as the step, the
+            derivative is 2. If the output drops, the derivative is negative.
+        </p>
+        <InsightBox>
+            <p class="text-sm">Two pieces of information live in one number. The <strong>sign</strong> says direction
+            (does the output go up or down when the input goes up?). The <strong>size</strong> says how fast. Learning
+            uses both: sign tells a knob which way to turn, size tells it how hard.</p>
+        </InsightBox>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">The nudge definition.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            Take a function <span class="font-mono">f</span>. Pick an input <span class="font-mono">x</span>. Add a
+            tiny amount <span class="font-mono">&epsilon;</span> (epsilon, think 0.0001). See how much the output moved,
+            and divide by the size of the nudge:
+        </p>
+        <Formula caption="As the nudge ε shrinks toward zero, this ratio settles on the derivative.">
+            slope &asymp; ( f(x + &epsilon;) &minus; f(x) ) / &epsilon;
+        </Formula>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            That's it. "Output change divided by input change," with the input change made tiny. The exact derivative
+            is what this ratio approaches as <span class="font-mono">&epsilon;</span> goes to zero. We write it
+            <span class="font-mono">df/dx</span> or <span class="font-mono">f&prime;(x)</span>.
+        </p>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            Computing the ratio with a small-but-real <span class="font-mono">&epsilon;</span> is called a
+            <strong>finite difference</strong>. It's approximate, but it's something you can do with arithmetic alone —
+            which makes it the perfect way to <em>check</em> the exact derivatives your framework computes. We'll use
+            that trick to prove the engine correct in Unit 2.
+        </p>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">A worked example.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            Take <span class="font-mono">f(x) = x&sup2;</span> at <span class="font-mono">x = 3</span>. So
+            <span class="font-mono">f(3) = 9</span>. Nudge with <span class="font-mono">&epsilon; = 0.001</span>:
+        </p>
+        <div class="bg-white border border-mt-border rounded-xl p-5 mb-4 font-mono text-sm">
+            f(3.001) = 3.001 &times; 3.001 = 9.006001<br>
+            slope &asymp; (9.006001 &minus; 9) / 0.001 = 6.001 &asymp; <strong>6</strong>
+        </div>
+
+        <SlopeNudgeDemo />
+        <p class="text-mt-muted leading-relaxed mb-4">
+            The derivative of <span class="font-mono">x&sup2;</span> at 3 is 6. (The exact rule is
+            <span class="font-mono">2x</span>, and 2&times;3 = 6 — the finite difference landed right next to it, off
+            only by the leftover <span class="font-mono">&epsilon;</span>.) That's the nudge question from lesson 0.1,
+            answered with arithmetic.
+        </p>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">The handful of rules we'll actually need.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            This isn't a calculus course. For a scalar engine you only need a few derivative rules, and each one is
+            the answer to "if I wiggle the input, how does this operation's output move?"
+        </p>
+        <div class="bg-white border border-mt-border rounded-xl overflow-hidden mb-4">
+            <table class="w-full text-sm">
+                <thead><tr class="bg-mt-bg text-left"><th class="px-5 py-2 font-semibold">Operation</th><th class="px-5 py-2 font-semibold">Derivative</th><th class="px-5 py-2 font-semibold">In words</th></tr></thead>
+                <tbody class="divide-y divide-mt-border font-mono text-xs">
+                    <tr><td class="px-5 py-2">c (a constant)</td><td class="px-5 py-2">0</td><td class="px-5 py-2 font-sans text-mt-muted">a constant never moves</td></tr>
+                    <tr><td class="px-5 py-2">x</td><td class="px-5 py-2">1</td><td class="px-5 py-2 font-sans text-mt-muted">moves exactly as fast as itself</td></tr>
+                    <tr><td class="px-5 py-2">x&sup2;</td><td class="px-5 py-2">2x</td><td class="px-5 py-2 font-sans text-mt-muted">steeper the further out you are</td></tr>
+                    <tr><td class="px-5 py-2">c &times; x</td><td class="px-5 py-2">c</td><td class="px-5 py-2 font-sans text-mt-muted">scaling the input scales the slope</td></tr>
+                    <tr><td class="px-5 py-2">f + g</td><td class="px-5 py-2">f&prime; + g&prime;</td><td class="px-5 py-2 font-sans text-mt-muted">slopes of a sum just add</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="text-mt-muted leading-relaxed">
+            The one rule left — how to handle a function <em>inside</em> a function — is the chain rule, and it's big
+            enough to get its own lesson (0.5). With these plus the chain rule, you can differentiate everything a
+            small neural net needs.
+        </p>
+    </section>
+
+    <section class="mb-14">
+        <ExerciseBox title="Try it by hand">
+            <p class="text-sm text-mt-muted">Estimate the slope of <span class="font-mono">f(x) = x&sup2;</span> at
+            <span class="font-mono">x = 2</span> using a nudge of <span class="font-mono">&epsilon; = 0.001</span>.
+            Compute <span class="font-mono">f(2.001)</span>, subtract <span class="font-mono">f(2)</span>, divide by
+            0.001. You should land right next to 4 (because the rule <span class="font-mono">2x</span> gives 2&times;2 = 4).</p>
+        </ExerciseBox>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Key takeaways</h2>
+        <div class="space-y-3">
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">1</span></div><p class="text-sm">A derivative is output-change per tiny input-change: which way the output moves, and how fast.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">2</span></div><p class="text-sm">You can estimate one with arithmetic (a finite difference) — which is how we'll later check the framework's exact answers.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">3</span></div><p class="text-sm">A scalar engine needs only a few derivative rules plus the chain rule. That's the whole math toolkit.</p></div>
+        </div>
+    </section>
+
+    <LessonNav
+        prevHref="/foundations/learning-as-fitting" prevLabel="Prev: Learning Is Fitting"
+        nextHref="/foundations/gradients" nextLabel="Next: Gradients"
+    />
+
+</LessonLayout>

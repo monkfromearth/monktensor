@@ -1,0 +1,77 @@
+---
+/**
+ * Interactive: drag x, see how tanh, sigmoid, and relu each map the same input.
+ * Shows the squashing shapes and the flat (saturated) tails. (Lesson 3.3.)
+ */
+const W = 130, H = 120, pad = 16;
+const xmin = -4, xmax = 4;
+const sx = (x: number) => pad + ((x - xmin) / (xmax - xmin)) * (W - 2 * pad);
+const sy = (y: number, ymin: number, ymax: number) => (H - pad) - ((y - ymin) / (ymax - ymin)) * (H - 2 * pad);
+const fns = [
+  { name: 'tanh', ymin: -1.2, ymax: 1.2, color: '#C96F5A' },
+  { name: 'sigmoid', ymin: -0.1, ymax: 1.1, color: '#7E7FBC' },
+  { name: 'relu', ymin: -0.4, ymax: 4, color: '#5E80C9' },
+];
+const evalF = (name: string, x: number) =>
+  name === 'tanh' ? Math.tanh(x) : name === 'sigmoid' ? 1 / (1 + Math.exp(-x)) : Math.max(0, x);
+const panels = fns.map((fn) => {
+  const pts: string[] = [];
+  for (let x = xmin; x <= xmax + 1e-9; x += 0.2) pts.push(`${sx(x).toFixed(1)},${sy(evalF(fn.name, x), fn.ymin, fn.ymax).toFixed(1)}`);
+  return { ...fn, curve: pts.join(' '), y0: sy(0, fn.ymin, fn.ymax), x0: sx(0) };
+});
+const startX = 1;
+---
+
+<div class="mt-activations-demo my-6 bg-white border border-mt-border rounded-2xl p-6"
+     data-w={W} data-h={H} data-pad={pad} data-xmin={xmin} data-xmax={xmax}>
+    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-5 text-center">Drag <span class="font-mono">x</span> &mdash; one input, three squashers</p>
+
+    <div class="grid grid-cols-3 gap-3 mb-4">
+        {panels.map((p) => (
+            <div class="text-center" data-panel data-name={p.name} data-ymin={p.ymin} data-ymax={p.ymax}>
+                <svg viewBox={`0 0 ${W} ${H}`} class="w-full" role="img" aria-label={p.name + " curve"}>
+                    <line x1={pad} y1={p.y0} x2={W - pad} y2={p.y0} stroke="#E8E4DF" stroke-width="1" />
+                    <line x1={p.x0} y1={pad} x2={p.x0} y2={H - pad} stroke="#F0EDE9" stroke-width="1" />
+                    <polyline points={p.curve} fill="none" stroke={p.color} stroke-width="2.5" stroke-linecap="round" />
+                    <circle data-dot cx={sx(startX)} cy={sy(evalF(p.name, startX), p.ymin, p.ymax)} r="5" fill={p.color} stroke="#fff" stroke-width="2" />
+                </svg>
+                <div class="font-mono text-xs mt-1" style={`color:${p.color}`}>{p.name}</div>
+                <div class="font-mono text-xs text-mt-muted">out = <span data-out>0.76</span></div>
+            </div>
+        ))}
+    </div>
+
+    <input type="range" min={xmin} max={xmax} step="0.1" value={startX} data-slider class="w-full accent-mt-accent cursor-pointer" aria-label="value of x" />
+    <p class="text-center text-xs text-mt-muted mt-3">notice the flat tails on tanh and sigmoid &mdash; out there the slope is ~0, so gradients nearly vanish</p>
+</div>
+
+<script>
+    import { gsap } from 'gsap';
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const evalF = (name: string, x: number) =>
+        name === 'tanh' ? Math.tanh(x) : name === 'sigmoid' ? 1 / (1 + Math.exp(-x)) : Math.max(0, x);
+
+    document.querySelectorAll<HTMLElement>('.mt-activations-demo').forEach((root) => {
+        const W = Number(root.dataset.w), H = Number(root.dataset.h), pad = Number(root.dataset.pad);
+        const xmin = Number(root.dataset.xmin), xmax = Number(root.dataset.xmax);
+        const sx = (x: number) => pad + ((x - xmin) / (xmax - xmin)) * (W - 2 * pad);
+        const sy = (y: number, a: number, b: number) => (H - pad) - ((y - a) / (b - a)) * (H - 2 * pad);
+        const slider = root.querySelector<HTMLInputElement>('[data-slider]')!;
+        const panels = Array.from(root.querySelectorAll<HTMLElement>('[data-panel]'));
+        const dur = reduce ? 0 : 0.2;
+
+        function update() {
+            const x = Number(slider.value);
+            panels.forEach((p) => {
+                const name = p.dataset.name!;
+                const ymin = Number(p.dataset.ymin), ymax = Number(p.dataset.ymax);
+                const y = evalF(name, x);
+                const dot = p.querySelector<SVGCircleElement>('[data-dot]')!;
+                p.querySelector<HTMLElement>('[data-out]')!.textContent = y.toFixed(2);
+                gsap.to(dot, { attr: { cx: sx(x), cy: sy(y, ymin, ymax) }, duration: dur, overwrite: true });
+            });
+        }
+        slider.addEventListener('input', update);
+        update();
+    });
+</script>

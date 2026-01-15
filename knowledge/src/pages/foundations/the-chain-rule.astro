@@ -1,0 +1,123 @@
+---
+import '../../styles/global.css';
+import LessonLayout from '../../layouts/LessonLayout.astro';
+import LessonHeader from '../../components/LessonHeader.astro';
+import LessonNav from '../../components/LessonNav.astro';
+import InsightBox from '../../components/InsightBox.astro';
+import Formula from '../../components/Formula.astro';
+import TagBadge from '../../components/TagBadge.astro';
+import GearsDemo from '../../components/demos/GearsDemo.astro';
+---
+
+<LessonLayout title="The Chain Rule" lessonNumber="0.5" section="Foundations">
+
+    <LessonHeader lessonNumber="0.5" title="The Chain Rule" description="The one rule backpropagation is built on. It tells you the slope of a function-inside-a-function, and it has a second half — what happens when one input feeds two places — that the whole engine hinges on.">
+        <TagBadge variant="math">math</TagBadge>
+        <TagBadge variant="default">12 min read</TagBadge>
+    </LessonHeader>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Gears.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            Gear A drives gear B; gear B drives gear C. If A turns and B spins three times as fast, and B turns and C
+            spins twice as fast, then turning A spins C <strong>six</strong> times as fast. The rates multiply along
+            the chain. That is the chain rule, and that one sentence is the engine of all of deep learning.
+        </p>
+
+        <GearsDemo />
+        <InsightBox>
+            <p class="text-sm">Real models are functions stacked on functions stacked on functions, dozens deep. The
+            chain rule is how a nudge at the very end (the loss) gets traced back, layer by layer, to every parameter
+            at the start. Multiply the local rates along the way.</p>
+        </InsightBox>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">The rule, stated plainly.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            Suppose <span class="font-mono">y</span> depends on <span class="font-mono">u</span>, and
+            <span class="font-mono">u</span> depends on <span class="font-mono">x</span>. To find how
+            <span class="font-mono">y</span> moves when <span class="font-mono">x</span> wiggles, multiply the two
+            local rates:
+        </p>
+        <Formula caption="The slope through a chain is the product of the slopes of each link.">
+            dy/dx &nbsp;=&nbsp; (dy/du) &times; (du/dx)
+        </Formula>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            "How fast <span class="font-mono">y</span> moves with <span class="font-mono">u</span>" times "how fast
+            <span class="font-mono">u</span> moves with <span class="font-mono">x</span>." The middle quantity cancels
+            the way fractions do, which is a good way to remember it.
+        </p>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">A worked chain.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            Let <span class="font-mono">u = 2x</span> and <span class="font-mono">y = u&sup2;</span>. The local rates:
+            <span class="font-mono">du/dx = 2</span> (from lesson 0.3) and <span class="font-mono">dy/du = 2u</span>.
+            Multiply:
+        </p>
+        <div class="bg-white border border-mt-border rounded-xl p-5 mb-4 font-mono text-sm text-center">
+            dy/dx = (2u) &times; (2) = 4u = 8x
+        </div>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            Check it with a nudge at <span class="font-mono">x = 1</span>: there <span class="font-mono">y = (2&middot;1)&sup2; = 4</span>.
+            Bump <span class="font-mono">x</span> to 1.001 → <span class="font-mono">u = 2.002</span> →
+            <span class="font-mono">y = 2.002&sup2; &asymp; 4.008</span>. The output moved about 0.008 for a 0.001 input
+            nudge: slope &asymp; 8. Matches <span class="font-mono">8x = 8</span>. The gears were right.
+        </p>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">The second half: when one input feeds two places.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            Here's the part most explanations skip, and it's the one your engine will live or die on. What if
+            <span class="font-mono">x</span> doesn't flow down a single chain, but <strong>splits</strong> and
+            influences the output through two different routes? Then its total effect is the <strong>sum</strong> of
+            the effects along each route. Influence through route 1 <em>plus</em> influence through route 2.
+        </p>
+        <Formula caption="When x reaches y through two paths, add the chain-rule product of each path.">
+            dy/dx &nbsp;=&nbsp; (path 1) &nbsp;+&nbsp; (path 2)
+        </Formula>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            The cleanest example: <span class="font-mono">y = x &times; x</span>. The same
+            <span class="font-mono">x</span> goes into <em>both</em> slots of the multiply. Treat each slot as its own
+            path. Wiggling the first <span class="font-mono">x</span> changes <span class="font-mono">y</span> at rate
+            "the other one," which is <span class="font-mono">x</span>; same for the second slot. Add them:
+        </p>
+        <div class="bg-white border border-mt-border rounded-xl p-5 mb-4 font-mono text-sm text-center">
+            dy/dx = (x) + (x) = 2x &nbsp;&nbsp;<span class="font-sans text-mt-muted">&mdash; exactly the rule for x&sup2;, recovered by adding the two paths</span>
+        </div>
+        <InsightBox>
+            <p class="text-sm"><strong>This is the rule behind gradient accumulation.</strong> In the computation
+            graph, whenever a value is used in more than one place, the gradients flowing back from each use must be
+            <em>added together</em>, not overwritten. Forgetting to add is the single most common bug when you write
+            an autograd engine. We give it a full lesson in Unit 2 — but the reason is right here: multiple paths sum.</p>
+        </InsightBox>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Why this is the whole of backprop.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            Put the two halves together and you have backpropagation in one sentence: <strong>to get the gradient of
+            the loss for any value, multiply the local rates along each path from that value to the loss, and add
+            across paths.</strong> Unit 1 builds the graph that records those paths; Unit 2 walks it backward doing
+            exactly this multiply-and-add. Everything else is plumbing.
+        </p>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Key takeaways</h2>
+        <div class="space-y-3">
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">1</span></div><p class="text-sm">Chain rule: the slope through a chain of functions is the product of the local slopes. Rates multiply.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">2</span></div><p class="text-sm">When one input reaches the output through multiple paths, its gradient is the sum over those paths.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">3</span></div><p class="text-sm">Multiply along paths, add across paths. That sentence is the entire backpropagation algorithm.</p></div>
+        </div>
+    </section>
+
+    <LessonNav
+        prevHref="/foundations/gradients" prevLabel="Prev: Gradients"
+        nextHref="/graph/computation-as-a-graph" nextLabel="Next: The Computation Graph"
+    />
+
+</LessonLayout>

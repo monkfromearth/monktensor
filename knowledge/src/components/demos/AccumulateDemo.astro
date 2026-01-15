@@ -1,0 +1,86 @@
+---
+/**
+ * Interactive: x is used in two places, so two gradients flow back to it and
+ * must be ADDED. Run the backward pass and watch x.grad accumulate. (Lesson 2.2.)
+ */
+---
+
+<div class="mt-accumulate-demo my-6 bg-white border border-mt-border rounded-2xl p-6">
+    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-1 text-center">Backward pass of <span class="font-mono">y = x &times; x</span></p>
+    <p class="text-center text-xs text-mt-muted mb-5">x is used twice, so two gradients come back &mdash; they add</p>
+
+    <div class="relative grid grid-cols-2 gap-6 items-center mb-5" style="min-height:120px">
+        <!-- accumulator -->
+        <div class="text-center">
+            <div class="inline-block px-4 py-3 rounded-xl bg-mt-accentLight border border-mt-accent/30">
+                <div class="text-xs text-mt-muted">x.grad</div>
+                <div class="font-mono text-2xl font-bold text-mt-accent" data-grad>0.0</div>
+            </div>
+            <div class="text-xs text-mt-muted mt-1 font-mono">x = <span data-x>3</span></div>
+        </div>
+        <!-- contributions -->
+        <div class="space-y-3">
+            <div class="px-3 py-2 rounded-lg bg-mt-lavLight border border-mt-lav/30 font-mono text-sm text-mt-lav" data-chip="0">path 1: +<span data-c0>3</span></div>
+            <div class="px-3 py-2 rounded-lg bg-mt-blueLight border border-mt-blue/30 font-mono text-sm text-mt-blue" data-chip="1">path 2: +<span data-c1>3</span></div>
+        </div>
+    </div>
+
+    <div class="flex items-center justify-center gap-3 mb-4">
+        <button data-run class="px-4 py-2 rounded-lg bg-mt-accent text-white text-sm font-semibold hover:opacity-90 transition">Run backward</button>
+        <button data-reset class="px-4 py-2 rounded-lg bg-stone-100 text-mt-muted text-sm hover:bg-stone-200 transition">Reset</button>
+    </div>
+
+    <div class="flex items-center justify-center gap-2 text-xs mb-2">
+        <span class="text-mt-muted">x:</span>
+        <input type="range" min="1" max="5" step="1" value="3" data-x-slider class="accent-mt-accent cursor-pointer w-40" aria-label="value of x" />
+    </div>
+
+    <p class="text-center text-xs text-mt-muted mt-3" data-msg>each path gives <span class="font-mono">x</span>; added, that's <span class="font-mono">2x</span>. Overwrite instead of add and you'd wrongly get just <span class="font-mono">x</span>.</p>
+</div>
+
+<script>
+    import { gsap } from 'gsap';
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    document.querySelectorAll<HTMLElement>('.mt-accumulate-demo').forEach((root) => {
+        const gradEl = root.querySelector<HTMLElement>('[data-grad]')!;
+        const chips = [root.querySelector<HTMLElement>('[data-chip="0"]')!, root.querySelector<HTMLElement>('[data-chip="1"]')!];
+        const xSlider = root.querySelector<HTMLInputElement>('[data-x-slider]')!;
+        const xEl = root.querySelector<HTMLElement>('[data-x]')!;
+        const c0 = root.querySelector<HTMLElement>('[data-c0]')!;
+        const c1 = root.querySelector<HTMLElement>('[data-c1]')!;
+        const runBtn = root.querySelector<HTMLButtonElement>('[data-run]')!;
+        const resetBtn = root.querySelector<HTMLButtonElement>('[data-reset]')!;
+
+        let x = 3;
+        const proxy = { v: 0 };
+        function render() { gradEl.textContent = proxy.v.toFixed(1); }
+
+        function reset() {
+            gsap.killTweensOf(proxy); proxy.v = 0; render();
+            gsap.set(chips, { x: 0, opacity: 1 });
+        }
+        function syncX() {
+            x = Number(xSlider.value);
+            xEl.textContent = String(x); c0.textContent = String(x); c1.textContent = String(x);
+            reset();
+        }
+        function addContribution(i: number, delay: number) {
+            if (reduce) { proxy.v += x; render(); return; }
+            const tl = gsap.timeline({ delay });
+            tl.to(chips[i], { x: -60, opacity: 0.2, duration: 0.5, ease: 'power2.in' })
+              .to(proxy, { v: proxy.v + x, duration: 0.3, onUpdate: render }, '<0.1')
+              .set(chips[i], { x: 0, opacity: 1, delay: 0.2 });
+        }
+        function run() {
+            reset();
+            addContribution(0, 0);
+            addContribution(1, 0.8);
+        }
+
+        runBtn.addEventListener('click', run);
+        resetBtn.addEventListener('click', reset);
+        xSlider.addEventListener('input', syncX);
+        syncX();
+    });
+</script>

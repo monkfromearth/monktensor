@@ -1,0 +1,75 @@
+---
+import '../styles/global.css';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docs — monktensor</title>
+    <meta name="description" content="Installation and usage documentation for monktensor. Arriving with the first release.">
+    <link rel="icon" type="image/svg+xml" href={base + "/logo.svg"} />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body class="font-sans text-mt-text min-h-screen">
+
+    <header class="border-b border-mt-border bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+            <a href={base + "/"} class="flex items-center gap-3">
+                <img src={base + "/logo.svg"} alt="monktensor" class="h-7 w-auto" />
+                <span class="font-bold text-lg leading-none">monktensor</span>
+            </a>
+            <div class="flex items-center gap-5 text-sm text-mt-muted">
+                <a href={base + "/learn"} class="hover:text-mt-text transition-colors">Learn</a>
+                <a href={base + "/docs"} class="text-mt-accent font-semibold">Docs</a>
+                <a href="https://github.com/monkfromearth/monktensor" class="hover:underline">GitHub</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-3xl mx-auto px-6 py-16">
+        <h1 class="text-3xl font-extrabold tracking-tight mb-3">Documentation</h1>
+        <p class="text-mt-muted text-lg leading-relaxed mb-10">
+            Installation, the API, and usage examples for the monktensor framework. This lands with the first release —
+            v1 is in active development.
+        </p>
+
+        <div class="space-y-4">
+            <div class="bg-white border border-mt-border rounded-2xl p-6">
+                <div class="flex items-center gap-2 mb-2">
+                    <h2 class="font-bold text-lg">Installation</h2>
+                    <span class="tag text-mt-muted bg-stone-100 px-2 py-0.5 rounded-full">coming soon</span>
+                </div>
+                <p class="text-mt-muted text-sm leading-relaxed">Install instructions will appear here once the first release is published. The implementation stack is being finalized.</p>
+            </div>
+            <div class="bg-white border border-mt-border rounded-2xl p-6">
+                <div class="flex items-center gap-2 mb-2">
+                    <h2 class="font-bold text-lg">Quickstart</h2>
+                    <span class="tag text-mt-muted bg-stone-100 px-2 py-0.5 rounded-full">coming soon</span>
+                </div>
+                <p class="text-mt-muted text-sm leading-relaxed">A minimal "build a value, run backward, read the gradient" example, then training a small net on the two-moons dataset.</p>
+            </div>
+            <div class="bg-white border border-mt-border rounded-2xl p-6">
+                <div class="flex items-center gap-2 mb-2">
+                    <h2 class="font-bold text-lg">API reference</h2>
+                    <span class="tag text-mt-muted bg-stone-100 px-2 py-0.5 rounded-full">coming soon</span>
+                </div>
+                <p class="text-mt-muted text-sm leading-relaxed">The full surface: the autograd value type, operations, the neuron/layer/MLP, losses, and the optimizer.</p>
+            </div>
+        </div>
+
+        <div class="mt-10 bg-mt-accentLight/50 rounded-2xl border border-mt-accent/20 p-6">
+            <p class="text-sm">In the meantime, the <a href={base + "/learn"} class="text-mt-accent font-semibold hover:underline">course</a> teaches every concept the framework is built on. Start there.</p>
+        </div>
+    </main>
+
+    <footer class="border-t border-mt-border py-8 text-center text-mt-muted text-sm">
+        <p>monktensor &middot; <a href="https://github.com/monkfromearth/monktensor" class="text-mt-accent hover:underline">GitHub</a></p>
+    </footer>
+
+</body>
+</html>

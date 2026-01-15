@@ -1,0 +1,77 @@
+---
+import '../../styles/global.css';
+import LessonLayout from '../../layouts/LessonLayout.astro';
+import LessonHeader from '../../components/LessonHeader.astro';
+import LessonNav from '../../components/LessonNav.astro';
+import InsightBox from '../../components/InsightBox.astro';
+import Formula from '../../components/Formula.astro';
+import TagBadge from '../../components/TagBadge.astro';
+---
+
+<LessonLayout title="The Neuron" lessonNumber="3.1" section="Networks">
+
+    <LessonHeader lessonNumber="3.1" title="The Neuron" description="The smallest piece of a neural network. A neuron takes some inputs, weighs each by importance, adds them up, and passes the total through a squasher. It's a tiny graph, so the engine you built already handles it.">
+        <TagBadge variant="concepts">concepts</TagBadge>
+        <TagBadge variant="default">8 min read</TagBadge>
+    </LessonHeader>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">A weighted vote.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            A neuron is a small decision-maker. It hears several inputs, decides how much each one matters (a
+            <strong>weight</strong> per input), adds up the weighted opinions, tips the scale with a baseline lean (the
+            <strong>bias</strong>), and finally passes the total through a squashing function (the
+            <strong>activation</strong>, from the last lesson of this unit).
+        </p>
+        <Formula caption="One neuron: weigh the inputs, sum, add bias, squash.">
+            out = activation( w&#8321;x&#8321; <span class="op">+</span> w&#8322;x&#8322; <span class="op">+</span> &hellip; <span class="op">+</span> b )
+        </Formula>
+        <p class="text-mt-muted leading-relaxed">
+            The weights say how much (and which way) each input pulls; a positive weight means "more of this input
+            raises my output," negative means the opposite. The bias sets how easily the neuron leans high or low
+            regardless of input.
+        </p>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">A worked neuron.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            Two inputs, weights <span class="font-mono">w = [2, -1]</span>, bias <span class="font-mono">b = 0.5</span>,
+            using <span class="font-mono">tanh</span> as the squasher. Feed it <span class="font-mono">x = [1, 1]</span>:
+        </p>
+        <div class="bg-white border border-mt-border rounded-xl p-5 mb-4 font-mono text-sm space-y-1">
+            <div>sum = 2&times;1 + (-1)&times;1 + 0.5 = 1.5</div>
+            <div>out = tanh(1.5) &asymp; <strong>0.905</strong></div>
+        </div>
+        <p class="text-mt-muted leading-relaxed">
+            Every piece here — each multiply, each add, the tanh — is one of the operations from Unit 1. So a neuron is
+            just a small computation graph, and the backward pass you already understand computes the gradient of every
+            weight and the bias for free.
+        </p>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">The neuron's parameters.</h2>
+        <InsightBox>
+            <p class="text-sm">A neuron's <strong>weights and bias are its parameters</strong> — the knobs from lesson
+            1.3. Learning a neuron means adjusting exactly those numbers. The inputs <span class="font-mono">x</span> are
+            data (fixed); the output is an activation (computed). When you build it, a neuron holds a small list of
+            learnable values and knows how to produce its output from them.</p>
+        </InsightBox>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Key takeaways</h2>
+        <div class="space-y-3">
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">1</span></div><p class="text-sm">A neuron weighs its inputs, sums them, adds a bias, and squashes the result through an activation.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">2</span></div><p class="text-sm">Its weights and bias are its parameters; inputs are data, output is an activation.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">3</span></div><p class="text-sm">A neuron is just a small computation graph, so your backward pass already differentiates it.</p></div>
+        </div>
+    </section>
+
+    <LessonNav
+        prevHref="/backprop/gradient-checking" prevLabel="Prev: Gradient Checking"
+        nextHref="/networks/layers-and-the-mlp" nextLabel="Next: Layers & the MLP"
+    />
+
+</LessonLayout>

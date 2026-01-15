@@ -1,0 +1,81 @@
+---
+import '../../styles/global.css';
+import LessonLayout from '../../layouts/LessonLayout.astro';
+import LessonHeader from '../../components/LessonHeader.astro';
+import LessonNav from '../../components/LessonNav.astro';
+import InsightBox from '../../components/InsightBox.astro';
+import TagBadge from '../../components/TagBadge.astro';
+---
+
+<LessonLayout title="Parameters vs Activations" lessonNumber="1.3" section="The Graph">
+
+    <LessonHeader lessonNumber="1.3" title="Parameters vs Activations" description="Not every number in the graph is the same kind of thing. Some you adjust to learn; some are just computed and thrown away. Mixing them up is a top source of bugs, so let's pin it down now.">
+        <TagBadge variant="concepts">concepts</TagBadge>
+        <TagBadge variant="default">8 min read</TagBadge>
+    </LessonHeader>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Knobs and readouts.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            On a machine, there are knobs you turn and readouts that just display whatever the knobs produce. You don't
+            "set" a readout — it shows you a consequence. The graph has the same split:
+        </p>
+        <div class="grid md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-white border border-mt-border rounded-xl p-5">
+                <p class="font-semibold text-sm text-mt-accent mb-1">Parameters (the knobs)</p>
+                <p class="text-mt-muted text-sm">Weights and biases. The numbers you <strong>adjust</strong> to make the model better. These are leaves of the graph, and they're what learning actually changes.</p>
+            </div>
+            <div class="bg-white border border-mt-border rounded-xl p-5">
+                <p class="font-semibold text-sm text-mt-lav mb-1">Activations (the readouts)</p>
+                <p class="text-mt-muted text-sm">The intermediate values computed during the forward pass. You don't set them; they fall out of the parameters and the data. They're recomputed from scratch every forward pass.</p>
+            </div>
+        </div>
+        <p class="text-mt-muted leading-relaxed">
+            There's a third kind of leaf: the <strong>data</strong> (your inputs). Like parameters, data sits at the
+            leaves — but unlike parameters, you never change it. It's given.
+        </p>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Everyone gets a gradient; only knobs get turned.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            Here's the subtlety that bites people. Backprop computes a gradient for <em>every</em> node in the graph —
+            parameters, activations, even the data. That's just how the chain rule flows. But the training step only
+            <strong>updates the parameters</strong>. The activations' gradients are used in passing (to push gradient
+            further back) and then discarded; the data's gradient is usually ignored entirely.
+        </p>
+        <InsightBox>
+            <p class="text-sm">Say <span class="font-mono">d = a &times; b</span>, where <span class="font-mono">a</span>
+            is a parameter (a knob) and <span class="font-mono">b</span> is data. Backprop will compute a gradient for
+            both. But your optimizer nudges only <span class="font-mono">a</span>; <span class="font-mono">b</span>
+            stays exactly as the dataset gave it. When you build the engine, this is the line between "things in the
+            parameter list" and everything else.</p>
+        </InsightBox>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Why frameworks "mark" the leaves.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            Because of this split, real frameworks let you flag which leaves are learnable (PyTorch calls it
+            <span class="font-mono">requires_grad</span>, and gathers them via <span class="font-mono">parameters()</span>).
+            The flag answers one question: "when I take a training step, which numbers am I allowed to change?" In your
+            engine, the network's <span class="font-mono">parameters()</span> list will be exactly that set — the knobs,
+            and nothing else.
+        </p>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Key takeaways</h2>
+        <div class="space-y-3">
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">1</span></div><p class="text-sm">Parameters are the knobs you adjust (weights, biases); activations are computed readouts; data is a fixed leaf.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">2</span></div><p class="text-sm">Backprop computes a gradient for every node, but the optimizer updates only the parameters.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">3</span></div><p class="text-sm">Your model's parameter list is precisely the set of learnable leaves — keep it distinct from everything else.</p></div>
+        </div>
+    </section>
+
+    <LessonNav
+        prevHref="/graph/the-forward-pass" prevLabel="Prev: The Forward Pass"
+        nextHref="/graph/local-gradients" nextLabel="Next: Local Gradients"
+    />
+
+</LessonLayout>

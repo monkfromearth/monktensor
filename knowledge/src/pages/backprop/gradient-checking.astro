@@ -1,0 +1,95 @@
+---
+import '../../styles/global.css';
+import LessonLayout from '../../layouts/LessonLayout.astro';
+import LessonHeader from '../../components/LessonHeader.astro';
+import LessonNav from '../../components/LessonNav.astro';
+import InsightBox from '../../components/InsightBox.astro';
+import ExerciseBox from '../../components/ExerciseBox.astro';
+import Formula from '../../components/Formula.astro';
+import TagBadge from '../../components/TagBadge.astro';
+---
+
+<LessonLayout title="Gradient Checking" lessonNumber="2.4" section="Backpropagation">
+
+    <LessonHeader lessonNumber="2.4" title="Gradient Checking (and why not finite differences)" description="How do you know your backprop is right? Check it against the slow, simple method from lesson 0.3. And that same comparison answers a deeper question: why we use backprop to train at all.">
+        <TagBadge variant="math">math</TagBadge>
+        <TagBadge variant="exercise">exercise</TagBadge>
+        <TagBadge variant="default">10 min read</TagBadge>
+    </LessonHeader>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Two ways to get a gradient.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            You now have a fast, exact way to get gradients: backprop. But fast and exact code can still have bugs. So
+            you keep a second, dead-simple way around to check it — the finite difference from lesson 0.3. Nudge one
+            parameter a tiny bit, see how the loss moves, divide:
+        </p>
+        <Formula caption="The two-sided finite difference: a slightly more accurate nudge, used only to check.">
+            grad &asymp; ( L(w + &epsilon;) &minus; L(w &minus; &epsilon;) ) / (2&epsilon;)
+        </Formula>
+        <p class="text-mt-muted leading-relaxed">
+            Run both. If your backprop says a parameter's gradient is <span class="font-mono">-3</span> and the nudge
+            says <span class="font-mono">-2.9998</span>, you're correct (the tiny gap is just <span class="font-mono">&epsilon;</span>
+            rounding). If they disagree by a lot, you have a bug — almost always a wrong local gradient or a missing
+            accumulation.
+        </p>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">This is your most important test.</h2>
+        <InsightBox>
+            <p class="text-sm">A gradient check is the one test that proves the heart of the engine works. Build a small
+            expression, compute gradients with backprop, compute them again by nudging, and assert they match within a
+            small tolerance. If that test passes, your autograd is trustworthy. Write it early; lean on it hard.</p>
+        </InsightBox>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">So why not just train with finite differences?</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            If nudging gives the gradient and it's so simple, why bother with backprop at all? Cost. To get the gradient
+            for <em>one</em> parameter by nudging, you run a whole forward pass (twice, for the two-sided version). To
+            get gradients for <strong>all</strong> parameters, you'd repeat that for every single one.
+        </p>
+        <div class="grid md:grid-cols-2 gap-4 mb-4">
+            <div class="bg-white border border-mt-border rounded-xl p-5">
+                <p class="font-semibold text-sm text-mt-muted mb-1">Finite differences</p>
+                <p class="text-mt-muted text-sm">About <span class="font-mono">N</span> forward passes for <span class="font-mono">N</span> parameters. A million parameters means a million forward passes <em>per step</em>. Hopeless.</p>
+            </div>
+            <div class="bg-white border border-mt-border rounded-xl p-5">
+                <p class="font-semibold text-sm text-mt-accent mb-1">Backpropagation</p>
+                <p class="text-mt-muted text-sm">One backward pass produces <strong>all</strong> <span class="font-mono">N</span> gradients, at roughly the cost of one forward pass. Total: about 2&times; a forward pass, no matter how many parameters.</p>
+            </div>
+        </div>
+        <p class="text-mt-muted leading-relaxed">
+            That gap — <span class="font-mono">N</span> passes versus one — is the entire reason automatic
+            differentiation exists, and why training billion-parameter models is even thinkable. Finite differences are
+            the honest, slow ruler you measure against; backprop is the thing you actually run.
+        </p>
+    </section>
+
+    <section class="mb-14">
+        <ExerciseBox title="Check it by hand">
+            <p class="text-sm text-mt-muted">For <span class="font-mono">e = (a &times; b) + c</span> at
+            <span class="font-mono">a = 2, b = -3, c = 10</span>, backprop gave <span class="font-mono">a.grad = -3</span>.
+            Verify by nudging: compute <span class="font-mono">e</span> with <span class="font-mono">a = 2.001</span> and
+            again with <span class="font-mono">a = 1.999</span>, then apply the two-sided formula. You should land right
+            next to <span class="font-mono">-3</span>.</p>
+        </ExerciseBox>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Key takeaways</h2>
+        <div class="space-y-3">
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">1</span></div><p class="text-sm">Gradient checking compares backprop against a finite-difference nudge; they must match within a small tolerance.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">2</span></div><p class="text-sm">It's the single most important test of your engine — write it early and trust it.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">3</span></div><p class="text-sm">We don't train with finite differences because they cost ~N forward passes; backprop gets all N gradients in one.</p></div>
+        </div>
+    </section>
+
+    <LessonNav
+        prevHref="/backprop/topological-order" prevLabel="Prev: Topological Order"
+        nextHref="/networks/the-neuron" nextLabel="Next: The Neuron"
+    />
+
+</LessonLayout>

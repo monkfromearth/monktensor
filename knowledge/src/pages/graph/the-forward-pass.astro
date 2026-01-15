@@ -1,0 +1,74 @@
+---
+import '../../styles/global.css';
+import LessonLayout from '../../layouts/LessonLayout.astro';
+import LessonHeader from '../../components/LessonHeader.astro';
+import LessonNav from '../../components/LessonNav.astro';
+import InsightBox from '../../components/InsightBox.astro';
+import TagBadge from '../../components/TagBadge.astro';
+import GraphForwardDemo from '../../components/demos/GraphForwardDemo.astro';
+---
+
+<LessonLayout title="The Forward Pass" lessonNumber="1.2" section="The Graph">
+
+    <LessonHeader lessonNumber="1.2" title="The Forward Pass" description="Running the graph left to right: push numbers in, compute each node, get an output. The twist is that while it computes, it also remembers, which is what makes going backward possible.">
+        <TagBadge variant="concepts">concepts</TagBadge>
+        <TagBadge variant="default">8 min read</TagBadge>
+    </LessonHeader>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Left to right.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            The <strong>forward pass</strong> is the obvious half: start at the leaves, evaluate each operation in
+            order, and carry the results forward until you reach the output. It's just doing the arithmetic the graph
+            describes. Watch it ripple through <span class="font-mono">e = (a &times; b) + c</span>:
+        </p>
+
+        <GraphForwardDemo />
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">A walk through, by hand.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            With <span class="font-mono">a = 2, b = -3, c = 10</span>:
+        </p>
+        <div class="bg-white border border-mt-border rounded-xl p-5 mb-4 font-mono text-sm space-y-1">
+            <div>d = a &times; b = 2 &times; (-3) = -6</div>
+            <div>e = d + c = -6 + 10 = <strong>4</strong></div>
+        </div>
+        <p class="text-mt-muted leading-relaxed">
+            That's the whole forward pass: two operations, one output. Nothing surprising. The interesting part is what
+            happens <em>alongside</em> the computing.
+        </p>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Computing and remembering at once.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            As each operation runs, it does two things, not one. It computes its output value, and it records two facts
+            about itself: <strong>which values were its inputs</strong>, and <strong>what operation it was</strong>.
+            That record is what lets the backward pass later ask each node, "given the gradient arriving at your
+            output, how much should flow to each of your inputs?"
+        </p>
+        <InsightBox>
+            <p class="text-sm">A useful mental image: the forward pass lays down a <strong>trail</strong> as it goes —
+            the graph from lesson 1.1, now filled with actual numbers and connections. Backprop simply follows that
+            trail home in reverse. No trail, no backprop. This is why a framework can't just compute the answer and
+            throw the steps away.</p>
+        </InsightBox>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Key takeaways</h2>
+        <div class="space-y-3">
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">1</span></div><p class="text-sm">The forward pass evaluates the graph from leaves to root, producing the output.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">2</span></div><p class="text-sm">While computing, each operation records its inputs and its kind — the trail backprop will follow.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">3</span></div><p class="text-sm">Forward computes the answer; the recorded trail is what makes the backward pass possible.</p></div>
+        </div>
+    </section>
+
+    <LessonNav
+        prevHref="/graph/computation-as-a-graph" prevLabel="Prev: Computation as a Graph"
+        nextHref="/graph/parameters-vs-activations" nextLabel="Next: Parameters vs Activations"
+    />
+
+</LessonLayout>

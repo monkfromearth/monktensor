@@ -1,0 +1,86 @@
+---
+/**
+ * Interactive: drag `a`, watch `c = a x b` move b times as fast.
+ * Shows the derivative dc/da = b as a constant rate. (Lessons 0.1 / 0.3.)
+ */
+interface Props {
+  a?: number;
+  b?: number;
+}
+const { a = 2, b = 3 } = Astro.props;
+const cmax = 4 * b; // a maxes at 4
+---
+
+<div class="mt-multiply-demo my-6 bg-white border border-mt-border rounded-2xl p-6"
+     data-b={b} data-a0={a} data-cmax={cmax}>
+    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-4 text-center">Drag <span class="font-mono">a</span> &mdash; watch <span class="font-mono">c</span></p>
+
+    <div class="flex items-center justify-center gap-2 font-mono text-lg mb-5">
+        <span class="px-3 py-1 rounded-lg bg-mt-accentLight text-mt-accent font-semibold" data-a>2.00</span>
+        <span class="text-mt-muted">&times;</span>
+        <span class="px-3 py-1 rounded-lg bg-stone-100 text-mt-muted" data-bout>3.00</span>
+        <span class="text-mt-muted">=</span>
+        <span class="px-3 py-1 rounded-lg bg-mt-lavLight text-mt-lav font-semibold" data-c>6.00</span>
+    </div>
+
+    <div class="space-y-3 mb-5">
+        <div>
+            <div class="flex justify-between text-xs text-mt-muted mb-1"><span>a</span><span class="font-mono" data-a2>2.00</span></div>
+            <div class="h-3 rounded-full bg-mt-bg overflow-hidden"><div class="h-full rounded-full bg-mt-accent" data-abar style="width:16.7%"></div></div>
+        </div>
+        <div>
+            <div class="flex justify-between text-xs text-mt-muted mb-1"><span>c = a &times; b</span><span class="font-mono" data-c2>6.00</span></div>
+            <div class="h-3 rounded-full bg-mt-bg overflow-hidden"><div class="h-full rounded-full bg-mt-lav" data-cbar style="width:50%"></div></div>
+        </div>
+    </div>
+
+    <input type="range" min="1" max="4" step="0.01" value="2" data-slider class="w-full accent-mt-accent cursor-pointer" aria-label="value of a" />
+
+    <p class="text-center text-sm mt-4 text-mt-muted">
+        since you started: <span class="font-mono text-mt-text" data-da>a +0.00</span>,
+        <span class="font-mono text-mt-text" data-dc>c +0.00</span>
+        &rarr; c moves <span class="font-mono text-mt-accent font-semibold" data-ratio>3.00</span>&times; as fast
+        <span class="block text-xs mt-1">that constant rate is <span class="font-mono">b</span>, the derivative <span class="font-mono">dc/da</span></span>
+    </p>
+</div>
+
+<script>
+    import { gsap } from 'gsap';
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    document.querySelectorAll<HTMLElement>('.mt-multiply-demo').forEach((root) => {
+        const b = Number(root.dataset.b);
+        const a0 = Number(root.dataset.a0);
+        const cmax = Number(root.dataset.cmax);
+        const c0 = a0 * b;
+
+        const slider = root.querySelector<HTMLInputElement>('[data-slider]')!;
+        const aEls = root.querySelectorAll<HTMLElement>('[data-a],[data-a2]');
+        const cEls = root.querySelectorAll<HTMLElement>('[data-c],[data-c2]');
+        const aBar = root.querySelector<HTMLElement>('[data-abar]')!;
+        const cBar = root.querySelector<HTMLElement>('[data-cbar]')!;
+        const da = root.querySelector<HTMLElement>('[data-da]')!;
+        const dc = root.querySelector<HTMLElement>('[data-dc]')!;
+        root.querySelector<HTMLElement>('[data-bout]')!.textContent = b.toFixed(2);
+
+        // smooth, trailing bars (the meaningful bit: c visibly outruns a)
+        const tweenA = reduce ? (w: number) => { aBar.style.width = w + '%'; }
+            : gsap.quickTo(aBar, 'width', { duration: 0.3, ease: 'power2.out', unit: '%' });
+        const tweenC = reduce ? (w: number) => { cBar.style.width = w + '%'; }
+            : gsap.quickTo(cBar, 'width', { duration: 0.3, ease: 'power2.out', unit: '%' });
+
+        function update() {
+            const a = Number(slider.value);
+            const c = a * b;
+            aEls.forEach((e) => (e.textContent = a.toFixed(2)));
+            cEls.forEach((e) => (e.textContent = c.toFixed(2)));
+            tweenA((a / cmax) * 100);
+            tweenC((c / cmax) * 100);
+            const dA = a - a0, dC = c - c0;
+            da.textContent = 'a ' + (dA >= 0 ? '+' : '') + dA.toFixed(2);
+            dc.textContent = 'c ' + (dC >= 0 ? '+' : '') + dC.toFixed(2);
+        }
+        slider.addEventListener('input', update);
+        update();
+    });
+</script>

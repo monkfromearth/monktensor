@@ -1,0 +1,91 @@
+---
+import '../../styles/global.css';
+import LessonLayout from '../../layouts/LessonLayout.astro';
+import LessonHeader from '../../components/LessonHeader.astro';
+import LessonNav from '../../components/LessonNav.astro';
+import InsightBox from '../../components/InsightBox.astro';
+import StepNumber from '../../components/StepNumber.astro';
+import TagBadge from '../../components/TagBadge.astro';
+---
+
+<LessonLayout title="The Training Loop" lessonNumber="4.5" section="Training">
+
+    <LessonHeader lessonNumber="4.5" title="The Training Loop" description="Everything in this course meets here. A handful of steps, repeated, that turn a random network into one that separates the two moons. This is where you stop reading and start building.">
+        <TagBadge variant="concepts">concepts</TagBadge>
+        <TagBadge variant="default">8 min read</TagBadge>
+    </LessonHeader>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">The whole thing, in five moves.</h2>
+        <p class="text-mt-muted leading-relaxed mb-6">
+            Training is one short loop, run many times (each full pass over the data is an <strong>epoch</strong>). Every
+            concept you've met plays its part:
+        </p>
+
+        <div class="space-y-3 mb-6">
+            <div class="flex items-start gap-4 bg-white border border-mt-border rounded-xl px-5 py-4">
+                <StepNumber number="1" color="accent" />
+                <div><p class="font-semibold text-sm">Forward pass.</p><p class="text-mt-muted text-sm">Run each input through the MLP to get a prediction. Builds the graph (Units 1, 3).</p></div>
+            </div>
+            <div class="flex items-start gap-4 bg-white border border-mt-border rounded-xl px-5 py-4">
+                <StepNumber number="2" color="lav" />
+                <div><p class="font-semibold text-sm">Compute the loss.</p><p class="text-mt-muted text-sm">Score how wrong the predictions are, plus a little L2 penalty. This is the root node (Units 4.2, 4.4).</p></div>
+            </div>
+            <div class="flex items-start gap-4 bg-white border border-mt-border rounded-xl px-5 py-4">
+                <StepNumber number="3" color="accent" />
+                <div><p class="font-semibold text-sm">Zero the gradients.</p><p class="text-mt-muted text-sm">Reset every parameter's gradient to 0 first, because they accumulate (Units 2.2, 4.3).</p></div>
+            </div>
+            <div class="flex items-start gap-4 bg-white border border-mt-border rounded-xl px-5 py-4">
+                <StepNumber number="4" color="lav" />
+                <div><p class="font-semibold text-sm">Backward pass.</p><p class="text-mt-muted text-sm">Call backward() on the loss; the engine fills in every parameter's gradient (Unit 2).</p></div>
+            </div>
+            <div class="flex items-start gap-4 bg-white border border-mt-border rounded-xl px-5 py-4">
+                <StepNumber number="5" color="accent" />
+                <div><p class="font-semibold text-sm">Step the parameters.</p><p class="text-mt-muted text-sm">Nudge each one downhill: w &larr; w &minus; lr &times; w.grad (Unit 4.3). Then repeat.</p></div>
+            </div>
+        </div>
+        <p class="text-mt-muted leading-relaxed">
+            That's it. Forward, loss, zero, backward, step — looped a few hundred times. The loss falls, the boundary
+            curves into place, and the random network becomes one that knows the two moons apart.
+        </p>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">What success looks like.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            As epochs pass, watch the loss trend down and accuracy climb. Plot the decision boundary every so often and
+            you'll see it bend from a meaningless line into a clean curve threading between the crescents. When held-out
+            points land on the right side too, the network has genuinely learned the shape.
+        </p>
+        <InsightBox>
+            <p class="text-sm">monktensor v1 is done when: the net separates make_moons, your gradient check passes
+            (lesson 2.4), the README explains backprop in plain English, and a notebook shows the decision boundary.
+            Tests, a benchmark plot, and a real README are what turn a toy into a portfolio-grade repo.</p>
+        </InsightBox>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Now build it.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            This is where the course hands off. You've seen every idea: the graph that remembers, the backward pass that
+            multiplies and accumulates, the neuron and the MLP, the loss, and the loop that ties them together. None of
+            it was implementation — that part is yours to write, which is exactly where the understanding becomes real.
+            Unit 5 is a short look at where monktensor goes after v1.
+        </p>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Key takeaways</h2>
+        <div class="space-y-3">
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">1</span></div><p class="text-sm">The training loop is five repeated moves: forward, loss, zero grads, backward, step.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">2</span></div><p class="text-sm">Run it for many epochs and the loss falls while the decision boundary curves into place.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">3</span></div><p class="text-sm">v1 is done when the net separates make_moons, the gradient check passes, and the boundary plot looks right.</p></div>
+        </div>
+    </section>
+
+    <LessonNav
+        prevHref="/training/initialization-and-regularization" prevLabel="Prev: Initialization & Regularization"
+        nextHref="/beyond/scalars-to-tensors" nextLabel="Next: Scalars to Tensors"
+    />
+
+</LessonLayout>

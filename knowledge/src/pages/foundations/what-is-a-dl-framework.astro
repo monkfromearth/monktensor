@@ -1,0 +1,171 @@
+---
+import '../../styles/global.css';
+import LessonLayout from '../../layouts/LessonLayout.astro';
+import LessonHeader from '../../components/LessonHeader.astro';
+import LessonNav from '../../components/LessonNav.astro';
+import InsightBox from '../../components/InsightBox.astro';
+import TagBadge from '../../components/TagBadge.astro';
+import MultiplyNudgeDemo from '../../components/demos/MultiplyNudgeDemo.astro';
+---
+
+<LessonLayout title="What a Framework Actually Is" lessonNumber="0.1" section="Foundations">
+
+    <LessonHeader lessonNumber="0.1" title="What a Framework Actually Is" description="Before any code, the mental model. A deep learning framework is a machine that does four jobs. Once you see them, the rest of the course is just building each one.">
+        <TagBadge variant="concepts">concepts</TagBadge>
+        <TagBadge variant="default">10 min read</TagBadge>
+    </LessonHeader>
+
+    <!-- The hook -->
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">A machine that remembers its own arithmetic.</h2>
+
+        <p class="text-mt-muted leading-relaxed mb-4">
+            Picture a calculator that does something ordinary calculators don't: every time you ask it to add or
+            multiply, it quietly writes down what it just did and what it used. After a long calculation, it can
+            answer a question that's normally hard to answer — <strong>"if I nudged this one number a tiny bit,
+            which way would the final answer move, and by how much?"</strong>
+        </p>
+
+        <p class="text-mt-muted leading-relaxed mb-4">
+            That question is the whole game in deep learning. A model is a giant calculation with millions of
+            adjustable numbers (the "weights"). Training means asking, over and over, "which way should each weight
+            move to make the answer a little less wrong?" A framework is the machine that answers that question
+            automatically — because it remembered every step.
+        </p>
+
+        <InsightBox>
+            <p class="text-sm">PyTorch, TensorFlow, JAX, tinygrad — under the branding, they are all this same machine.
+            They run the steps forward, remember them, and hand you the answer to the nudge question. monktensor is that
+            machine too, built on single numbers first so you can watch every step.</p>
+        </InsightBox>
+    </section>
+
+    <!-- The four jobs -->
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">The four jobs.</h2>
+
+        <p class="text-mt-muted leading-relaxed mb-6">
+            Strip away the size and the GPUs and every framework does exactly four things, in order:
+        </p>
+
+        <div class="space-y-4 mb-6">
+            <div class="flex items-start gap-4 bg-white border border-mt-border rounded-xl px-5 py-4">
+                <div class="w-8 h-8 rounded-lg bg-mt-accentLight flex items-center justify-center flex-shrink-0"><span class="text-mt-accent font-bold text-sm">1</span></div>
+                <div>
+                    <p class="font-semibold text-sm">Represent the computation.</p>
+                    <p class="text-mt-muted text-sm">Let you build a calculation out of small pieces — add, multiply, a squashing function — and quietly record how the pieces connect. This record is the <strong>computation graph</strong> (Unit 1).</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-4 bg-white border border-mt-border rounded-xl px-5 py-4">
+                <div class="w-8 h-8 rounded-lg bg-mt-accentLight flex items-center justify-center flex-shrink-0"><span class="text-mt-accent font-bold text-sm">2</span></div>
+                <div>
+                    <p class="font-semibold text-sm">Run it forward.</p>
+                    <p class="text-mt-muted text-sm">Push numbers through the graph and get a result out — a prediction, and then a single number that says how wrong the prediction was (the <strong>loss</strong>). This is the <strong>forward pass</strong>.</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-4 bg-white border border-mt-border rounded-xl px-5 py-4">
+                <div class="w-8 h-8 rounded-lg bg-mt-accentLight flex items-center justify-center flex-shrink-0"><span class="text-mt-accent font-bold text-sm">3</span></div>
+                <div>
+                    <p class="font-semibold text-sm">Figure out the gradients — automatically.</p>
+                    <p class="text-mt-muted text-sm">For every input number, compute "how much does the loss change if I wiggle this one?" The framework does this itself, exactly, by walking the recorded graph backward. This is <strong>automatic differentiation</strong>, or <strong>backpropagation</strong> (Unit 2). It is the part that feels like magic, and it isn't.</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-4 bg-white border border-mt-border rounded-xl px-5 py-4">
+                <div class="w-8 h-8 rounded-lg bg-mt-accentLight flex items-center justify-center flex-shrink-0"><span class="text-mt-accent font-bold text-sm">4</span></div>
+                <div>
+                    <p class="font-semibold text-sm">Update the numbers.</p>
+                    <p class="text-mt-muted text-sm">Nudge each weight a small step in the direction that lowers the loss, then do the whole thing again. This is <strong>gradient descent</strong> (Unit 4). Repeat enough times and the calculation turns into something that has "learned."</p>
+                </div>
+            </div>
+        </div>
+
+        <p class="text-mt-muted leading-relaxed">
+            That's the entire arc of this course: <strong>represent → run → differentiate → update.</strong> It's the
+            loop on the home page, and it's the loop inside every framework on earth.
+        </p>
+    </section>
+
+    <!-- The one idea that makes it work -->
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Why "remembering the steps" is the trick.</h2>
+
+        <p class="text-mt-muted leading-relaxed mb-4">
+            Here is the smallest possible version of the magic. Suppose you ask the machine to multiply two numbers:
+        </p>
+
+        <div class="bg-white border border-mt-border rounded-xl p-5 mb-4 text-center font-mono">
+            a = 2, &nbsp; b = 3 &nbsp;&rarr;&nbsp; c = a &times; b = 6
+        </div>
+
+        <MultiplyNudgeDemo a={2} b={3} />
+
+        <p class="text-mt-muted leading-relaxed mb-4">
+            Now the nudge question: <em>if a grows by a tiny sliver, how much does c grow?</em> Since c is
+            <code class="bg-stone-100 px-1 rounded text-xs">a &times; b</code> and b is 3, every sliver added to a shows
+            up <strong>tripled</strong> in c. So the answer is 3 — which happens to be b. The machine didn't do any
+            calculus to know this; it just remembered "c came from multiplying a by b," and the rule for a multiply is
+            "each input's influence is the other input."
+        </p>
+
+        <InsightBox>
+            <p class="text-sm">That number — "how much the output moves when one input wiggles" — is a
+            <strong>derivative</strong>. The framework's superpower is computing it for <em>every</em> input in a huge
+            calculation, automatically, by remembering each small step and the simple rule that goes with it. The next
+            three lessons make "derivative," "gradient," and "the rule for chaining steps" precise.</p>
+        </InsightBox>
+    </section>
+
+    <!-- What it is NOT -->
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">What this framework is NOT (yet).</h2>
+
+        <div class="space-y-3">
+            <div class="flex items-start gap-3 bg-white border border-mt-border rounded-xl px-5 py-4">
+                <svg class="w-5 h-5 text-mt-muted flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                <div>
+                    <p class="font-semibold text-sm">Not about GPUs or speed.</p>
+                    <p class="text-mt-muted text-xs">We start with single numbers, not big arrays. Slow is fine — the point is to see every operation. Speed is a Unit 5 concern.</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-3 bg-white border border-mt-border rounded-xl px-5 py-4">
+                <svg class="w-5 h-5 text-mt-muted flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                <div>
+                    <p class="font-semibold text-sm">Not a collection of ready-made models.</p>
+                    <p class="text-mt-muted text-xs">No pretrained networks, no "import a chatbot." You're building the layer those things are made of.</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-3 bg-white border border-mt-border rounded-xl px-5 py-4">
+                <svg class="w-5 h-5 text-mt-muted flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                <div>
+                    <p class="font-semibold text-sm">Not magic.</p>
+                    <p class="text-mt-muted text-xs">By the end you'll have computed a gradient by hand and checked the machine against your own arithmetic. Nothing here stays mysterious.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key takeaways -->
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Key takeaways</h2>
+        <div class="space-y-3">
+            <div class="flex items-start gap-3">
+                <div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">1</span></div>
+                <p class="text-sm">A framework is a machine that does four jobs: represent a computation, run it forward, compute gradients automatically, and update the numbers.</p>
+            </div>
+            <div class="flex items-start gap-3">
+                <div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">2</span></div>
+                <p class="text-sm">The hard, valuable job is the third one: automatic differentiation. It works by remembering every small step and applying a simple rule to each.</p>
+            </div>
+            <div class="flex items-start gap-3">
+                <div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">3</span></div>
+                <p class="text-sm">A derivative is just the answer to "if I wiggle this input a tiny bit, how much does the output move?" The whole course makes that precise and then automatic.</p>
+            </div>
+        </div>
+    </section>
+
+    <LessonNav
+        nextHref="/foundations/learning-as-fitting"
+        nextLabel="Next: Learning Is Just Fitting a Function"
+    />
+
+</LessonLayout>

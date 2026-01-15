@@ -1,0 +1,87 @@
+---
+import '../../styles/global.css';
+import LessonLayout from '../../layouts/LessonLayout.astro';
+import LessonHeader from '../../components/LessonHeader.astro';
+import LessonNav from '../../components/LessonNav.astro';
+import InsightBox from '../../components/InsightBox.astro';
+import TagBadge from '../../components/TagBadge.astro';
+---
+
+<LessonLayout title="Layers and the MLP" lessonNumber="3.2" section="Networks">
+
+    <LessonHeader lessonNumber="3.2" title="Layers and the MLP" description="Put many neurons side by side and you have a layer. Stack layers and you have a multi-layer perceptron. It's still one computation graph, so nothing about backprop changes.">
+        <TagBadge variant="concepts">concepts</TagBadge>
+        <TagBadge variant="default">8 min read</TagBadge>
+    </LessonHeader>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">A layer is a row of neurons.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            One neuron gives one output. A <strong>layer</strong> is several neurons looking at the <em>same</em> inputs,
+            each with its own weights and bias, each producing one number. A layer of 4 neurons turns an input into 4
+            outputs — four different weighted views of the same data.
+        </p>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            Stack layers so each layer's outputs become the next layer's inputs, and you have a
+            <strong>multi-layer perceptron (MLP)</strong> — the simplest real neural network.
+        </p>
+        <div class="bg-white border border-mt-border rounded-xl p-6 mb-4">
+            <svg viewBox="0 0 360 170" class="w-full max-w-md mx-auto block" role="img" aria-label="an MLP: 2 inputs, two hidden layers of 4, one output">
+                <g stroke="#E8E4DF" stroke-width="1">
+                    {[50, 110].map((iy) => [40, 70, 100, 130].map((hy) => <line x1="70" y1={iy} x2="150" y2={hy} />))}
+                    {[40, 70, 100, 130].map((h1) => [40, 70, 100, 130].map((h2) => <line x1="150" y1={h1} x2="230" y2={h2} />))}
+                    {[40, 70, 100, 130].map((h2) => <line x1="230" y1={h2} x2="310" y2="85" />)}
+                </g>
+                <g>
+                    {[50, 110].map((y) => <circle cx="70" cy={y} r="9" fill="#FBEEE9" stroke="#C96F5A" stroke-width="2" />)}
+                    {[40, 70, 100, 130].map((y) => <circle cx="150" cy={y} r="9" fill="#F0F0FB" stroke="#7E7FBC" stroke-width="2" />)}
+                    {[40, 70, 100, 130].map((y) => <circle cx="230" cy={y} r="9" fill="#F0F0FB" stroke="#7E7FBC" stroke-width="2" />)}
+                    <circle cx="310" cy="85" r="9" fill="#EEF3FC" stroke="#5E80C9" stroke-width="2" />
+                </g>
+                <g font-family="JetBrains Mono, monospace" font-size="10" fill="#6B6560" text-anchor="middle">
+                    <text x="70" y="155">inputs</text><text x="190" y="155">hidden layers</text><text x="310" y="155">output</text>
+                </g>
+            </svg>
+        </div>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Why stack them?</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            A single layer can only carve the input space with straight cuts — it draws lines. Many real problems need
+            curved, wiggly boundaries. Stacking layers, each followed by a nonlinearity, lets the network bend and
+            combine those cuts into complex shapes. Depth is what turns "draw a line" into "draw any boundary you need."
+            (The nonlinearity is essential here — that's the next lesson.)
+        </p>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">All the knobs in one list.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            An MLP's parameters are simply every weight and bias of every neuron in every layer, gathered into one list.
+            That list is what the optimizer steps each round. A net with input 2 → hidden 4 → hidden 4 → output 1 has,
+            for instance, a few dozen parameters; a real one has millions. The mechanism is identical.
+        </p>
+        <InsightBox>
+            <p class="text-sm">An MLP is just neurons composed into layers composed into a network — and the whole thing
+            is still one computation graph. So the forward pass runs it, and the single <span class="font-mono">backward()</span>
+            from Unit 2 computes the gradient of every parameter end to end. You don't write new differentiation for
+            networks; you reuse the engine.</p>
+        </InsightBox>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Key takeaways</h2>
+        <div class="space-y-3">
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">1</span></div><p class="text-sm">A layer is several neurons sharing inputs; an MLP is layers stacked so each feeds the next.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">2</span></div><p class="text-sm">Depth plus nonlinearity lets a network represent curved, complex boundaries, not just straight cuts.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">3</span></div><p class="text-sm">The MLP's parameters are all weights and biases in one list; it's one graph, so backprop just works.</p></div>
+        </div>
+    </section>
+
+    <LessonNav
+        prevHref="/networks/the-neuron" prevLabel="Prev: The Neuron"
+        nextHref="/networks/activations" nextLabel="Next: Activations"
+    />
+
+</LessonLayout>

@@ -1,0 +1,69 @@
+---
+/**
+ * Interactive: change a, b, c and watch the value ripple forward through the
+ * graph e = (a x b) + c. Shows the forward pass as flow. (Lesson 1.2.)
+ */
+---
+
+<div class="mt-forward-demo my-6 bg-white border border-mt-border rounded-2xl p-6">
+    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-5 text-center">Change an input &mdash; watch it ripple forward to <span class="font-mono">e</span></p>
+
+    <div class="flex flex-col items-center gap-3 font-mono text-sm mb-6">
+        <div class="flex items-center gap-2">
+            <span class="px-3 py-1.5 rounded-lg bg-mt-accentLight text-mt-accent" data-node="a">2</span>
+            <span class="text-mt-muted">&times;</span>
+            <span class="px-3 py-1.5 rounded-lg bg-mt-accentLight text-mt-accent" data-node="b">-3</span>
+            <span class="text-mt-muted">&rarr;</span>
+            <span class="px-3 py-1.5 rounded-lg bg-mt-lavLight text-mt-lav font-semibold" data-node="d">-6</span>
+            <span class="text-mt-muted text-xs">(d = a &times; b)</span>
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="px-3 py-1.5 rounded-lg bg-mt-lavLight text-mt-lav font-semibold" data-node="d2">-6</span>
+            <span class="text-mt-muted">+</span>
+            <span class="px-3 py-1.5 rounded-lg bg-mt-accentLight text-mt-accent" data-node="c">10</span>
+            <span class="text-mt-muted">&rarr;</span>
+            <span class="px-3 py-1.5 rounded-lg bg-mt-blueLight text-mt-blue font-bold" data-node="e">4</span>
+            <span class="text-mt-muted text-xs">(e = d + c, the output)</span>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-4 text-xs">
+        <label class="flex flex-col gap-1">a <input type="range" min="-5" max="5" step="0.5" value="2" data-in="a" class="accent-mt-accent cursor-pointer" /></label>
+        <label class="flex flex-col gap-1">b <input type="range" min="-5" max="5" step="0.5" value="-3" data-in="b" class="accent-mt-accent cursor-pointer" /></label>
+        <label class="flex flex-col gap-1">c <input type="range" min="-5" max="15" step="0.5" value="10" data-in="c" class="accent-mt-accent cursor-pointer" /></label>
+    </div>
+
+    <p class="text-center text-xs text-mt-muted mt-4">the same operations run in the same order every time &mdash; that order is the graph</p>
+</div>
+
+<script>
+    import { gsap } from 'gsap';
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    document.querySelectorAll<HTMLElement>('.mt-forward-demo').forEach((root) => {
+        const get = (n: string) => root.querySelector<HTMLElement>(`[data-node="${n}"]`)!;
+        const nodes = { a: get('a'), b: get('b'), c: get('c'), d: get('d'), d2: get('d2'), e: get('e') };
+        const inputs = root.querySelectorAll<HTMLInputElement>('[data-in]');
+
+        function pulse(el: HTMLElement) {
+            if (reduce) return;
+            gsap.fromTo(el, { scale: 1 }, { scale: 1.18, duration: 0.12, yoyo: true, repeat: 1, ease: 'power1.out', transformOrigin: 'center' });
+        }
+
+        function update(animate = false) {
+            const a = Number((root.querySelector('[data-in="a"]') as HTMLInputElement).value);
+            const b = Number((root.querySelector('[data-in="b"]') as HTMLInputElement).value);
+            const c = Number((root.querySelector('[data-in="c"]') as HTMLInputElement).value);
+            const d = a * b, e = d + c;
+            nodes.a.textContent = String(a);
+            nodes.b.textContent = String(b);
+            nodes.c.textContent = String(c);
+            nodes.d.textContent = String(d);
+            nodes.d2.textContent = String(d);
+            nodes.e.textContent = String(e);
+            if (animate) { pulse(nodes.d); pulse(nodes.d2); gsap.delayedCall(0.12, () => pulse(nodes.e)); }
+        }
+        inputs.forEach((i) => i.addEventListener('input', () => update(true)));
+        update(false);
+    });
+</script>

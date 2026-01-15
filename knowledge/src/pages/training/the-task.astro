@@ -1,0 +1,80 @@
+---
+import '../../styles/global.css';
+import LessonLayout from '../../layouts/LessonLayout.astro';
+import LessonHeader from '../../components/LessonHeader.astro';
+import LessonNav from '../../components/LessonNav.astro';
+import InsightBox from '../../components/InsightBox.astro';
+import TagBadge from '../../components/TagBadge.astro';
+---
+
+<LessonLayout title="The Task & Data" lessonNumber="4.1" section="Training">
+
+    <LessonHeader lessonNumber="4.1" title="The Task & Data" description="Before training anything, you need a problem to solve and data to learn from. Ours is a classic: tell apart two interleaving crescents of points. Small, visual, and just hard enough to need a real network.">
+        <TagBadge variant="concepts">concepts</TagBadge>
+        <TagBadge variant="default">8 min read</TagBadge>
+    </LessonHeader>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Two moons.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            The task is <strong>classification</strong>: given a point, predict which group it belongs to. The dataset
+            is <span class="font-mono">make_moons</span> — points scattered in two interleaving crescent shapes, one
+            class each. Given a point's two coordinates, the network must answer "moon A or moon B?"
+        </p>
+        <div class="bg-white border border-mt-border rounded-xl p-6 mb-4">
+            <svg viewBox="0 0 300 160" class="w-full max-w-sm mx-auto block" role="img" aria-label="two interleaving crescents of points, two classes">
+                <g fill="#C96F5A">
+                    {[[60,60],[80,50],[100,46],[120,48],[140,56],[155,70],[95,58],[120,60]].map(([x,y]) => <circle cx={x} cy={y} r="3.5" />)}
+                </g>
+                <g fill="#5E80C9">
+                    {[[150,96],[170,104],[190,108],[210,104],[228,92],[180,100],[205,96],[165,98]].map(([x,y]) => <circle cx={x} cy={y} r="3.5" />)}
+                </g>
+            </svg>
+        </div>
+        <p class="text-mt-muted leading-relaxed">
+            The two coordinates are the <strong>features</strong> (the inputs). Which moon a point belongs to is its
+            <strong>label</strong> (the answer). A training example is a point together with its correct label.
+        </p>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">The decision boundary.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            A trained classifier effectively draws a <strong>decision boundary</strong> — a line or curve where it
+            switches its answer from one class to the other. For two straight-separable blobs, a straight line would do.
+            But the moons interleave, so no straight line can split them. The boundary has to <em>curve</em> between the
+            crescents. That's why this task needs a network with a nonlinearity and a hidden layer, not a single neuron.
+        </p>
+        <InsightBox>
+            <p class="text-sm">make_moons is the perfect first task for exactly these reasons: it's 2D so you can
+            literally see the boundary the model draws; it's small so training is fast; and it's not linearly separable,
+            so it genuinely exercises depth and nonlinearity. When your boundary curves cleanly between the moons,
+            monktensor works.</p>
+        </InsightBox>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Don't just memorize — generalize.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            You hold out some labeled points the network never trains on (a <strong>validation</strong> set). Doing well
+            on training points is easy — a model can memorize. The real test is the held-out points: a boundary that
+            also classifies those correctly has learned the <em>shape</em>, not the specific dots. This is the
+            "generalization, not memorization" idea from lesson 0.2, made concrete.
+        </p>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Key takeaways</h2>
+        <div class="space-y-3">
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">1</span></div><p class="text-sm">The task is classification: features (the coordinates) in, a label (which class) out.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">2</span></div><p class="text-sm">A classifier draws a decision boundary; the moons interleave, so it must curve — needing depth and nonlinearity.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">3</span></div><p class="text-sm">Hold out a validation set to check the model generalizes instead of memorizing.</p></div>
+        </div>
+    </section>
+
+    <LessonNav
+        prevHref="/networks/activations" prevLabel="Prev: Activations"
+        nextHref="/training/loss-functions" nextLabel="Next: Loss Functions"
+    />
+
+</LessonLayout>

@@ -1,0 +1,26 @@
+name: CI
+
+# Verifies the knowledge site builds on every push and PR. Framework tests
+# (Python, including the gradient check) will be added here as v1 lands.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  knowledge-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        working-directory: knowledge
+        run: bun install --frozen-lockfile
+
+      - name: Build knowledge site
+        working-directory: knowledge
+        run: bun run build

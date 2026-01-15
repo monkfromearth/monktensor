@@ -1,0 +1,107 @@
+---
+/**
+ * Interactive: take gradient-descent steps on a bowl L(w) = w^2. Tune the
+ * learning rate and watch it crawl, slide nicely, or overshoot. (Lesson 4.3.)
+ */
+const W = 320, H = 200, pad = 26;
+const wmin = -3, wmax = 3, Lmax = 9;
+const sx = (w: number) => pad + ((w - wmin) / (wmax - wmin)) * (W - 2 * pad);
+const sy = (L: number) => (H - pad) - (L / Lmax) * (H - 2 * pad);
+const pts: string[] = [];
+for (let w = wmin; w <= wmax + 1e-9; w += 0.15) pts.push(`${sx(w).toFixed(1)},${sy(w * w).toFixed(1)}`);
+const bowl = pts.join(' ');
+const w0 = -2.6;
+---
+
+<div class="mt-descent-demo my-6 bg-white border border-mt-border rounded-2xl p-6"
+     data-w={W} data-h={H} data-pad={pad} data-wmin={wmin} data-wmax={wmax} data-lmax={Lmax} data-w0={w0}>
+    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-4 text-center">Roll downhill on <span class="font-mono">L(w) = w&sup2;</span> &mdash; one step at a time</p>
+
+    <svg viewBox={`0 0 ${W} ${H}`} class="w-full max-w-md mx-auto block" role="img" aria-label="a bowl-shaped loss curve with a ball doing gradient descent">
+        <line x1={pad} y1={sy(0)} x2={W - pad} y2={sy(0)} stroke="#E8E4DF" stroke-width="1" />
+        <polyline points={bowl} fill="none" stroke="#7E7FBC" stroke-width="2.5" stroke-linecap="round" />
+        <g data-trail></g>
+        <circle data-ball cx={sx(w0)} cy={sy(w0 * w0)} r="7" fill="#C96F5A" stroke="#fff" stroke-width="2" />
+    </svg>
+
+    <div class="flex items-center justify-center gap-3 font-mono text-sm mt-3 mb-4">
+        <span class="px-3 py-1 rounded-lg bg-stone-100 text-mt-muted">w = <span data-w>-2.60</span></span>
+        <span class="px-3 py-1 rounded-lg bg-mt-lavLight text-mt-lav">loss = <span data-loss>6.76</span></span>
+        <span class="px-3 py-1 rounded-lg bg-stone-100 text-mt-muted">step <span data-step>0</span></span>
+    </div>
+
+    <div class="flex items-center justify-center gap-2 text-xs mb-3">
+        <span class="text-mt-muted">learning rate</span>
+        <input type="range" min="0.05" max="1.1" step="0.05" value="0.3" data-lr class="accent-mt-accent cursor-pointer w-44" aria-label="learning rate" />
+        <span class="font-mono text-mt-text w-8" data-lrval>0.30</span>
+    </div>
+
+    <div class="flex items-center justify-center gap-3">
+        <button data-step-btn class="px-4 py-2 rounded-lg bg-mt-accent text-white text-sm font-semibold hover:opacity-90 transition">Step</button>
+        <button data-run-btn class="px-4 py-2 rounded-lg bg-mt-lav text-white text-sm font-semibold hover:opacity-90 transition">Run 15</button>
+        <button data-reset-btn class="px-4 py-2 rounded-lg bg-stone-100 text-mt-muted text-sm hover:bg-stone-200 transition">Reset</button>
+    </div>
+
+    <p class="text-center text-xs text-mt-muted mt-3" data-note>each step: <span class="font-mono">w &larr; w &minus; lr &times; 2w</span>. Small lr crawls; near 1 it overshoots; above 1 it flies apart.</p>
+</div>
+
+<script>
+    import { gsap } from 'gsap';
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    document.querySelectorAll<HTMLElement>('.mt-descent-demo').forEach((root) => {
+        const W = Number(root.dataset.w), H = Number(root.dataset.h), pad = Number(root.dataset.pad);
+        const wmin = Number(root.dataset.wmin), wmax = Number(root.dataset.wmax), Lmax = Number(root.dataset.lmax);
+        const w0 = Number(root.dataset.w0);
+        const clamp = (w: number) => Math.max(wmin, Math.min(wmax, w));
+        const sx = (w: number) => pad + ((clamp(w) - wmin) / (wmax - wmin)) * (W - 2 * pad);
+        const sy = (L: number) => (H - pad) - (Math.min(L, Lmax) / Lmax) * (H - 2 * pad);
+
+        const ball = root.querySelector<SVGCircleElement>('[data-ball]')!;
+        const trail = root.querySelector<SVGGElement>('[data-trail]')!;
+        const lr = root.querySelector<HTMLInputElement>('[data-lr]')!;
+        const lrval = root.querySelector<HTMLElement>('[data-lrval]')!;
+        const wEl = root.querySelector<HTMLElement>('[data-w]')!;
+        const lossEl = root.querySelector<HTMLElement>('[data-loss]')!;
+        const stepEl = root.querySelector<HTMLElement>('[data-step]')!;
+        const svgNS = 'http://www.w3.org/2000/svg';
+        let w = w0, steps = 0;
+
+        function render(animate: boolean) {
+            wEl.textContent = w.toFixed(2);
+            lossEl.textContent = (w * w).toFixed(2);
+            stepEl.textContent = String(steps);
+            const target = { attr: { cx: sx(w), cy: sy(w * w) } };
+            if (animate && !reduce) gsap.to(ball, { ...target, duration: 0.35, ease: 'power2.inout', overwrite: true });
+            else gsap.set(ball, target);
+        }
+        function dropTrail() {
+            const dot = document.createElementNS(svgNS, 'circle');
+            dot.setAttribute('cx', String(sx(w))); dot.setAttribute('cy', String(sy(w * w)));
+            dot.setAttribute('r', '2.5'); dot.setAttribute('fill', '#C96F5A'); dot.setAttribute('opacity', '0.35');
+            trail.appendChild(dot);
+        }
+        function step() {
+            dropTrail();
+            const grad = 2 * w;            // dL/dw for L = w^2
+            w = w - Number(lr.value) * grad;
+            steps += 1;
+            render(true);
+        }
+        function reset() {
+            gsap.killTweensOf(ball); w = w0; steps = 0; trail.replaceChildren(); render(false);
+        }
+        function run() {
+            reset();
+            let i = 0;
+            const tick = () => { if (i++ >= 15) return; step(); gsap.delayedCall(reduce ? 0 : 0.18, tick); };
+            tick();
+        }
+
+        lr.addEventListener('input', () => (lrval.textContent = Number(lr.value).toFixed(2)));
+        root.querySelector('[data-step-btn]')!.addEventListener('click', step);
+        root.querySelector('[data-run-btn]')!.addEventListener('click', run);
+        root.querySelector('[data-reset-btn]')!.addEventListener('click', reset);
+        render(false);
+    });
+</script>

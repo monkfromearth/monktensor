@@ -1,0 +1,22 @@
+<svg width="240" height="140" viewBox="0 0 240 140" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="monktensor">
+  <title>monktensor</title>
+  <defs>
+    <linearGradient id="mt-warm" x1="40" y1="70" x2="200" y2="70" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#E9A294"/>
+      <stop offset="0.4" stop-color="#C2A4CD"/>
+      <stop offset="0.7" stop-color="#A2ABDE"/>
+      <stop offset="1" stop-color="#88B2EC"/>
+    </linearGradient>
+    <linearGradient id="mt-sheen" x1="40" y1="50" x2="200" y2="50" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.15"/>
+    </linearGradient>
+  </defs>
+
+  <!-- forward/backward autograd loop: one stroke, two opposite-sense lobes -->
+  <path d="M120,70 C100,30 50,30 50,70 C50,110 100,110 120,70 C140,30 190,30 190,70 C190,110 140,110 120,70 Z"
+        stroke="url(#mt-warm)" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- soft top sheen for ribbon depth -->
+  <path d="M120,66 C101,32 54,33 53,66 M120,66 C139,32 186,33 187,66"
+        stroke="url(#mt-sheen)" stroke-width="6" stroke-linecap="round" fill="none"/>
+</svg>

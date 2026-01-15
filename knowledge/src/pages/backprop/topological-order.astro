@@ -1,0 +1,73 @@
+---
+import '../../styles/global.css';
+import LessonLayout from '../../layouts/LessonLayout.astro';
+import LessonHeader from '../../components/LessonHeader.astro';
+import LessonNav from '../../components/LessonNav.astro';
+import InsightBox from '../../components/InsightBox.astro';
+import TagBadge from '../../components/TagBadge.astro';
+---
+
+<LessonLayout title="Topological Order" lessonNumber="2.3" section="Backpropagation">
+
+    <LessonHeader lessonNumber="2.3" title="Topological Order" description="Backprop only works if you visit nodes in the right order. A node's gradient isn't final until every place that uses it has reported back. Getting that order right is a topological sort.">
+        <TagBadge variant="math">math</TagBadge>
+        <TagBadge variant="default">9 min read</TagBadge>
+    </LessonHeader>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Socks before shoes.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            Some steps have to happen before others. You can't put shoes on before socks. Backprop has the same
+            constraint: you can't finalize a node's gradient until <strong>every node that uses it</strong> has already
+            sent its contribution (remember, fan-out means gradients add up — lesson 2.2). Compute a node too early and
+            its gradient is incomplete when you use it to push further back.
+        </p>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">The order that always works.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            A <strong>topological order</strong> of the graph lists every node after the things it's built from. For our
+            example <span class="font-mono">e = (a &times; b) + c</span>, one topological (forward) order is:
+        </p>
+        <div class="bg-white border border-mt-border rounded-xl p-5 mb-4 font-mono text-sm text-center">
+            a, &nbsp; b, &nbsp; d, &nbsp; c, &nbsp; e
+        </div>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            For the backward pass you walk this <strong>in reverse</strong>: <span class="font-mono">e, c, d, b, a</span>.
+            Going in reverse guarantees that by the time you reach any node, every node that consumes it has already run
+            and deposited its gradient. So when you process <span class="font-mono">d</span>, both its consumers (here,
+            just <span class="font-mono">e</span>) are already done, and <span class="font-mono">d.grad</span> is complete.
+        </p>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">How you build that order.</h2>
+        <p class="text-mt-muted leading-relaxed mb-4">
+            The standard way is a depth-first walk from the output: visit a node, recurse into the nodes that produced
+            it, and add the node to a list <em>after</em> its producers are added. That yields the forward topological
+            order; reverse it for backprop. (A "visited" set keeps you from doing a node twice when paths merge.)
+        </p>
+        <InsightBox>
+            <p class="text-sm">Put the last three lessons together and the whole algorithm fits in one sentence:
+            <strong>backward() = topologically sort the graph, seed the output gradient at 1, then walk the nodes in
+            reverse, each one pushing its local gradient onto its inputs and accumulating.</strong> That sentence is the
+            engine. Everything you'll write is a faithful transcription of it.</p>
+        </InsightBox>
+    </section>
+
+    <section class="mb-14">
+        <h2 class="text-xl font-bold mb-4">Key takeaways</h2>
+        <div class="space-y-3">
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">1</span></div><p class="text-sm">A node's gradient is only complete after all its consumers have contributed, so order matters.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">2</span></div><p class="text-sm">Build a topological order (depth-first from the output), then walk it in reverse for the backward pass.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">3</span></div><p class="text-sm">backward() = topological sort + seed 1 + reverse walk applying local gradients and accumulating.</p></div>
+        </div>
+    </section>
+
+    <LessonNav
+        prevHref="/backprop/fan-out-and-accumulation" prevLabel="Prev: Fan-out & Accumulation"
+        nextHref="/backprop/gradient-checking" nextLabel="Next: Gradient Checking"
+    />
+
+</LessonLayout>
