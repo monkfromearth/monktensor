@@ -1,9 +1,12 @@
 <div align="center">
-  <img src="./public/logo-wordmark.svg" alt="monktensor" width="420" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./public/logo-wordmark-dark.svg" />
+    <img src="./public/logo-wordmark.svg" alt="monktensor" width="420" />
+  </picture>
 
   <p><strong>A deep learning framework built from scratch.</strong></p>
 
-  <p>Automatic differentiation, neural networks, and training — from first principles, one number at a time.</p>
+  <p>Automatic differentiation, neural networks, and training, from first principles, one number at a time.</p>
 
   <p>
     <a href="https://monkfromearth.github.io/monktensor/learn">Course</a> ·
