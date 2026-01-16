@@ -1,0 +1,117 @@
+---
+/**
+ * The capstone: press Train and watch the loop run — the loss falls, the decision
+ * boundary bends from a useless line into a curve that separates the moons, and the
+ * five steps cycle. (Lesson 4.5.)
+ */
+const W = 360, H = 230, pad = 26;
+const dxmin = -1.4, dxmax = 2.4, dymin = -0.9, dymax = 1.4;
+const sx = (x: number) => pad + ((x - dxmin) / (dxmax - dxmin)) * (W - 2 * pad);
+const sy = (y: number) => (H - pad) - ((y - dymin) / (dymax - dymin)) * (H - 2 * pad);
+const ts = Array.from({ length: 9 }, (_, i) => (i * Math.PI) / 8);
+const moonA = ts.map((t) => [Math.cos(t), Math.sin(t)] as [number, number]);
+const moonB = ts.map((t) => [1 - Math.cos(t), 0.5 - Math.sin(t)] as [number, number]);
+// boundary sample xs and the curved target it should reach
+const bx = [-1.4, -0.7, 0, 0.7, 1.4, 2.1, 2.4];
+const target = [1.05, 1.0, 0.8, 0.3, -0.15, -0.3, -0.3];
+const steps = ['forward', 'loss', 'zero', 'backward', 'step'];
+---
+
+<div class="mt-demo mt-trainloop-demo my-6 bg-white border border-mt-border rounded-2xl p-6"
+     data-w={W} data-h={H} data-pad={pad} data-dxmin={dxmin} data-dxmax={dxmax} data-dymin={dymin} data-dymax={dymax}
+     data-bx={JSON.stringify(bx)} data-target={JSON.stringify(target)}>
+    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-3 text-center">Press Train &mdash; the loss falls and the boundary bends into place</p>
+
+    <svg viewBox={`0 0 ${W} ${H}`} class="w-full max-w-md mx-auto block" role="img" aria-label="moons with a decision boundary that curves as training runs, plus a loss curve">
+        <!-- decision boundary -->
+        <path data-boundary d="" fill="none" stroke="#322E45" stroke-width="2.5" stroke-linecap="round" />
+        {moonA.map((p) => <circle cx={sx(p[0])} cy={sy(p[1])} r="4.5" fill="#C96F5A" />)}
+        {moonB.map((p) => <circle cx={sx(p[0])} cy={sy(p[1])} r="4.5" fill="#5E80C9" />)}
+        <!-- loss sparkline inset -->
+        <g transform="translate(244,20)">
+            <rect width="96" height="58" rx="8" fill="#FAF8F5" stroke="#E8E4DF" />
+            <text x="8" y="14" font-size="8" fill="#6B6560" class="font-mono">loss</text>
+            <polyline data-spark points="" fill="none" stroke="#C96F5A" stroke-width="2" />
+        </g>
+        <text data-lossnum x="292" y="92" text-anchor="middle" class="font-mono" font-size="12" font-weight="bold" fill="#C96F5A">0.69</text>
+        <text data-epoch x="292" y="106" text-anchor="middle" class="font-mono" font-size="8" fill="#6B6560">epoch 0</text>
+    </svg>
+
+    <div class="flex flex-wrap items-center justify-center gap-1.5 mt-3 mb-4">
+        {steps.map((s, i) => (
+            <>
+                <span data-step={i} class="font-mono text-[11px] px-2 py-1 rounded-md bg-stone-100 text-mt-muted transition-colors">{s}</span>
+                {i < steps.length - 1 && <span class="text-mt-muted text-xs">&rarr;</span>}
+            </>
+        ))}
+    </div>
+
+    <div class="flex items-center justify-center gap-3">
+        <button data-train class="px-4 py-2 rounded-lg bg-mt-accent text-white text-sm font-semibold hover:opacity-90 transition">Train</button>
+        <button data-reset class="px-4 py-2 rounded-lg bg-stone-100 text-mt-muted text-sm hover:bg-stone-200 transition">Reset</button>
+    </div>
+    <p class="text-center text-xs text-mt-muted mt-3">forward &rarr; loss &rarr; zero grads &rarr; backward &rarr; step, a few hundred times &mdash; that loop is all of training</p>
+</div>
+
+<script>
+    import { gsap, REDUCED } from '../../lib/interact';
+
+    document.querySelectorAll<HTMLElement>('.mt-trainloop-demo').forEach((root) => {
+        const W = Number(root.dataset.w), H = Number(root.dataset.h), pad = Number(root.dataset.pad);
+        const dxmin = Number(root.dataset.dxmin), dxmax = Number(root.dataset.dxmax);
+        const dymin = Number(root.dataset.dymin), dymax = Number(root.dataset.dymax);
+        const bx: number[] = JSON.parse(root.dataset.bx!);
+        const target: number[] = JSON.parse(root.dataset.target!);
+        const sx = (x: number) => pad + ((x - dxmin) / (dxmax - dxmin)) * (W - 2 * pad);
+        const sy = (y: number) => (H - pad) - ((y - dymin) / (dymax - dymin)) * (H - 2 * pad);
+
+        const boundary = root.querySelector<SVGPathElement>('[data-boundary]')!;
+        const spark = root.querySelector<SVGPolylineElement>('[data-spark]')!;
+        const lossNum = root.querySelector<SVGTextElement>('[data-lossnum]')!;
+        const epochEl = root.querySelector<SVGTextElement>('[data-epoch]')!;
+        const stepEls = Array.from(root.querySelectorAll<SVGTextElement>('[data-step]'));
+        const N = 40;
+
+        const boundaryPath = (t: number) => {
+            const pts = bx.map((x, i) => {
+                const y = 0.25 + t * (target[i] - 0.25);
+                return `${sx(x).toFixed(1)},${sy(y).toFixed(1)}`;
+            });
+            return 'M' + pts.join(' L');
+        };
+        const loss = (epoch: number) => 0.69 * Math.exp(-epoch / 8) + 0.03;
+
+        function setEpoch(epoch: number) {
+            const t = epoch / N;
+            boundary.setAttribute('d', boundaryPath(t));
+            const l = loss(epoch);
+            lossNum.textContent = l.toFixed(2);
+            epochEl.textContent = 'epoch ' + epoch;
+            // sparkline (within the 96x58 inset, leave margins)
+            const sp: string[] = [];
+            for (let e = 0; e <= epoch; e++) {
+                const px = 8 + (e / N) * 80;
+                const py = 52 - (1 - loss(e) / 0.72) * 36; // higher loss -> higher up
+                sp.push(`${px.toFixed(1)},${py.toFixed(1)}`);
+            }
+            spark.setAttribute('points', sp.join(' '));
+            stepEls.forEach((el, i) => {
+                const on = i === epoch % 5;
+                el.classList.toggle('bg-mt-accent', on);
+                el.classList.toggle('text-white', on);
+                el.classList.toggle('bg-stone-100', !on);
+                el.classList.toggle('text-mt-muted', !on);
+            });
+        }
+        function reset() { gsap.killTweensOf({}); setEpoch(0); }
+        function train() {
+            reset();
+            let e = 0;
+            const tick = () => { if (e > N) return; setEpoch(e); e++; gsap.delayedCall(REDUCED ? 0 : 0.06, tick); };
+            tick();
+        }
+        root.querySelector('[data-train]')!.addEventListener('click', train);
+        root.querySelector('[data-reset]')!.addEventListener('click', reset);
+        setEpoch(0);
+    });
+</script>

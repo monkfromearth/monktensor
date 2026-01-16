@@ -1,0 +1,86 @@
+---
+/**
+ * Interactive: drag the ball around a bowl-shaped loss. A red arrow always points
+ * uphill (the gradient); the green dashed arrow is the downhill step learning takes.
+ * "Roll downhill" runs gradient descent to the bottom. (Lesson 0.4.)
+ */
+const W = 300, H = 250, cx = 150, cy = 120, u = 30; // u px per unit
+const rings = [1, 2, 3]; // contour radii in units
+---
+
+<div class="mt-demo mt-landscape-demo my-6 bg-white border border-mt-border rounded-2xl p-6" data-cx={cx} data-cy={cy} data-u={u}>
+    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-1 text-center">Drag the ball around the hill</p>
+    <p class="text-center text-xs text-mt-muted mb-3">the red arrow points straight uphill &mdash; learning steps the opposite way</p>
+
+    <svg viewBox={`0 0 ${W} ${H}`} class="w-full max-w-xs mx-auto block" role="img" aria-label="a bowl-shaped loss with a draggable ball and a gradient arrow">
+        <defs>
+            <radialGradient id="bowl" cx="50%" cy="50%" r="50%">
+                <stop offset="0" stop-color="#EFF8F2" />
+                <stop offset="0.6" stop-color="#F0F0FB" />
+                <stop offset="1" stop-color="#FBEEE9" />
+            </radialGradient>
+            <marker id="arrowU" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#C96F5A" /></marker>
+            <marker id="arrowD" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#4F9D7B" /></marker>
+        </defs>
+        <circle cx={cx} cy={cy} r={3 * u} fill="url(#bowl)" stroke="#E8E4DF" />
+        {rings.map((r) => <circle cx={cx} cy={cy} r={r * u} fill="none" stroke="#E0DCD6" stroke-width="1" stroke-dasharray="2 4" />)}
+        <circle cx={cx} cy={cy} r="3" fill="#9b97a8" />
+        <text x={cx} y={cy + 3 * u + 16} text-anchor="middle" font-size="9" fill="#6B6560" class="font-mono">lowest loss at the center</text>
+
+        <line data-down x1={cx} y1={cy} x2={cx} y2={cy} stroke="#4F9D7B" stroke-width="2.5" stroke-dasharray="4 3" marker-end="url(#arrowD)" />
+        <line data-up x1={cx} y1={cy} x2={cx} y2={cy} stroke="#C96F5A" stroke-width="3" marker-end="url(#arrowU)" />
+        <circle data-ball cx={cx} cy={cy} r="9" fill="#fff" stroke="#322E45" stroke-width="3" class="mt-grab" />
+    </svg>
+
+    <div class="flex items-center justify-center gap-3 mt-2 font-mono text-sm">
+        <span class="px-3 py-1 rounded-lg bg-mt-lavLight text-mt-lav">loss = <span data-loss>0.00</span></span>
+        <button data-roll class="px-4 py-2 rounded-lg bg-mt-accent text-white text-sm font-semibold hover:opacity-90 transition">Roll downhill</button>
+    </div>
+    <p class="text-center text-xs text-mt-muted mt-3"><span class="text-mt-accent">uphill</span> = the gradient; <span class="text-mt-green">downhill</span> = where a training step moves you</p>
+</div>
+
+<script>
+    import { gsap, svgPoint, clamp, REDUCED } from '../../lib/interact';
+
+    document.querySelectorAll<HTMLElement>('.mt-landscape-demo').forEach((root) => {
+        const svg = root.querySelector<SVGSVGElement>('svg')!;
+        const cx = Number(root.dataset.cx), cy = Number(root.dataset.cy), u = Number(root.dataset.u);
+        const ball = root.querySelector<SVGCircleElement>('[data-ball]')!;
+        const up = root.querySelector<SVGLineElement>('[data-up]')!;
+        const down = root.querySelector<SVGLineElement>('[data-down]')!;
+        const lossEl = root.querySelector<HTMLElement>('[data-loss]')!;
+        let a = 2, b = -1.5;
+
+        function render() {
+            const px = cx + a * u, py = cy + b * u;
+            ball.setAttribute('cx', String(px)); ball.setAttribute('cy', String(py));
+            lossEl.textContent = (a * a + b * b).toFixed(2);
+            // gradient (2a, 2b) points uphill (away from center); length capped for display
+            const gx = 2 * a, gy = 2 * b, mag = Math.hypot(gx, gy) || 1;
+            const len = Math.min(mag * 12, 55);
+            const ux = (gx / mag) * len, uy = (gy / mag) * len;
+            up.setAttribute('x1', String(px)); up.setAttribute('y1', String(py));
+            up.setAttribute('x2', String(px + ux)); up.setAttribute('y2', String(py + uy));
+            down.setAttribute('x1', String(px)); down.setAttribute('y1', String(py));
+            down.setAttribute('x2', String(px - ux)); down.setAttribute('y2', String(py - uy));
+        }
+        const set = (e: PointerEvent) => {
+            const p = svgPoint(svg, e);
+            a = clamp((p.x - cx) / u, -3, 3); b = clamp((p.y - cy) / u, -3, 3); render();
+        };
+        ball.addEventListener('pointerdown', (e) => { ball.setPointerCapture(e.pointerId); set(e); });
+        ball.addEventListener('pointermove', (e) => { if (ball.hasPointerCapture(e.pointerId)) set(e); });
+        svg.addEventListener('pointerdown', (e) => { if (e.target !== ball) set(e); });
+
+        root.querySelector('[data-roll]')!.addEventListener('click', () => {
+            let i = 0;
+            const step = () => {
+                if (i++ >= 18 || a * a + b * b < 0.01) return;
+                a -= 0.18 * 2 * a; b -= 0.18 * 2 * b; render(); // gradient descent
+                gsap.delayedCall(REDUCED ? 0 : 0.07, step);
+            };
+            step();
+        });
+        render();
+    });
+</script>

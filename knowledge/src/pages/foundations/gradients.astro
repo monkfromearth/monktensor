@@ -6,6 +6,7 @@ import LessonNav from '../../components/LessonNav.astro';
 import InsightBox from '../../components/InsightBox.astro';
 import Formula from '../../components/Formula.astro';
 import TagBadge from '../../components/TagBadge.astro';
+import GradientLandscapeDemo from '../../components/demos/GradientLandscapeDemo.astro';
 ---
 
 <LessonLayout title="Gradients: Derivatives With Many Knobs" lessonNumber="0.4" section="Foundations">
@@ -71,6 +72,8 @@ import TagBadge from '../../components/TagBadge.astro';
         <div class="bg-white border border-mt-border rounded-xl p-5 mb-4 font-mono text-sm text-center">
             &nabla;L = (2a, 2b) &nbsp;&nbsp;&rarr;&nbsp;&nbsp; at (a, b) = (3, 4): &nbsp; &nabla;L = (6, 8)
         </div>
+
+        <GradientLandscapeDemo />
         <p class="text-mt-muted leading-relaxed mb-4">
             That arrow (6, 8) points away from the origin — uphill, out of the bowl. Step the other way and both
             <span class="font-mono">a</span> and <span class="font-mono">b</span> shrink toward 0, the bottom of the

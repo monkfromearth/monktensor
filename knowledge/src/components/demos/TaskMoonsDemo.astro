@@ -1,0 +1,81 @@
+---
+/**
+ * Interactive: drag a straight line over the two moons; misclassified points light up
+ * red. No straight line separates interleaving moons — motivating a curved boundary
+ * (a hidden layer). (Lesson 4.1.)
+ */
+const W = 340, H = 240, pad = 30;
+const dxmin = -1.4, dxmax = 2.4, dymin = -0.9, dymax = 1.4;
+const sx = (x: number) => pad + ((x - dxmin) / (dxmax - dxmin)) * (W - 2 * pad);
+const sy = (y: number) => (H - pad) - ((y - dymin) / (dymax - dymin)) * (H - 2 * pad);
+const ts = Array.from({ length: 9 }, (_, i) => (i * Math.PI) / 8);
+const moonA = ts.map((t) => [Math.cos(t), Math.sin(t)] as [number, number]);          // class 0
+const moonB = ts.map((t) => [1 - Math.cos(t), 0.5 - Math.sin(t)] as [number, number]); // class 1
+const pts = [...moonA.map((p) => ({ x: p[0], y: p[1], cls: 0 })), ...moonB.map((p) => ({ x: p[0], y: p[1], cls: 1 }))];
+const yL0 = 0.25, yR0 = 0.25;
+---
+
+<div class="mt-demo mt-moons-demo my-6 bg-white border border-mt-border rounded-2xl p-6"
+     data-w={W} data-h={H} data-pad={pad} data-xl={sx(dxmin)} data-xr={sx(dxmax)}
+     data-dxmin={dxmin} data-dxmax={dxmax} data-dymin={dymin} data-dymax={dymax}
+     data-pts={JSON.stringify(pts)}>
+    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-1 text-center">Drag the line to split the two moons</p>
+    <p class="text-center text-xs text-mt-muted mb-3">coral is one class, blue the other &mdash; points on the wrong side flash red</p>
+
+    <svg viewBox={`0 0 ${W} ${H}`} class="w-full max-w-md mx-auto block" role="img" aria-label="two interleaving moons of points with a draggable straight line">
+        <line data-line x1={sx(dxmin)} y1={sy(yL0)} x2={sx(dxmax)} y2={sy(yR0)} stroke="#322E45" stroke-width="2.5" stroke-linecap="round" />
+        {pts.map((p, i) => (
+            <g>
+                <circle data-miss={i} cx={sx(p.x)} cy={sy(p.y)} r="8.5" fill="none" stroke="#E5484D" stroke-width="2.5" opacity="0" />
+                <circle cx={sx(p.x)} cy={sy(p.y)} r="4.5" fill={p.cls === 0 ? '#C96F5A' : '#5E80C9'} />
+            </g>
+        ))}
+        <circle data-handle="L" cx={sx(dxmin)} cy={sy(yL0)} r="9" fill="#fff" stroke="#322E45" stroke-width="3" class="mt-grab" />
+        <circle data-handle="R" cx={sx(dxmax)} cy={sy(yR0)} r="9" fill="#fff" stroke="#322E45" stroke-width="3" class="mt-grab" />
+    </svg>
+
+    <p class="text-center text-sm mt-2"><span class="font-mono text-mt-accent font-semibold" data-wrong>0</span> <span class="text-mt-muted">points on the wrong side</span></p>
+    <p class="text-center text-xs text-mt-muted mt-2" data-verdict>try every angle &mdash; a straight line always leaves some wrong. The moons interleave, so the boundary has to <strong>curve</strong> (that's what a hidden layer buys you).</p>
+</div>
+
+<script>
+    import { svgPoint, clamp } from '../../lib/interact';
+
+    document.querySelectorAll<HTMLElement>('.mt-moons-demo').forEach((root) => {
+        const W = Number(root.dataset.w), H = Number(root.dataset.h), pad = Number(root.dataset.pad);
+        const xL = Number(root.dataset.xl), xR = Number(root.dataset.xr);
+        const dymin = Number(root.dataset.dymin), dymax = Number(root.dataset.dymax);
+        const dxmin = Number(root.dataset.dxmin), dxmax = Number(root.dataset.dxmax);
+        const pts: { x: number; y: number; cls: number }[] = JSON.parse(root.dataset.pts!);
+        const sx = (x: number) => pad + ((x - dxmin) / (dxmax - dxmin)) * (W - 2 * pad);
+        const sy = (y: number) => (H - pad) - ((y - dymin) / (dymax - dymin)) * (H - 2 * pad);
+        const invY = (py: number) => dymin + ((H - pad - py) / (H - 2 * pad)) * (dymax - dymin);
+
+        const svg = root.querySelector<SVGSVGElement>('svg')!;
+        const line = root.querySelector<SVGLineElement>('[data-line]')!;
+        const wrongEl = root.querySelector<HTMLElement>('[data-wrong]')!;
+        let yL = 0.25, yR = 0.25;
+        const lineY = (x: number) => yL + ((yR - yL) / (dxmax - dxmin)) * (x - dxmin);
+
+        function render() {
+            line.setAttribute('y1', String(sy(yL))); line.setAttribute('y2', String(sy(yR)));
+            let wrong = 0;
+            pts.forEach((p, i) => {
+                const above = p.y > lineY(p.x);          // predict class 0 above the line, 1 below
+                const pred = above ? 0 : 1;
+                const miss = pred !== p.cls;
+                if (miss) wrong++;
+                root.querySelector<SVGCircleElement>(`[data-miss="${i}"]`)!.setAttribute('opacity', miss ? '1' : '0');
+            });
+            wrongEl.textContent = String(wrong);
+        }
+        function drag(handle: SVGCircleElement, set: (y: number) => void) {
+            const move = (e: PointerEvent) => { if (handle.hasPointerCapture(e.pointerId)) { set(clamp(invY(svgPoint(svg, e).y), dymin, dymax)); render(); } };
+            handle.addEventListener('pointerdown', (e) => { handle.setPointerCapture(e.pointerId); });
+            handle.addEventListener('pointermove', move);
+        }
+        drag(root.querySelector('[data-handle="L"]')!, (y) => { yL = y; root.querySelector('[data-handle="L"]')!.setAttribute('cy', String(sy(y))); });
+        drag(root.querySelector('[data-handle="R"]')!, (y) => { yR = y; root.querySelector('[data-handle="R"]')!.setAttribute('cy', String(sy(y))); });
+        render();
+    });
+</script>

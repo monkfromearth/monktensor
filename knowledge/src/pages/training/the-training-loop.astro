@@ -6,6 +6,7 @@ import LessonNav from '../../components/LessonNav.astro';
 import InsightBox from '../../components/InsightBox.astro';
 import StepNumber from '../../components/StepNumber.astro';
 import TagBadge from '../../components/TagBadge.astro';
+import TrainingLoopDemo from '../../components/demos/TrainingLoopDemo.astro';
 ---
 
 <LessonLayout title="The Training Loop" lessonNumber="4.5" section="Training">
@@ -48,6 +49,8 @@ import TagBadge from '../../components/TagBadge.astro';
             That's it. Forward, loss, zero, backward, step — looped a few hundred times. The loss falls, the boundary
             curves into place, and the random network becomes one that knows the two moons apart.
         </p>
+
+        <TrainingLoopDemo />
     </section>
 
     <section class="mb-14">

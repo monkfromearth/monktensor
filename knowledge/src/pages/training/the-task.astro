@@ -5,6 +5,7 @@ import LessonHeader from '../../components/LessonHeader.astro';
 import LessonNav from '../../components/LessonNav.astro';
 import InsightBox from '../../components/InsightBox.astro';
 import TagBadge from '../../components/TagBadge.astro';
+import TaskMoonsDemo from '../../components/demos/TaskMoonsDemo.astro';
 ---
 
 <LessonLayout title="The Task & Data" lessonNumber="4.1" section="Training">
@@ -45,6 +46,8 @@ import TagBadge from '../../components/TagBadge.astro';
             But the moons interleave, so no straight line can split them. The boundary has to <em>curve</em> between the
             crescents. That's why this task needs a network with a nonlinearity and a hidden layer, not a single neuron.
         </p>
+
+        <TaskMoonsDemo />
         <InsightBox>
             <p class="text-sm">make_moons is the perfect first task for exactly these reasons: it's 2D so you can
             literally see the boundary the model draws; it's small so training is fast; and it's not linearly separable,
