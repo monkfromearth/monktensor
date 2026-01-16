@@ -53,7 +53,7 @@ const startP = -1;
         const pmin = Number(root.dataset.pmin), pmax = Number(root.dataset.pmax);
         const sx = (p: number) => pad + ((p - pmin) / (pmax - pmin)) * (W - 2 * pad);
         const sy = (v: number, vmax: number) => (H - pad) - (Math.min(v, vmax) / vmax) * (H - 2 * pad);
-        const invP = (px: number) => clamp(pmin + ((px - pad) / (W - 2 * pad)) * (pmax - pmin), pmin, pmax);
+        const invP = (px: number) => clamp(Math.round((pmin + ((px - pad) / (W - 2 * pad)) * (pmax - pmin)) * 2) / 2, pmin, pmax);
         const panels = Array.from(root.querySelectorAll<HTMLElement>('[data-panel]'));
         let p = -1;
 

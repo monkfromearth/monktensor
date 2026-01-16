@@ -82,7 +82,7 @@
         });
         (['a', 'b'] as const).forEach((k) => {
             const h = root.querySelector<SVGCircleElement>(`[data-drag="${k}"]`)!;
-            const set = (e: PointerEvent) => { v[k] = clamp(Math.round((5 - (svgPoint(svg, e).y / 90) * 10) * 10) / 10, -5, 5); render(); };
+            const set = (e: PointerEvent) => { v[k] = clamp(Math.round((5 - (svgPoint(svg, e).y / 90) * 10) * 2) / 2, -5, 5); render(); };
             h.addEventListener('pointerdown', (e) => { h.setPointerCapture(e.pointerId); set(e); });
             h.addEventListener('pointermove', (e) => { if (h.hasPointerCapture(e.pointerId)) set(e); });
         });

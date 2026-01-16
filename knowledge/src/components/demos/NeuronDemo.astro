@@ -65,7 +65,7 @@
         const state: Record<string, number> = { x1: 1, x2: 1, w1: 1.5, w2: -0.5 };
         const b = 0;
         const yFor = (k: string, v: number) => { const t = tracks[k]; return t.bot - ((v + 2) / 4) * (t.bot - t.top); };
-        const vFor = (k: string, y: number) => clamp(2 - ((y - tracks[k].top) / (tracks[k].bot - tracks[k].top)) * 4, -2, 2);
+        const vFor = (k: string, y: number) => clamp(Math.round((2 - ((y - tracks[k].top) / (tracks[k].bot - tracks[k].top)) * 4) * 2) / 2, -2, 2);
 
         function render() {
             (['x1', 'x2', 'w1', 'w2'] as const).forEach((k) => (out(k).textContent = state[k].toFixed(1)));
