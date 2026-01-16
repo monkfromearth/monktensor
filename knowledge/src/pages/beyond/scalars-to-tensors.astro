@@ -10,7 +10,7 @@ import ScalarToTensorDemo from '../../components/demos/ScalarToTensorDemo.astro'
 
 <LessonLayout title="Scalars to Tensors" lessonNumber="5.1" section="Beyond v1">
 
-    <LessonHeader lessonNumber="5.1" title="Scalars to Tensors" description="v1 ran on single numbers so every step was visible. Real frameworks run on arrays — tensors — so they can be fast. The good news: the autograd you learned doesn't change, it just works on arrays now.">
+    <LessonHeader lessonNumber="5.1" title="Scalars to Tensors" description="v1 ran on single numbers so every step was visible. Real frameworks run on arrays, tensors, so they can be fast. The good news: the autograd you learned doesn't change, it just works on arrays now.">
         <TagBadge variant="concepts">concepts</TagBadge>
         <TagBadge variant="default">7 min read</TagBadge>
     </LessonHeader>
@@ -23,7 +23,7 @@ import ScalarToTensorDemo from '../../components/demos/ScalarToTensorDemo.astro'
             push thousands of numbers through the same operation at once.
         </p>
         <p class="text-mt-muted leading-relaxed mb-4">
-            The answer is the <strong>tensor</strong> — an n-dimensional array of numbers treated as a single value. One
+            The answer is the <strong>tensor</strong>, an n-dimensional array of numbers treated as a single value. One
             tensor operation does what thousands of scalar ones would, and it maps onto hardware (CPU vector units, GPUs)
             built exactly for bulk number-crunching.
         </p>
@@ -34,12 +34,11 @@ import ScalarToTensorDemo from '../../components/demos/ScalarToTensorDemo.astro'
     <section class="mb-14">
         <h2 class="text-xl font-bold mb-4">The two ideas you'll add.</h2>
         <div class="space-y-3 mb-4">
-            <div class="bg-white border border-mt-border rounded-xl px-5 py-4"><p class="font-semibold text-sm">Broadcasting</p><p class="text-mt-muted text-sm">Rules for combining arrays of different shapes without writing loops — e.g. adding one bias value to every row of a matrix. It's how a layer applies the same operation across a whole batch.</p></div>
+            <div class="bg-white border border-mt-border rounded-xl px-5 py-4"><p class="font-semibold text-sm">Broadcasting</p><p class="text-mt-muted text-sm">Rules for combining arrays of different shapes without writing loops, e.g. adding one bias value to every row of a matrix. It's how a layer applies the same operation across a whole batch.</p></div>
             <div class="bg-white border border-mt-border rounded-xl px-5 py-4"><p class="font-semibold text-sm">Matrix multiply (matmul)</p><p class="text-mt-muted text-sm">The workhorse of a layer: a whole layer's worth of weighted sums is one matmul of the inputs against the weight matrix, plus the bias. One operation replaces a forest of scalar multiplies and adds.</p></div>
         </div>
         <p class="text-mt-muted leading-relaxed">
-            tinygrad makes a clarifying observation here: nearly everything reduces to three kinds of operation —
-            elementwise (add, multiply, relu), reduction (sum, max), and movement (reshape, transpose). Build those well
+            tinygrad makes a clarifying observation here: nearly everything reduces to three kinds of operation, elementwise (add, multiply, relu), reduction (sum, max), and movement (reshape, transpose). Build those well
             and you can express any network.
         </p>
     </section>
@@ -60,7 +59,7 @@ import ScalarToTensorDemo from '../../components/demos/ScalarToTensorDemo.astro'
         <div class="space-y-3">
             <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">1</span></div><p class="text-sm">Tensors (n-dim arrays) let one operation process many numbers at once, which is what makes frameworks fast.</p></div>
             <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">2</span></div><p class="text-sm">Broadcasting and matmul are the two new pieces; a layer becomes one matmul plus a bias.</p></div>
-            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">3</span></div><p class="text-sm">The autograd you built is unchanged — values become arrays, the chain rule and accumulation stay the same.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">3</span></div><p class="text-sm">The autograd you built is unchanged, values become arrays, the chain rule and accumulation stay the same.</p></div>
         </div>
     </section>
 

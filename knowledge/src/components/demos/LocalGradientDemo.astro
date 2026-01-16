@@ -6,7 +6,7 @@
 ---
 
 <div class="mt-demo mt-localgrad-demo my-6 bg-white border border-mt-border rounded-2xl p-6">
-    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-3 text-center">One operation, up close &mdash; drag the inputs</p>
+    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-3 text-center">One operation, up close, drag the inputs</p>
 
     <div class="flex items-center justify-center gap-2 mb-4">
         {['+', '×', 'tanh'].map((op, i) => (
@@ -39,7 +39,7 @@
         <span class="px-3 py-1 rounded-lg bg-mt-accentLight text-mt-accent">∂out/∂a = <span data-ga>-3</span></span>
         <span data-gbpill class="px-3 py-1 rounded-lg bg-mt-accentLight text-mt-accent">∂out/∂b = <span data-gb>2</span></span>
     </div>
-    <p class="text-center text-xs text-mt-muted mt-3">the local gradient is just "if I nudge this input, how fast does the output move?" &mdash; ignoring the rest of any graph</p>
+    <p class="text-center text-xs text-mt-muted mt-3">the local gradient is just "if I nudge this input, how fast does the output move?", ignoring the rest of any graph</p>
 </div>
 
 <script>

@@ -12,7 +12,7 @@ import SlopeNudgeDemo from '../../components/demos/SlopeNudgeDemo.astro';
 
 <LessonLayout title="Derivatives, Intuitively" lessonNumber="0.3" section="Foundations">
 
-    <LessonHeader lessonNumber="0.3" title="Derivatives, Intuitively" description="A derivative is one number that answers the nudge question from lesson 0.1: wiggle the input a hair, how much does the output move? No heavy calculus — just the few ideas the framework needs.">
+    <LessonHeader lessonNumber="0.3" title="Derivatives, Intuitively" description="A derivative is one number that answers the nudge question from lesson 0.1: wiggle the input a hair, how much does the output move? No heavy calculus, just the few ideas the framework needs.">
         <TagBadge variant="math">math</TagBadge>
         <TagBadge variant="default">11 min read</TagBadge>
     </LessonHeader>
@@ -21,8 +21,7 @@ import SlopeNudgeDemo from '../../components/demos/SlopeNudgeDemo.astro';
         <h2 class="text-xl font-bold mb-4">Standing on a hill in the fog.</h2>
         <p class="text-mt-muted leading-relaxed mb-4">
             You're on a hillside, fog everywhere, can't see a thing. But you can feel the ground under your feet
-            tilt. That tilt tells you two things: which way is downhill, and how steep it is. That's a derivative —
-            the steepness of a function at the exact spot you're standing.
+            tilt. That tilt tells you two things: which way is downhill, and how steep it is. That's a derivative, the steepness of a function at the exact spot you're standing.
         </p>
         <p class="text-mt-muted leading-relaxed mb-4">
             More precisely: the derivative of a function at a point is <strong>how much the output changes per tiny
@@ -53,8 +52,7 @@ import SlopeNudgeDemo from '../../components/demos/SlopeNudgeDemo.astro';
         </p>
         <p class="text-mt-muted leading-relaxed mb-4">
             Computing the ratio with a small-but-real <span class="font-mono">&epsilon;</span> is called a
-            <strong>finite difference</strong>. It's approximate, but it's something you can do with arithmetic alone —
-            which makes it the perfect way to <em>check</em> the exact derivatives your framework computes. We'll use
+            <strong>finite difference</strong>. It's approximate, but it's something you can do with arithmetic alone, which makes it the perfect way to <em>check</em> the exact derivatives your framework computes. We'll use
             that trick to prove the engine correct in Unit 2.
         </p>
     </section>
@@ -73,7 +71,7 @@ import SlopeNudgeDemo from '../../components/demos/SlopeNudgeDemo.astro';
         <SlopeNudgeDemo />
         <p class="text-mt-muted leading-relaxed mb-4">
             The derivative of <span class="font-mono">x&sup2;</span> at 3 is 6. (The exact rule is
-            <span class="font-mono">2x</span>, and 2&times;3 = 6 — the finite difference landed right next to it, off
+            <span class="font-mono">2x</span>, and 2&times;3 = 6, the finite difference landed right next to it, off
             only by the leftover <span class="font-mono">&epsilon;</span>.) That's the nudge question from lesson 0.1,
             answered with arithmetic.
         </p>
@@ -98,7 +96,7 @@ import SlopeNudgeDemo from '../../components/demos/SlopeNudgeDemo.astro';
             </table>
         </div>
         <p class="text-mt-muted leading-relaxed">
-            The one rule left — how to handle a function <em>inside</em> a function — is the chain rule, and it's big
+            The one rule left, how to handle a function <em>inside</em> a function, is the chain rule, and it's big
             enough to get its own lesson (0.5). With these plus the chain rule, you can differentiate everything a
             small neural net needs.
         </p>
@@ -117,7 +115,7 @@ import SlopeNudgeDemo from '../../components/demos/SlopeNudgeDemo.astro';
         <h2 class="text-xl font-bold mb-4">Key takeaways</h2>
         <div class="space-y-3">
             <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">1</span></div><p class="text-sm">A derivative is output-change per tiny input-change: which way the output moves, and how fast.</p></div>
-            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">2</span></div><p class="text-sm">You can estimate one with arithmetic (a finite difference) — which is how we'll later check the framework's exact answers.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">2</span></div><p class="text-sm">You can estimate one with arithmetic (a finite difference), which is how we'll later check the framework's exact answers.</p></div>
             <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">3</span></div><p class="text-sm">A scalar engine needs only a few derivative rules plus the chain rule. That's the whole math toolkit.</p></div>
         </div>
     </section>

@@ -20,13 +20,13 @@ import GraphAssembleDemo from '../../components/demos/GraphAssembleDemo.astro';
         <p class="text-mt-muted leading-relaxed mb-4">
             Think of a recipe: chop the onions, fry them, add tomatoes, simmer. Each step takes some ingredients and
             makes something new, which feeds the next step. Draw it as boxes with arrows and you have a flowchart. A
-            computation is exactly this — small operations, each taking inputs and producing an output that flows into
+            computation is exactly this, small operations, each taking inputs and producing an output that flows into
             the next. That flowchart is a <strong>computation graph</strong>.
         </p>
         <p class="text-mt-muted leading-relaxed mb-4">
             In the graph, each <strong>node</strong> is a value produced by one operation, and each <strong>edge</strong>
             is "this value feeds into that operation." The <strong>leaves</strong> (no incoming edges) are your starting
-            numbers — inputs and parameters. The <strong>root</strong> at the far end is the final number you care
+            numbers, inputs and parameters. The <strong>root</strong> at the far end is the final number you care
             about, which during training is the loss.
         </p>
     </section>
@@ -71,7 +71,7 @@ import GraphAssembleDemo from '../../components/demos/GraphAssembleDemo.astro';
         <h2 class="text-xl font-bold mb-4">Built as you go (define-by-run).</h2>
         <p class="text-mt-muted leading-relaxed mb-4">
             Here's the design choice that makes this pleasant to write: the graph is built <em>while</em> you do the
-            arithmetic. Every time you multiply or add two values, the result quietly records what made it — its
+            arithmetic. Every time you multiply or add two values, the result quietly records what made it, its
             inputs and which operation. You write ordinary-looking math; the graph assembles itself underneath. This
             is called a <strong>define-by-run</strong> (or dynamic) graph, and it's how PyTorch works.
         </p>

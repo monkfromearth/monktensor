@@ -7,7 +7,7 @@ const neurons = [0, 1, 2, 3];
 ---
 
 <div class="mt-demo mt-symmetry-demo my-6 bg-white border border-mt-border rounded-2xl p-6">
-    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-3 text-center">Four neurons &mdash; do they ever become different?</p>
+    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-3 text-center">Four neurons, do they ever become different?</p>
 
     <div class="flex items-center justify-center gap-2 mb-4">
         <div class="inline-flex rounded-lg border border-mt-border overflow-hidden text-sm">
@@ -32,7 +32,7 @@ const neurons = [0, 1, 2, 3];
         <button data-reset class="px-4 py-2 rounded-lg bg-stone-100 text-mt-muted text-sm hover:bg-stone-200 transition">Reset</button>
         <span class="text-xs text-mt-muted">step <span data-steps>0</span></span>
     </div>
-    <p class="text-center text-xs text-mt-muted mt-3" data-cap>all equal: identical gradients, so they move together and stay clones &mdash; the layer never spreads out</p>
+    <p class="text-center text-xs text-mt-muted mt-3" data-cap>all equal: identical gradients, so they move together and stay clones, the layer never spreads out</p>
 </div>
 
 <script>
@@ -58,7 +58,7 @@ const neurons = [0, 1, 2, 3];
             steps = 0; stepsEl.textContent = '0';
             w = [...(mode === 'equal' ? equalStart : randomStart)];
             cap.textContent = mode === 'equal'
-                ? 'all equal: identical gradients, so they move together and stay clones — the layer never spreads out'
+                ? 'all equal: identical gradients, so they move together and stay clones, the layer never spreads out'
                 : 'random: different gradients, so the neurons drift apart and learn different features';
             draw();
         }

@@ -20,7 +20,7 @@ import GradientDescentDemo from '../../components/demos/GradientDescentDemo.astr
         <p class="text-mt-muted leading-relaxed mb-4">
             You have a loss and, thanks to backprop, its gradient for every parameter. The gradient points uphill
             (lesson 0.4), so to lower the loss you step each parameter a little in the opposite direction. Do it again.
-            And again. That's <strong>gradient descent</strong> — the entire learning algorithm in one move:
+            And again. That's <strong>gradient descent</strong>, the entire learning algorithm in one move:
         </p>
         <div class="bg-white border border-mt-border rounded-xl p-5 mb-4 text-center font-mono text-sm">
             w &larr; w &minus; (learning rate) &times; w.grad
@@ -34,7 +34,7 @@ import GradientDescentDemo from '../../components/demos/GradientDescentDemo.astr
         <h2 class="text-xl font-bold mb-4">The learning rate is the knob you'll fight most.</h2>
         <p class="text-mt-muted leading-relaxed mb-4">
             The <strong>learning rate</strong> is the step size, and the demo shows its whole personality. Too small and
-            it crawls — correct direction, glacial progress. Just right and it slides smoothly to the bottom. Too big and
+            it crawls, correct direction, glacial progress. Just right and it slides smoothly to the bottom. Too big and
             it overshoots, bouncing across the valley; past a point it diverges entirely, flying uphill. Most of the
             practical art of training is finding a learning rate that's brisk but stable.
         </p>
@@ -47,7 +47,7 @@ import GradientDescentDemo from '../../components/demos/GradientDescentDemo.astr
             with <span class="font-mono">+=</span>). So before every backward pass you must <strong>reset every
             gradient to 0</strong>. Skip it and this step's gradients pile on top of last step's leftovers, and the model
             lurches around or stalls. The training loop is: zero the grads, backward, step. Forgetting the zero is one of
-            the most common training bugs there is — and nothing crashes to warn you.</p>
+            the most common training bugs there is, and nothing crashes to warn you.</p>
         </InsightBox>
     </section>
 

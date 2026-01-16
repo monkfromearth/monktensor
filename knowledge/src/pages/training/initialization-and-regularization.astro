@@ -18,8 +18,8 @@ import SymmetryDemo from '../../components/demos/SymmetryDemo.astro';
     <section class="mb-14">
         <h2 class="text-xl font-bold mb-4">Where the knobs start matters.</h2>
         <p class="text-mt-muted leading-relaxed mb-4">
-            Before the first step, every weight needs a starting value. The tempting choice — set them all to zero (or
-            all the same) — quietly breaks the network. If every neuron in a layer starts identical, they all compute
+            Before the first step, every weight needs a starting value. The tempting choice, set them all to zero (or
+            all the same), quietly breaks the network. If every neuron in a layer starts identical, they all compute
             the same thing, all receive the same gradient, and so update identically forever. They stay clones; the
             layer never spreads out to learn different features. This is the <strong>symmetry</strong> problem.
         </p>
@@ -35,14 +35,14 @@ import SymmetryDemo from '../../components/demos/SymmetryDemo.astro';
     <section class="mb-14">
         <h2 class="text-xl font-bold mb-4">Stop it from memorizing.</h2>
         <p class="text-mt-muted leading-relaxed mb-4">
-            A network with enough knobs can memorize the training points exactly — drawing a wildly wiggly boundary that
-            threads every dot — and then fail on new points. That's <strong>overfitting</strong>: great on training data,
+            A network with enough knobs can memorize the training points exactly, drawing a wildly wiggly boundary that
+            threads every dot, and then fail on new points. That's <strong>overfitting</strong>: great on training data,
             poor on the held-out set. The tell is the validation loss creeping up while the training loss keeps falling.
         </p>
         <p class="text-mt-muted leading-relaxed mb-4">
             <strong>Regularization</strong> pushes back. The common form, <strong>L2</strong> (weight decay), adds a
             small penalty for large weights to the loss. The network now has to justify big weights with real reduction
-            in error, so it prefers smaller weights and smoother, simpler boundaries — the kind that generalize.
+            in error, so it prefers smaller weights and smoother, simpler boundaries, the kind that generalize.
         </p>
         <InsightBox>
             <p class="text-sm">For make_moons: start weights small and random, and add a little L2. That combination
@@ -54,7 +54,7 @@ import SymmetryDemo from '../../components/demos/SymmetryDemo.astro';
     <section class="mb-14">
         <h2 class="text-xl font-bold mb-4">Key takeaways</h2>
         <div class="space-y-3">
-            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">1</span></div><p class="text-sm">Don't start all weights equal — neurons would stay clones (the symmetry problem). Start small and random.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">1</span></div><p class="text-sm">Don't start all weights equal, neurons would stay clones (the symmetry problem). Start small and random.</p></div>
             <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">2</span></div><p class="text-sm">Overfitting is memorizing the training data; the sign is validation loss rising while training loss falls.</p></div>
             <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">3</span></div><p class="text-sm">L2 regularization penalizes large weights, favoring smoother boundaries that generalize.</p></div>
         </div>

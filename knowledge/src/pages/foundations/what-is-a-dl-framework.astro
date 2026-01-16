@@ -22,7 +22,7 @@ import MultiplyNudgeDemo from '../../components/demos/MultiplyNudgeDemo.astro';
         <p class="text-mt-muted leading-relaxed mb-4">
             Picture a calculator that does something ordinary calculators don't: every time you ask it to add or
             multiply, it quietly writes down what it just did and what it used. After a long calculation, it can
-            answer a question that's normally hard to answer — <strong>"if I nudged this one number a tiny bit,
+            answer a question that's normally hard to answer, <strong>"if I nudged this one number a tiny bit,
             which way would the final answer move, and by how much?"</strong>
         </p>
 
@@ -30,11 +30,11 @@ import MultiplyNudgeDemo from '../../components/demos/MultiplyNudgeDemo.astro';
             That question is the whole game in deep learning. A model is a giant calculation with millions of
             adjustable numbers (the "weights"). Training means asking, over and over, "which way should each weight
             move to make the answer a little less wrong?" A framework is the machine that answers that question
-            automatically — because it remembered every step.
+            automatically, because it remembered every step.
         </p>
 
         <InsightBox>
-            <p class="text-sm">PyTorch, TensorFlow, JAX, tinygrad — under the branding, they are all this same machine.
+            <p class="text-sm">PyTorch, TensorFlow, JAX, tinygrad. Under the branding, they are all this same machine.
             They run the steps forward, remember them, and hand you the answer to the nudge question. monktensor is that
             machine too, built on single numbers first so you can watch every step.</p>
         </InsightBox>
@@ -53,20 +53,20 @@ import MultiplyNudgeDemo from '../../components/demos/MultiplyNudgeDemo.astro';
                 <div class="w-8 h-8 rounded-lg bg-mt-accentLight flex items-center justify-center flex-shrink-0"><span class="text-mt-accent font-bold text-sm">1</span></div>
                 <div>
                     <p class="font-semibold text-sm">Represent the computation.</p>
-                    <p class="text-mt-muted text-sm">Let you build a calculation out of small pieces — add, multiply, a squashing function — and quietly record how the pieces connect. This record is the <strong>computation graph</strong> (Unit 1).</p>
+                    <p class="text-mt-muted text-sm">Let you build a calculation out of small pieces, add, multiply, a squashing function, and quietly record how the pieces connect. This record is the <strong>computation graph</strong> (Unit 1).</p>
                 </div>
             </div>
             <div class="flex items-start gap-4 bg-white border border-mt-border rounded-xl px-5 py-4">
                 <div class="w-8 h-8 rounded-lg bg-mt-accentLight flex items-center justify-center flex-shrink-0"><span class="text-mt-accent font-bold text-sm">2</span></div>
                 <div>
                     <p class="font-semibold text-sm">Run it forward.</p>
-                    <p class="text-mt-muted text-sm">Push numbers through the graph and get a result out — a prediction, and then a single number that says how wrong the prediction was (the <strong>loss</strong>). This is the <strong>forward pass</strong>.</p>
+                    <p class="text-mt-muted text-sm">Push numbers through the graph and get a result out, a prediction, and then a single number that says how wrong the prediction was (the <strong>loss</strong>). This is the <strong>forward pass</strong>.</p>
                 </div>
             </div>
             <div class="flex items-start gap-4 bg-white border border-mt-border rounded-xl px-5 py-4">
                 <div class="w-8 h-8 rounded-lg bg-mt-accentLight flex items-center justify-center flex-shrink-0"><span class="text-mt-accent font-bold text-sm">3</span></div>
                 <div>
-                    <p class="font-semibold text-sm">Figure out the gradients — automatically.</p>
+                    <p class="font-semibold text-sm">Figure out the gradients, automatically.</p>
                     <p class="text-mt-muted text-sm">For every input number, compute "how much does the loss change if I wiggle this one?" The framework does this itself, exactly, by walking the recorded graph backward. This is <strong>automatic differentiation</strong>, or <strong>backpropagation</strong> (Unit 2). It is the part that feels like magic, and it isn't.</p>
                 </div>
             </div>
@@ -102,13 +102,13 @@ import MultiplyNudgeDemo from '../../components/demos/MultiplyNudgeDemo.astro';
         <p class="text-mt-muted leading-relaxed mb-4">
             Now the nudge question: <em>if a grows by a tiny sliver, how much does c grow?</em> Since c is
             <code class="bg-stone-100 px-1 rounded text-xs">a &times; b</code> and b is 3, every sliver added to a shows
-            up <strong>tripled</strong> in c. So the answer is 3 — which happens to be b. The machine didn't do any
+            up <strong>tripled</strong> in c. So the answer is 3, which happens to be b. The machine didn't do any
             calculus to know this; it just remembered "c came from multiplying a by b," and the rule for a multiply is
             "each input's influence is the other input."
         </p>
 
         <InsightBox>
-            <p class="text-sm">That number — "how much the output moves when one input wiggles" — is a
+            <p class="text-sm">That number, "how much the output moves when one input wiggles", is a
             <strong>derivative</strong>. The framework's superpower is computing it for <em>every</em> input in a huge
             calculation, automatically, by remembering each small step and the simple rule that goes with it. The next
             three lessons make "derivative," "gradient," and "the rule for chaining steps" precise.</p>
@@ -124,7 +124,7 @@ import MultiplyNudgeDemo from '../../components/demos/MultiplyNudgeDemo.astro';
                 <svg class="w-5 h-5 text-mt-muted flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                 <div>
                     <p class="font-semibold text-sm">Not about GPUs or speed.</p>
-                    <p class="text-mt-muted text-xs">We start with single numbers, not big arrays. Slow is fine — the point is to see every operation. Speed is a Unit 5 concern.</p>
+                    <p class="text-mt-muted text-xs">We start with single numbers, not big arrays. Slow is fine. The point is to see every operation. Speed is a Unit 5 concern.</p>
                 </div>
             </div>
             <div class="flex items-start gap-3 bg-white border border-mt-border rounded-xl px-5 py-4">

@@ -19,7 +19,7 @@ import KnobsGaugesDemo from '../../components/demos/KnobsGaugesDemo.astro';
         <h2 class="text-xl font-bold mb-4">Knobs and readouts.</h2>
         <p class="text-mt-muted leading-relaxed mb-4">
             On a machine, there are knobs you turn and readouts that just display whatever the knobs produce. You don't
-            "set" a readout — it shows you a consequence. The graph has the same split:
+            "set" a readout, it shows you a consequence. The graph has the same split:
         </p>
         <div class="grid md:grid-cols-2 gap-4 mb-4">
             <div class="bg-white border border-mt-border rounded-xl p-5">
@@ -33,7 +33,7 @@ import KnobsGaugesDemo from '../../components/demos/KnobsGaugesDemo.astro';
         </div>
         <p class="text-mt-muted leading-relaxed">
             There's a third kind of leaf: the <strong>data</strong> (your inputs). Like parameters, data sits at the
-            leaves — but unlike parameters, you never change it. It's given.
+            leaves, but unlike parameters, you never change it. It's given.
         </p>
 
         <KnobsGaugesDemo />
@@ -42,8 +42,7 @@ import KnobsGaugesDemo from '../../components/demos/KnobsGaugesDemo.astro';
     <section class="mb-14">
         <h2 class="text-xl font-bold mb-4">Everyone gets a gradient; only knobs get turned.</h2>
         <p class="text-mt-muted leading-relaxed mb-4">
-            Here's the subtlety that bites people. Backprop computes a gradient for <em>every</em> node in the graph —
-            parameters, activations, even the data. That's just how the chain rule flows. But the training step only
+            Here's the subtlety that bites people. Backprop computes a gradient for <em>every</em> node in the graph, parameters, activations, even the data. That's just how the chain rule flows. But the training step only
             <strong>updates the parameters</strong>. The activations' gradients are used in passing (to push gradient
             further back) and then discarded; the data's gradient is usually ignored entirely.
         </p>
@@ -62,7 +61,7 @@ import KnobsGaugesDemo from '../../components/demos/KnobsGaugesDemo.astro';
             Because of this split, real frameworks let you flag which leaves are learnable (PyTorch calls it
             <span class="font-mono">requires_grad</span>, and gathers them via <span class="font-mono">parameters()</span>).
             The flag answers one question: "when I take a training step, which numbers am I allowed to change?" In your
-            engine, the network's <span class="font-mono">parameters()</span> list will be exactly that set — the knobs,
+            engine, the network's <span class="font-mono">parameters()</span> list will be exactly that set, the knobs,
             and nothing else.
         </p>
     </section>
@@ -72,7 +71,7 @@ import KnobsGaugesDemo from '../../components/demos/KnobsGaugesDemo.astro';
         <div class="space-y-3">
             <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">1</span></div><p class="text-sm">Parameters are the knobs you adjust (weights, biases); activations are computed readouts; data is a fixed leaf.</p></div>
             <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">2</span></div><p class="text-sm">Backprop computes a gradient for every node, but the optimizer updates only the parameters.</p></div>
-            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">3</span></div><p class="text-sm">Your model's parameter list is precisely the set of learnable leaves — keep it distinct from everything else.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">3</span></div><p class="text-sm">Your model's parameter list is precisely the set of learnable leaves, keep it distinct from everything else.</p></div>
         </div>
     </section>
 

@@ -1,7 +1,7 @@
 ---
 /**
  * Watch the graph assemble itself as the expression e = (a x b) + c is built,
- * one operation at a time — the meaning of "define-by-run". (Lesson 1.1.)
+ * one operation at a time, the meaning of "define-by-run". (Lesson 1.1.)
  */
 const N = {
   a: { cx: 52, cy: 46, t: 'a', c: '#C96F5A', l: '#FBEEE9' },
@@ -21,7 +21,7 @@ const reveal: { node?: K; edges?: [K, K][] }[] = [
 
 <div class="mt-demo mt-assemble-demo my-6 bg-white border border-mt-border rounded-2xl p-6">
     <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-1 text-center">Build <span class="font-mono">e = (a &times; b) + c</span></p>
-    <p class="text-center text-xs text-mt-muted mb-3">each operation adds itself to the graph as it runs &mdash; define-by-run</p>
+    <p class="text-center text-xs text-mt-muted mb-3">each operation adds itself to the graph as it runs, define-by-run</p>
 
     <svg viewBox="0 0 360 215" class="w-full max-w-md mx-auto block" role="img" aria-label="a computation graph assembling step by step">
         {edges.map(([s, t]) => <line data-edge={`${s}${t}`} x1={N[s].cx} y1={N[s].cy} x2={N[t].cx} y2={N[t].cy} stroke="#E8E4DF" stroke-width="2" opacity="0" />)}

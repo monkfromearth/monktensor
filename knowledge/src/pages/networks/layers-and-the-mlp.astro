@@ -19,11 +19,11 @@ import TagBadge from '../../components/TagBadge.astro';
         <p class="text-mt-muted leading-relaxed mb-4">
             One neuron gives one output. A <strong>layer</strong> is several neurons looking at the <em>same</em> inputs,
             each with its own weights and bias, each producing one number. A layer of 4 neurons turns an input into 4
-            outputs — four different weighted views of the same data.
+            outputs, four different weighted views of the same data.
         </p>
         <p class="text-mt-muted leading-relaxed mb-4">
             Stack layers so each layer's outputs become the next layer's inputs, and you have a
-            <strong>multi-layer perceptron (MLP)</strong> — the simplest real neural network.
+            <strong>multi-layer perceptron (MLP)</strong>, the simplest real neural network.
         </p>
         <div class="bg-white border border-mt-border rounded-xl p-6 mb-4">
             <svg viewBox="0 0 360 170" class="w-full max-w-md mx-auto block" role="img" aria-label="an MLP: 2 inputs, two hidden layers of 4, one output">
@@ -48,10 +48,10 @@ import TagBadge from '../../components/TagBadge.astro';
     <section class="mb-14">
         <h2 class="text-xl font-bold mb-4">Why stack them?</h2>
         <p class="text-mt-muted leading-relaxed mb-4">
-            A single layer can only carve the input space with straight cuts — it draws lines. Many real problems need
+            A single layer can only carve the input space with straight cuts, it draws lines. Many real problems need
             curved, wiggly boundaries. Stacking layers, each followed by a nonlinearity, lets the network bend and
             combine those cuts into complex shapes. Depth is what turns "draw a line" into "draw any boundary you need."
-            (The nonlinearity is essential here — that's the next lesson.)
+            (The nonlinearity is essential here, that's the next lesson.)
         </p>
     </section>
 
@@ -63,7 +63,7 @@ import TagBadge from '../../components/TagBadge.astro';
             for instance, a few dozen parameters; a real one has millions. The mechanism is identical.
         </p>
         <InsightBox>
-            <p class="text-sm">An MLP is just neurons composed into layers composed into a network — and the whole thing
+            <p class="text-sm">An MLP is just neurons composed into layers composed into a network, and the whole thing
             is still one computation graph. So the forward pass runs it, and the single <span class="font-mono">backward()</span>
             from Unit 2 computes the gradient of every parameter end to end. You don't write new differentiation for
             networks; you reuse the engine.</p>

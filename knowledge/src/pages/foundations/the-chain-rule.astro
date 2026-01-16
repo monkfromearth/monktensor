@@ -11,7 +11,7 @@ import GearsDemo from '../../components/demos/GearsDemo.astro';
 
 <LessonLayout title="The Chain Rule" lessonNumber="0.5" section="Foundations">
 
-    <LessonHeader lessonNumber="0.5" title="The Chain Rule" description="The one rule backpropagation is built on. It tells you the slope of a function-inside-a-function, and it has a second half — what happens when one input feeds two places — that the whole engine hinges on.">
+    <LessonHeader lessonNumber="0.5" title="The Chain Rule" description="The one rule backpropagation is built on. It tells you the slope of a function-inside-a-function, and it has a second half, what happens when one input feeds two places, that the whole engine hinges on.">
         <TagBadge variant="math">math</TagBadge>
         <TagBadge variant="default">12 min read</TagBadge>
     </LessonHeader>
@@ -86,13 +86,13 @@ import GearsDemo from '../../components/demos/GearsDemo.astro';
             "the other one," which is <span class="font-mono">x</span>; same for the second slot. Add them:
         </p>
         <div class="bg-white border border-mt-border rounded-xl p-5 mb-4 font-mono text-sm text-center">
-            dy/dx = (x) + (x) = 2x &nbsp;&nbsp;<span class="font-sans text-mt-muted">&mdash; exactly the rule for x&sup2;, recovered by adding the two paths</span>
+            dy/dx = (x) + (x) = 2x &nbsp;&nbsp;<span class="font-sans text-mt-muted">, exactly the rule for x&sup2;, recovered by adding the two paths</span>
         </div>
         <InsightBox>
             <p class="text-sm"><strong>This is the rule behind gradient accumulation.</strong> In the computation
             graph, whenever a value is used in more than one place, the gradients flowing back from each use must be
             <em>added together</em>, not overwritten. Forgetting to add is the single most common bug when you write
-            an autograd engine. We give it a full lesson in Unit 2 — but the reason is right here: multiple paths sum.</p>
+            an autograd engine. We give it a full lesson in Unit 2, but the reason is right here: multiple paths sum.</p>
         </InsightBox>
     </section>
 

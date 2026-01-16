@@ -27,26 +27,26 @@ import LineFitDemo from '../../components/demos/LineFitDemo.astro';
         <p class="text-mt-muted leading-relaxed mb-4">
             That's the whole of "learning" in this course. The machine is a <strong>function</strong>. The knobs are
             its <strong>parameters</strong> (also called weights). "Learning" is just searching for knob settings that
-            make the function fit your examples. Nothing is being understood or memorized — numbers are being tuned.
+            make the function fit your examples. Nothing is being understood or memorized; numbers are being tuned.
         </p>
         <InsightBox>
             <p class="text-sm"><strong>Function:</strong> a rule that takes an input and produces an output.
             <strong>Parameters:</strong> the adjustable numbers inside that rule. A child learning to throw a ball is
-            adjusting parameters too — every miss tells the arm which way to correct next time.</p>
+            adjusting parameters too, every miss tells the arm which way to correct next time.</p>
         </InsightBox>
     </section>
 
     <section class="mb-14">
         <h2 class="text-xl font-bold mb-4">Measuring "wrong" with a single number.</h2>
         <p class="text-mt-muted leading-relaxed mb-4">
-            To turn the knobs sensibly, you need to know how wrong you currently are — as one number. That number is
+            To turn the knobs sensibly, you need to know how wrong you currently are, as one number. That number is
             the <strong>loss</strong>. High loss means bad predictions; low loss means good ones. Learning is the hunt
             for knob settings that make the loss small.
         </p>
         <p class="text-mt-muted leading-relaxed mb-4">
             A simple loss: take each example, find the gap between your prediction and the true answer, square it so
             misses in either direction count as bad, and average over all examples. One example off by 2 contributes
-            4; off by 0 contributes nothing. Average them — that's your score for the current knob settings.
+            4; off by 0 contributes nothing. Average them, that's your score for the current knob settings.
         </p>
     </section>
 
@@ -64,7 +64,7 @@ import LineFitDemo from '../../components/demos/LineFitDemo.astro';
         <p class="text-mt-muted leading-relaxed mb-4">
             Dragging the line's two ends is the same as choosing the two knobs: the slope
             <span class="font-mono">w</span> and the height <span class="font-mono">b</span>.
-            Pick <span class="font-mono">w = 0, b = 0</span> and the line is flat on the floor — terrible fit, high
+            Pick <span class="font-mono">w = 0, b = 0</span> and the line is flat on the floor, terrible fit, high
             loss. Nudge <span class="font-mono">w</span> up and the line tilts to follow the points; the loss drops.
             Overshoot and it climbs again. If you plotted the loss against <span class="font-mono">w</span>, you'd see
             a <strong>valley</strong>: learning is walking downhill to the bottom of that valley.
@@ -72,7 +72,7 @@ import LineFitDemo from '../../components/demos/LineFitDemo.astro';
         <InsightBox>
             <p class="text-sm">This reframes the scary phrase "the AI learns" into something plain:
             <strong>learning is minimizing a function</strong> (the loss) by adjusting its inputs (the parameters).
-            The entire rest of this course is about doing that walk-downhill <em>efficiently</em> — which is exactly
+            The entire rest of this course is about doing that walk-downhill <em>efficiently</em>, which is exactly
             what gradients are for.</p>
         </InsightBox>
     </section>

@@ -40,7 +40,7 @@ const at = (id: string) => nodes.find((n) => n.id === id)!;
         <button data-run class="px-4 py-2 rounded-lg bg-mt-blue text-white text-sm font-semibold hover:opacity-90 transition">Run backward</button>
         <button data-reset class="px-4 py-2 rounded-lg bg-stone-100 text-mt-muted text-sm hover:bg-stone-200 transition">Reset</button>
     </div>
-    <p class="text-center text-xs text-mt-muted mt-3" data-caption>each node hands its inputs (their local gradient) &times; (the gradient that arrived) &mdash; multiply along, add across</p>
+    <p class="text-center text-xs text-mt-muted mt-3" data-caption>each node hands its inputs (their local gradient) &times; (the gradient that arrived), multiply along, add across</p>
 </div>
 
 <script>

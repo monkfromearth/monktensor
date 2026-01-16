@@ -1,7 +1,7 @@
 ---
 /**
  * Interactive: drag a straight line over the two moons; misclassified points light up
- * red. No straight line separates interleaving moons — motivating a curved boundary
+ * red. No straight line separates interleaving moons, motivating a curved boundary
  * (a hidden layer). (Lesson 4.1.)
  */
 const W = 340, H = 240, pad = 30;
@@ -20,7 +20,7 @@ const yL0 = 0.25, yR0 = 0.25;
      data-dxmin={dxmin} data-dxmax={dxmax} data-dymin={dymin} data-dymax={dymax}
      data-pts={JSON.stringify(pts)}>
     <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-1 text-center">Drag the line to split the two moons</p>
-    <p class="text-center text-xs text-mt-muted mb-3">coral is one class, blue the other &mdash; points on the wrong side flash red</p>
+    <p class="text-center text-xs text-mt-muted mb-3">coral is one class, blue the other, points on the wrong side flash red</p>
 
     <svg viewBox={`0 0 ${W} ${H}`} class="w-full max-w-md mx-auto block" role="img" aria-label="two interleaving moons of points with a draggable straight line">
         <line data-line x1={sx(dxmin)} y1={sy(yL0)} x2={sx(dxmax)} y2={sy(yR0)} stroke="#322E45" stroke-width="2.5" stroke-linecap="round" />
@@ -35,7 +35,7 @@ const yL0 = 0.25, yR0 = 0.25;
     </svg>
 
     <p class="text-center text-sm mt-2"><span class="font-mono text-mt-accent font-semibold" data-wrong>0</span> <span class="text-mt-muted">points on the wrong side</span></p>
-    <p class="text-center text-xs text-mt-muted mt-2" data-verdict>try every angle &mdash; a straight line always leaves some wrong. The moons interleave, so the boundary has to <strong>curve</strong> (that's what a hidden layer buys you).</p>
+    <p class="text-center text-xs text-mt-muted mt-2" data-verdict>try every angle, a straight line always leaves some wrong. The moons interleave, so the boundary has to <strong>curve</strong> (that's what a hidden layer buys you).</p>
 </div>
 
 <script>

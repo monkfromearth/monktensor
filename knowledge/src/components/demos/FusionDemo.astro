@@ -7,7 +7,7 @@ const ops = ['+', '×', 'relu', '+', '×'];
 ---
 
 <div class="mt-demo mt-fusion-demo my-6 bg-white border border-mt-border rounded-2xl p-6">
-    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-4 text-center">Five operations &mdash; five trips to memory, or one</p>
+    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-4 text-center">Five operations, five trips to memory, or one</p>
 
     <div data-eager class="flex items-center justify-center gap-2 flex-wrap" style="min-height:80px">
         {ops.map((op, i) => (
@@ -26,7 +26,7 @@ const ops = ['+', '×', 'relu', '+', '×'];
         <button data-unfuse class="px-4 py-2 rounded-lg bg-stone-100 text-mt-muted text-sm hover:bg-stone-200 transition">Unfuse</button>
         <span class="font-mono text-xs px-3 py-1 rounded-lg bg-stone-100 text-mt-muted">memory trips: <span data-trips>5</span></span>
     </div>
-    <p class="text-center text-xs text-mt-muted mt-3">eager runs each op separately; a lazy graph lets the compiler fuse them into one pass &mdash; far fewer trips to memory</p>
+    <p class="text-center text-xs text-mt-muted mt-3">eager runs each op separately; a lazy graph lets the compiler fuse them into one pass, far fewer trips to memory</p>
 </div>
 
 <script>

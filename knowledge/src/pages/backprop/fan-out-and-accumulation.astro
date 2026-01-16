@@ -18,7 +18,7 @@ import AccumulateDemo from '../../components/demos/AccumulateDemo.astro';
     <section class="mb-14">
         <h2 class="text-xl font-bold mb-4">One value, many uses.</h2>
         <p class="text-mt-muted leading-relaxed mb-4">
-            So far each value fed exactly one operation. But values get reused all the time — the same weight feeds many
+            So far each value fed exactly one operation. But values get reused all the time, the same weight feeds many
             neurons, the same activation feeds several downstream ops. When a value <strong>fans out</strong> to several
             places, each place sends a gradient back to it during the backward pass.
         </p>
@@ -34,14 +34,13 @@ import AccumulateDemo from '../../components/demos/AccumulateDemo.astro';
         <p class="text-mt-muted leading-relaxed mb-4">
             Take <span class="font-mono">y = x &times; x</span>. The same <span class="font-mono">x</span> goes into both
             slots of the multiply. During backward, each slot sends a gradient of <span class="font-mono">x</span> back
-            (the multiply rule: each input gets the other). Add them: <span class="font-mono">x.grad = x + x = 2x</span> —
-            exactly the derivative of <span class="font-mono">x&sup2;</span>. Run it:
+            (the multiply rule: each input gets the other). Add them: <span class="font-mono">x.grad = x + x = 2x</span>, exactly the derivative of <span class="font-mono">x&sup2;</span>. Run it:
         </p>
 
         <AccumulateDemo />
 
         <p class="text-mt-muted leading-relaxed mt-4">
-            If you had <em>overwritten</em> instead of added — second gradient replacing the first — you'd get
+            If you had <em>overwritten</em> instead of added, second gradient replacing the first, you'd get
             <span class="font-mono">x</span>, which is wrong. The two paths must accumulate.
         </p>
     </section>
@@ -60,7 +59,7 @@ import AccumulateDemo from '../../components/demos/AccumulateDemo.astro';
     <section class="mb-14">
         <h2 class="text-xl font-bold mb-4">Why this is correct, not a hack.</h2>
         <p class="text-mt-muted leading-relaxed mb-4">
-            It isn't a fudge to make numbers work — it's the multivariable chain rule. If <span class="font-mono">x</span>
+            It isn't a fudge to make numbers work, it's the multivariable chain rule. If <span class="font-mono">x</span>
             reaches the output along two independent routes, nudging <span class="font-mono">x</span> moves the output
             once through each route, and the total movement is the sum. Adding the gradients is just bookkeeping that
             total honestly.
@@ -70,7 +69,7 @@ import AccumulateDemo from '../../components/demos/AccumulateDemo.astro';
     <section class="mb-14">
         <h2 class="text-xl font-bold mb-4">Key takeaways</h2>
         <div class="space-y-3">
-            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">1</span></div><p class="text-sm">When a value feeds multiple operations, gradient flows back from each — and you add them.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">1</span></div><p class="text-sm">When a value feeds multiple operations, gradient flows back from each, and you add them.</p></div>
             <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">2</span></div><p class="text-sm">Start gradients at 0 and accumulate with +=, never overwrite. This is the classic autograd bug.</p></div>
             <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">3</span></div><p class="text-sm">It's the multivariable chain rule: multiple paths to the output mean the gradients sum.</p></div>
         </div>

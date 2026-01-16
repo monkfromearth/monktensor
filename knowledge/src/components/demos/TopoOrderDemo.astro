@@ -16,7 +16,7 @@ const edges: [K, K][] = [['a', 'd'], ['b', 'd'], ['d', 'e'], ['c', 'e']];
 
 <div class="mt-demo mt-topo-demo my-6 bg-white border border-mt-border rounded-2xl p-6">
     <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-1 text-center">Backward needs the right order</p>
-    <p class="text-center text-xs text-mt-muted mb-3">a node is only done once everything that uses it has reported &mdash; socks before shoes</p>
+    <p class="text-center text-xs text-mt-muted mb-3">a node is only done once everything that uses it has reported, socks before shoes</p>
 
     <svg viewBox="0 0 360 215" class="w-full max-w-md mx-auto block" role="img" aria-label="graph showing valid backward processing order">
         {edges.map(([s, t]) => <line x1={N[s].cx} y1={N[s].cy} x2={N[t].cx} y2={N[t].cy} stroke="#E8E4DF" stroke-width="2" />)}
@@ -47,7 +47,7 @@ const edges: [K, K][] = [['a', 'd'], ['b', 'd'], ['d', 'e'], ['c', 'e']];
         const reset = () => { all.forEach((k) => { gsap.set(ring(k), { stroke: '#E8E4DF' }); gsap.set(mark(k), { opacity: 0 }); mark(k).textContent = ''; }); };
 
         function valid() {
-            reset(); cap.textContent = 'output first, then its inputs — each node done only after its users';
+            reset(); cap.textContent = 'output first, then its inputs, each node done only after its users';
             const order = ['e', 'd', 'c', 'b', 'a'];
             const tl = gsap.timeline();
             order.forEach((k) => {
@@ -58,7 +58,7 @@ const edges: [K, K][] = [['a', 'd'], ['b', 'd'], ['d', 'e'], ['c', 'e']];
             });
         }
         function wrong() {
-            reset(); cap.textContent = "processing d first is too early — its user e hasn't reported, so d's gradient is incomplete";
+            reset(); cap.textContent = "processing d first is too early, its user e hasn't reported, so d's gradient is incomplete";
             // try d before e
             const tl = gsap.timeline();
             tl.add(() => { mark('d').textContent = '✕'; mark('d').setAttribute('fill', '#E5484D'); })

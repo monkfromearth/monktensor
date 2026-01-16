@@ -16,18 +16,18 @@ const cost = Array.from({ length: 8 }); // 8 "parameters" for the cost race
             <span data-check class="text-mt-green font-bold opacity-0">= ✓</span>
             <span class="px-3 py-1 rounded-lg bg-mt-lavLight text-mt-lav">nudge: <span data-fd>0.00</span></span>
         </div>
-        <p class="text-center text-[11px] text-mt-muted mt-2">the nudge (finite difference) converges on the exact answer &mdash; that's how you trust the engine</p>
+        <p class="text-center text-[11px] text-mt-muted mt-2">the nudge (finite difference) converges on the exact answer, that's how you trust the engine</p>
     </div>
 
     <!-- cost race -->
     <div class="grid grid-cols-2 gap-4 text-xs">
         <div>
-            <p class="font-semibold text-mt-accent mb-2">backprop &mdash; 1 pass</p>
+            <p class="font-semibold text-mt-accent mb-2">backprop, 1 pass</p>
             <div class="flex gap-1"><span data-bpbox class="w-5 h-5 rounded bg-stone-100"></span></div>
             <p class="text-mt-muted mt-1" data-bptime>&nbsp;</p>
         </div>
         <div>
-            <p class="font-semibold text-mt-lav mb-2">nudging &mdash; 1 pass per parameter</p>
+            <p class="font-semibold text-mt-lav mb-2">nudging, 1 pass per parameter</p>
             <div class="flex gap-1 flex-wrap">{cost.map(() => <span data-fdbox class="w-5 h-5 rounded bg-stone-100"></span>)}</div>
             <p class="text-mt-muted mt-1" data-fdtime>&nbsp;</p>
         </div>

@@ -7,7 +7,7 @@ const grid = Array.from({ length: 36 });
 ---
 
 <div class="mt-demo mt-tensor-demo my-6 bg-white border border-mt-border rounded-2xl p-6">
-    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-3 text-center">One operation &mdash; on one number, or on many at once</p>
+    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-3 text-center">One operation, on one number, or on many at once</p>
 
     <div class="flex items-center justify-center gap-2 mb-5">
         <div class="inline-flex rounded-lg border border-mt-border overflow-hidden text-sm">
@@ -34,7 +34,7 @@ const grid = Array.from({ length: 36 });
         <button data-apply class="px-4 py-2 rounded-lg bg-mt-lav text-white text-sm font-semibold hover:opacity-90 transition">Apply tanh</button>
         <span class="font-mono text-xs px-3 py-1 rounded-lg bg-stone-100 text-mt-muted">values per op: <span data-count>1</span></span>
     </div>
-    <p class="text-center text-xs text-mt-muted mt-3">a tensor runs the same operation across a whole array in one go &mdash; that's what makes a framework fast</p>
+    <p class="text-center text-xs text-mt-muted mt-3">a tensor runs the same operation across a whole array in one go, that's what makes a framework fast</p>
 </div>
 
 <script>
@@ -64,7 +64,7 @@ const grid = Array.from({ length: 36 });
             if (mode === 'scalar') {
                 gsap.fromTo(cell, { backgroundColor: '#F0F0FB' }, { backgroundColor: '#C2A4CD', duration: REDUCED ? 0 : 0.3, yoyo: true, repeat: 1 });
             } else {
-                // all cells light up together — one operation, many values
+                // all cells light up together, one operation, many values
                 gsap.fromTo(tcells, { backgroundColor: '#F0F0FB' }, { backgroundColor: '#C2A4CD', duration: REDUCED ? 0 : 0.35, yoyo: true, repeat: 1, stagger: REDUCED ? 0 : { each: 0.004, from: 'center' } });
             }
         }

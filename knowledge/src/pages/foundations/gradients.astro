@@ -20,7 +20,7 @@ import GradientLandscapeDemo from '../../components/demos/GradientLandscapeDemo.
         <h2 class="text-xl font-bold mb-4">The hill, now in many directions.</h2>
         <p class="text-mt-muted leading-relaxed mb-4">
             Back on the foggy hill, but now you can step in any direction, not just east-west. The steepness depends on
-            which way you face. So a single slope isn't enough — you need a slope <em>per direction</em>. Collect the
+            which way you face. So a single slope isn't enough, you need a slope <em>per direction</em>. Collect the
             slope along each axis and you get an arrow that points straight uphill, as steep as the hill gets. That
             arrow is the <strong>gradient</strong>.
         </p>
@@ -43,7 +43,7 @@ import GradientLandscapeDemo from '../../components/demos/GradientLandscapeDemo.
             &nabla;L = ( &part;L/&part;w&#8321;, &nbsp; &part;L/&part;w&#8322;, &nbsp; &hellip;, &nbsp; &part;L/&part;w&#8345; )
         </Formula>
         <p class="text-mt-muted leading-relaxed mb-4">
-            Each entry is just an ordinary derivative — the thing from lesson 0.3 — taken with respect to one
+            Each entry is just an ordinary derivative, the thing from lesson 0.3, taken with respect to one
             parameter. Nothing new, only bookkeeping: many derivatives kept in a list.
         </p>
     </section>
@@ -51,7 +51,7 @@ import GradientLandscapeDemo from '../../components/demos/GradientLandscapeDemo.
     <section class="mb-14">
         <h2 class="text-xl font-bold mb-4">Uphill, so walk downhill.</h2>
         <p class="text-mt-muted leading-relaxed mb-4">
-            The gradient points toward <em>increasing</em> loss — the steepest way up. We want loss to go
+            The gradient points toward <em>increasing</em> loss, the steepest way up. We want loss to go
             <em>down</em>. So learning takes a small step in the <strong>opposite</strong> direction of the gradient.
             That single rule is gradient descent, which gets its own lesson in Unit 4:
         </p>
@@ -63,7 +63,7 @@ import GradientLandscapeDemo from '../../components/demos/GradientLandscapeDemo.
     <section class="mb-14">
         <h2 class="text-xl font-bold mb-4">A worked example with two knobs.</h2>
         <p class="text-mt-muted leading-relaxed mb-4">
-            Let the loss be <span class="font-mono">L(a, b) = a&sup2; + b&sup2;</span> — a bowl with its lowest point at
+            Let the loss be <span class="font-mono">L(a, b) = a&sup2; + b&sup2;</span>, a bowl with its lowest point at
             the origin. The partials: wiggling <span class="font-mono">a</span> changes
             <span class="font-mono">a&sup2;</span> at rate <span class="font-mono">2a</span> (the
             <span class="font-mono">b&sup2;</span> term is frozen, contributes 0), and likewise for
@@ -75,14 +75,14 @@ import GradientLandscapeDemo from '../../components/demos/GradientLandscapeDemo.
 
         <GradientLandscapeDemo />
         <p class="text-mt-muted leading-relaxed mb-4">
-            That arrow (6, 8) points away from the origin — uphill, out of the bowl. Step the other way and both
+            That arrow (6, 8) points away from the origin, uphill, out of the bowl. Step the other way and both
             <span class="font-mono">a</span> and <span class="font-mono">b</span> shrink toward 0, the bottom of the
             bowl, the smallest loss. Repeat the step and you slide to the minimum. That slide <em>is</em> training.
         </p>
         <InsightBox>
             <p class="text-sm">A network with a million parameters has a million-entry gradient. Computing it one knob
             at a time with finite differences would be hopeless. The whole reason backpropagation exists is to compute
-            this entire vector in one efficient sweep — the punchline of Unit 2.</p>
+            this entire vector in one efficient sweep, the punchline of Unit 2.</p>
         </InsightBox>
     </section>
 
@@ -90,7 +90,7 @@ import GradientLandscapeDemo from '../../components/demos/GradientLandscapeDemo.
         <h2 class="text-xl font-bold mb-4">Key takeaways</h2>
         <div class="space-y-3">
             <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">1</span></div><p class="text-sm">A gradient is just a list of derivatives, one per parameter (each a partial derivative: nudge one knob, freeze the rest).</p></div>
-            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">2</span></div><p class="text-sm">It points uphill (toward higher loss), so learning steps in the opposite direction — downhill.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">2</span></div><p class="text-sm">It points uphill (toward higher loss), so learning steps in the opposite direction, downhill.</p></div>
             <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">3</span></div><p class="text-sm">Backprop's job is to produce this whole vector cheaply, no matter how many parameters there are.</p></div>
         </div>
     </section>

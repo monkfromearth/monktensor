@@ -19,7 +19,7 @@ import TaskMoonsDemo from '../../components/demos/TaskMoonsDemo.astro';
         <h2 class="text-xl font-bold mb-4">Two moons.</h2>
         <p class="text-mt-muted leading-relaxed mb-4">
             The task is <strong>classification</strong>: given a point, predict which group it belongs to. The dataset
-            is <span class="font-mono">make_moons</span> — points scattered in two interleaving crescent shapes, one
+            is <span class="font-mono">make_moons</span>, points scattered in two interleaving crescent shapes, one
             class each. Given a point's two coordinates, the network must answer "moon A or moon B?"
         </p>
         <div class="bg-white border border-mt-border rounded-xl p-6 mb-4">
@@ -41,7 +41,7 @@ import TaskMoonsDemo from '../../components/demos/TaskMoonsDemo.astro';
     <section class="mb-14">
         <h2 class="text-xl font-bold mb-4">The decision boundary.</h2>
         <p class="text-mt-muted leading-relaxed mb-4">
-            A trained classifier effectively draws a <strong>decision boundary</strong> — a line or curve where it
+            A trained classifier effectively draws a <strong>decision boundary</strong>, a line or curve where it
             switches its answer from one class to the other. For two straight-separable blobs, a straight line would do.
             But the moons interleave, so no straight line can split them. The boundary has to <em>curve</em> between the
             crescents. That's why this task needs a network with a nonlinearity and a hidden layer, not a single neuron.
@@ -57,10 +57,10 @@ import TaskMoonsDemo from '../../components/demos/TaskMoonsDemo.astro';
     </section>
 
     <section class="mb-14">
-        <h2 class="text-xl font-bold mb-4">Don't just memorize — generalize.</h2>
+        <h2 class="text-xl font-bold mb-4">Don't just memorize, generalize.</h2>
         <p class="text-mt-muted leading-relaxed mb-4">
             You hold out some labeled points the network never trains on (a <strong>validation</strong> set). Doing well
-            on training points is easy — a model can memorize. The real test is the held-out points: a boundary that
+            on training points is easy, a model can memorize. The real test is the held-out points: a boundary that
             also classifies those correctly has learned the <em>shape</em>, not the specific dots. This is the
             "generalization, not memorization" idea from lesson 0.2, made concrete.
         </p>
@@ -70,7 +70,7 @@ import TaskMoonsDemo from '../../components/demos/TaskMoonsDemo.astro';
         <h2 class="text-xl font-bold mb-4">Key takeaways</h2>
         <div class="space-y-3">
             <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">1</span></div><p class="text-sm">The task is classification: features (the coordinates) in, a label (which class) out.</p></div>
-            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">2</span></div><p class="text-sm">A classifier draws a decision boundary; the moons interleave, so it must curve — needing depth and nonlinearity.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">2</span></div><p class="text-sm">A classifier draws a decision boundary; the moons interleave, so it must curve, needing depth and nonlinearity.</p></div>
             <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">3</span></div><p class="text-sm">Hold out a validation set to check the model generalizes instead of memorizing.</p></div>
         </div>
     </section>

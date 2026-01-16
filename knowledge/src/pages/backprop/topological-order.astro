@@ -20,7 +20,7 @@ import TopoOrderDemo from '../../components/demos/TopoOrderDemo.astro';
         <p class="text-mt-muted leading-relaxed mb-4">
             Some steps have to happen before others. You can't put shoes on before socks. Backprop has the same
             constraint: you can't finalize a node's gradient until <strong>every node that uses it</strong> has already
-            sent its contribution (remember, fan-out means gradients add up — lesson 2.2). Compute a node too early and
+            sent its contribution (remember, fan-out means gradients add up, lesson 2.2). Compute a node too early and
             its gradient is incomplete when you use it to push further back.
         </p>
     </section>

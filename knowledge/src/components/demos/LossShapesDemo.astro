@@ -1,7 +1,7 @@
 ---
 /**
  * Drag the prediction; the true answer is fixed at +1. Each loss penalizes being wrong
- * with a different shape — squared, a hinge, a log. (Lesson 4.2.)
+ * with a different shape, squared, a hinge, a log. (Lesson 4.2.)
  */
 const W = 140, H = 130, pad = 18;
 const pmin = -3, pmax = 3;
@@ -24,7 +24,7 @@ const startP = -1;
 
 <div class="mt-demo mt-loss-demo my-6 bg-white border border-mt-border rounded-2xl p-6"
      data-w={W} data-h={H} data-pad={pad} data-pmin={pmin} data-pmax={pmax}>
-    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-1 text-center">Drag the prediction &mdash; truth is fixed at <span class="font-mono">+1</span></p>
+    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-1 text-center">Drag the prediction, truth is fixed at <span class="font-mono">+1</span></p>
     <p class="text-center text-xs text-mt-muted mb-4">each loss says "how wrong" with a different shape; all hit zero at the right answer</p>
 
     <div class="grid grid-cols-3 gap-3">
@@ -40,7 +40,7 @@ const startP = -1;
             </div>
         ))}
     </div>
-    <p class="text-center text-xs text-mt-muted mt-3">the green dashed line is the right answer &mdash; drag a dot toward it and every penalty falls to 0</p>
+    <p class="text-center text-xs text-mt-muted mt-3">the green dashed line is the right answer, drag a dot toward it and every penalty falls to 0</p>
 </div>
 
 <script>

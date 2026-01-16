@@ -9,8 +9,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>monktensor — Build a Deep Learning Framework From Scratch</title>
-    <meta name="description" content="A from-scratch course on how deep learning actually works: automatic differentiation, backpropagation, and training a neural network — every idea built up from first principles.">
+    <title>monktensor, Build a Deep Learning Framework From Scratch</title>
+    <meta name="description" content="A from-scratch course on how deep learning actually works: automatic differentiation, backpropagation, and training a neural network, every idea built up from first principles.">
     <link rel="icon" type="image/svg+xml" href={base + "/logo.svg"} />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,7 +41,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
         <section class="mb-14">
             <h2 class="text-3xl font-extrabold tracking-tight mb-3">Build a deep learning framework from scratch.</h2>
             <p class="text-mt-muted text-lg max-w-2xl leading-relaxed">
-                You'll build the engine that powers PyTorch and TensorFlow — automatic differentiation — and
+                You'll build the engine that powers PyTorch and TensorFlow, automatic differentiation, and
                 train a neural network with it. This course teaches the ideas, not the implementation: by the
                 end you'll understand every part well enough to write the framework yourself.
             </p>
@@ -97,14 +97,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
             <div class="mb-10">
                 <div class="flex items-center gap-2 mb-4">
                     <span class="tag text-mt-accent bg-mt-accentLight px-2 py-0.5 rounded-full">Foundations</span>
-                    <span class="text-mt-muted text-sm">The ideas under everything — before you build</span>
+                    <span class="text-mt-muted text-sm">The ideas under everything, before you build</span>
                 </div>
 
                 <div class="unit-card bg-white rounded-2xl border border-mt-border overflow-hidden">
                     <div class="p-6 border-b border-mt-border bg-gradient-to-r from-mt-accentLight to-white">
                         <div class="flex items-start justify-between">
                             <div>
-                                <h3 class="font-bold text-xl">Unit 0 — Foundations</h3>
+                                <h3 class="font-bold text-xl">Unit 0, Foundations</h3>
                                 <p class="text-mt-muted mt-1">What a framework is, what "learning" means, and the calculus backprop is built on.</p>
                             </div>
                             <span class="tag text-mt-accent bg-white px-2 py-0.5 rounded-full border border-mt-accent/20">5 lessons</span>
@@ -144,7 +144,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
             <div class="mb-10">
                 <div class="flex items-center gap-2 mb-4"><span class="tag text-mt-lav bg-mt-lavLight px-2 py-0.5 rounded-full">Unit 1</span><span class="text-mt-muted text-sm">Representing computation</span></div>
                 <div class="unit-card bg-white rounded-2xl border border-mt-border overflow-hidden">
-                    <div class="p-6 border-b border-mt-border bg-gradient-to-r from-mt-lavLight to-white"><div class="flex items-start justify-between"><div><h3 class="font-bold text-xl">Unit 1 — The Computation Graph</h3><p class="text-mt-muted mt-1">Values as nodes, operations as edges, and the forward pass that fills it in.</p></div><span class="tag text-mt-lav bg-white px-2 py-0.5 rounded-full border border-mt-lav/20">4 lessons</span></div></div>
+                    <div class="p-6 border-b border-mt-border bg-gradient-to-r from-mt-lavLight to-white"><div class="flex items-start justify-between"><div><h3 class="font-bold text-xl">Unit 1, The Computation Graph</h3><p class="text-mt-muted mt-1">Values as nodes, operations as edges, and the forward pass that fills it in.</p></div><span class="tag text-mt-lav bg-white px-2 py-0.5 rounded-full border border-mt-lav/20">4 lessons</span></div></div>
                     <div class="divide-y divide-mt-border">
                         <a href={base + "/graph/computation-as-a-graph"} class="lesson-item flex items-center gap-4 px-6 py-4"><div class="w-8 h-8 rounded-full bg-mt-lavLight flex items-center justify-center flex-shrink-0"><span class="text-mt-lav font-semibold text-sm">1.1</span></div><div class="flex-1"><h4 class="font-semibold text-sm">Computation as a Graph</h4><p class="text-mt-muted text-xs mt-0.5">Nodes, edges, leaves; the graph as the framework's memory.</p></div><TagBadge variant="concepts">concepts</TagBadge></a>
                         <a href={base + "/graph/the-forward-pass"} class="lesson-item flex items-center gap-4 px-6 py-4"><div class="w-8 h-8 rounded-full bg-mt-lavLight flex items-center justify-center flex-shrink-0"><span class="text-mt-lav font-semibold text-sm">1.2</span></div><div class="flex-1"><h4 class="font-semibold text-sm">The Forward Pass</h4><p class="text-mt-muted text-xs mt-0.5">Compute the output and leave a trail. Interactive.</p></div><TagBadge variant="concepts">concepts</TagBadge></a>
@@ -158,7 +158,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
             <div class="mb-10">
                 <div class="flex items-center gap-2 mb-4"><span class="tag text-mt-blue bg-mt-blueLight px-2 py-0.5 rounded-full">Unit 2</span><span class="text-mt-muted text-sm">The engine</span></div>
                 <div class="unit-card bg-white rounded-2xl border border-mt-border overflow-hidden">
-                    <div class="p-6 border-b border-mt-border bg-gradient-to-r from-mt-blueLight to-white"><div class="flex items-start justify-between"><div><h3 class="font-bold text-xl">Unit 2 — Backpropagation</h3><p class="text-mt-muted mt-1">Walk the graph backward, accumulate, and prove it correct.</p></div><span class="tag text-mt-blue bg-white px-2 py-0.5 rounded-full border border-mt-blue/20">4 lessons</span></div></div>
+                    <div class="p-6 border-b border-mt-border bg-gradient-to-r from-mt-blueLight to-white"><div class="flex items-start justify-between"><div><h3 class="font-bold text-xl">Unit 2, Backpropagation</h3><p class="text-mt-muted mt-1">Walk the graph backward, accumulate, and prove it correct.</p></div><span class="tag text-mt-blue bg-white px-2 py-0.5 rounded-full border border-mt-blue/20">4 lessons</span></div></div>
                     <div class="divide-y divide-mt-border">
                         <a href={base + "/backprop/the-backward-pass"} class="lesson-item flex items-center gap-4 px-6 py-4"><div class="w-8 h-8 rounded-full bg-mt-blueLight flex items-center justify-center flex-shrink-0"><span class="text-mt-blue font-semibold text-sm">2.1</span></div><div class="flex-1"><h4 class="font-semibold text-sm">The Backward Pass</h4><p class="text-mt-muted text-xs mt-0.5">Seed 1, walk in reverse, push local gradients.</p></div><TagBadge variant="math">math</TagBadge></a>
                         <a href={base + "/backprop/fan-out-and-accumulation"} class="lesson-item flex items-center gap-4 px-6 py-4"><div class="w-8 h-8 rounded-full bg-mt-blueLight flex items-center justify-center flex-shrink-0"><span class="text-mt-blue font-semibold text-sm">2.2</span></div><div class="flex-1"><h4 class="font-semibold text-sm">Fan-out & Accumulation</h4><p class="text-mt-muted text-xs mt-0.5">When a value is used twice, gradients add. Interactive.</p></div><TagBadge variant="math">math</TagBadge></a>
@@ -172,7 +172,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
             <div class="mb-10">
                 <div class="flex items-center gap-2 mb-4"><span class="tag text-mt-rose bg-mt-roseLight px-2 py-0.5 rounded-full">Unit 3</span><span class="text-mt-muted text-sm">Building a model</span></div>
                 <div class="unit-card bg-white rounded-2xl border border-mt-border overflow-hidden">
-                    <div class="p-6 border-b border-mt-border bg-gradient-to-r from-mt-roseLight to-white"><div class="flex items-start justify-between"><div><h3 class="font-bold text-xl">Unit 3 — Neural Networks</h3><p class="text-mt-muted mt-1">Neurons into layers into an MLP, all on top of the engine.</p></div><span class="tag text-mt-rose bg-white px-2 py-0.5 rounded-full border border-mt-rose/20">3 lessons</span></div></div>
+                    <div class="p-6 border-b border-mt-border bg-gradient-to-r from-mt-roseLight to-white"><div class="flex items-start justify-between"><div><h3 class="font-bold text-xl">Unit 3, Neural Networks</h3><p class="text-mt-muted mt-1">Neurons into layers into an MLP, all on top of the engine.</p></div><span class="tag text-mt-rose bg-white px-2 py-0.5 rounded-full border border-mt-rose/20">3 lessons</span></div></div>
                     <div class="divide-y divide-mt-border">
                         <a href={base + "/networks/the-neuron"} class="lesson-item flex items-center gap-4 px-6 py-4"><div class="w-8 h-8 rounded-full bg-mt-roseLight flex items-center justify-center flex-shrink-0"><span class="text-mt-rose font-semibold text-sm">3.1</span></div><div class="flex-1"><h4 class="font-semibold text-sm">The Neuron</h4><p class="text-mt-muted text-xs mt-0.5">A weighted vote through a squasher.</p></div><TagBadge variant="concepts">concepts</TagBadge></a>
                         <a href={base + "/networks/layers-and-the-mlp"} class="lesson-item flex items-center gap-4 px-6 py-4"><div class="w-8 h-8 rounded-full bg-mt-roseLight flex items-center justify-center flex-shrink-0"><span class="text-mt-rose font-semibold text-sm">3.2</span></div><div class="flex-1"><h4 class="font-semibold text-sm">Layers and the MLP</h4><p class="text-mt-muted text-xs mt-0.5">Stack neurons; why depth needs nonlinearity.</p></div><TagBadge variant="concepts">concepts</TagBadge></a>
@@ -185,7 +185,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
             <div class="mb-10">
                 <div class="flex items-center gap-2 mb-4"><span class="tag text-mt-green bg-mt-greenLight px-2 py-0.5 rounded-full">Unit 4</span><span class="text-mt-muted text-sm">Making it learn</span></div>
                 <div class="unit-card bg-white rounded-2xl border border-mt-border overflow-hidden">
-                    <div class="p-6 border-b border-mt-border bg-gradient-to-r from-mt-greenLight to-white"><div class="flex items-start justify-between"><div><h3 class="font-bold text-xl">Unit 4 — Training</h3><p class="text-mt-muted mt-1">The task, the loss, gradient descent, and the loop that ties it together.</p></div><span class="tag text-mt-green bg-white px-2 py-0.5 rounded-full border border-mt-green/20">5 lessons</span></div></div>
+                    <div class="p-6 border-b border-mt-border bg-gradient-to-r from-mt-greenLight to-white"><div class="flex items-start justify-between"><div><h3 class="font-bold text-xl">Unit 4, Training</h3><p class="text-mt-muted mt-1">The task, the loss, gradient descent, and the loop that ties it together.</p></div><span class="tag text-mt-green bg-white px-2 py-0.5 rounded-full border border-mt-green/20">5 lessons</span></div></div>
                     <div class="divide-y divide-mt-border">
                         <a href={base + "/training/the-task"} class="lesson-item flex items-center gap-4 px-6 py-4"><div class="w-8 h-8 rounded-full bg-mt-greenLight flex items-center justify-center flex-shrink-0"><span class="text-mt-green font-semibold text-sm">4.1</span></div><div class="flex-1"><h4 class="font-semibold text-sm">The Task & Data</h4><p class="text-mt-muted text-xs mt-0.5">Classification, the two moons, the decision boundary.</p></div><TagBadge variant="concepts">concepts</TagBadge></a>
                         <a href={base + "/training/loss-functions"} class="lesson-item flex items-center gap-4 px-6 py-4"><div class="w-8 h-8 rounded-full bg-mt-greenLight flex items-center justify-center flex-shrink-0"><span class="text-mt-green font-semibold text-sm">4.2</span></div><div class="flex-1"><h4 class="font-semibold text-sm">Loss Functions</h4><p class="text-mt-muted text-xs mt-0.5">MSE, hinge, cross-entropy: defining "good."</p></div><TagBadge variant="concepts">concepts</TagBadge></a>
@@ -200,7 +200,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
             <div class="mb-10">
                 <div class="flex items-center gap-2 mb-4"><span class="tag text-mt-accent bg-mt-accentLight px-2 py-0.5 rounded-full">Unit 5</span><span class="text-mt-muted text-sm">Where it goes next</span></div>
                 <div class="unit-card bg-white rounded-2xl border border-mt-border overflow-hidden">
-                    <div class="p-6 border-b border-mt-border bg-gradient-to-r from-mt-accentLight to-white"><div class="flex items-start justify-between"><div><h3 class="font-bold text-xl">Unit 5 — Beyond v1</h3><p class="text-mt-muted mt-1">From scalars to tensors, then to a fusing compiler.</p></div><span class="tag text-mt-accent bg-white px-2 py-0.5 rounded-full border border-mt-accent/20">2 lessons</span></div></div>
+                    <div class="p-6 border-b border-mt-border bg-gradient-to-r from-mt-accentLight to-white"><div class="flex items-start justify-between"><div><h3 class="font-bold text-xl">Unit 5, Beyond v1</h3><p class="text-mt-muted mt-1">From scalars to tensors, then to a fusing compiler.</p></div><span class="tag text-mt-accent bg-white px-2 py-0.5 rounded-full border border-mt-accent/20">2 lessons</span></div></div>
                     <div class="divide-y divide-mt-border">
                         <a href={base + "/beyond/scalars-to-tensors"} class="lesson-item flex items-center gap-4 px-6 py-4"><div class="w-8 h-8 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0"><span class="text-mt-accent font-semibold text-sm">5.1</span></div><div class="flex-1"><h4 class="font-semibold text-sm">Scalars to Tensors</h4><p class="text-mt-muted text-xs mt-0.5">Batching with arrays; same autograd, vectorized.</p></div><TagBadge variant="concepts">concepts</TagBadge></a>
                         <a href={base + "/beyond/lazy-eval-and-fusion"} class="lesson-item flex items-center gap-4 px-6 py-4"><div class="w-8 h-8 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0"><span class="text-mt-accent font-semibold text-sm">5.2</span></div><div class="flex-1"><h4 class="font-semibold text-sm">Lazy Evaluation & Fusion</h4><p class="text-mt-muted text-xs mt-0.5">Record the plan, fuse the kernels. The senior part.</p></div><TagBadge variant="concepts">concepts</TagBadge></a>
@@ -273,14 +273,14 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
                         </div>
                     </div>
                 </div>
-                <p class="text-mt-muted text-xs mt-4">This course teaches the concepts. You write the framework — that's where the understanding sticks.</p>
+                <p class="text-mt-muted text-xs mt-4">This course teaches the concepts. You write the framework, that's where the understanding sticks.</p>
             </div>
         </section>
 
     </main>
 
     <footer class="border-t border-mt-border py-8 text-center text-mt-muted text-sm">
-        <p>Part of <a href="https://github.com/monkfromearth/monktensor" class="text-mt-accent hover:underline">monktensor</a> — a deep learning framework built from scratch.</p>
+        <p>Part of <a href="https://github.com/monkfromearth/monktensor" class="text-mt-accent hover:underline">monktensor</a>, a deep learning framework built from scratch.</p>
     </footer>
 
 </body>

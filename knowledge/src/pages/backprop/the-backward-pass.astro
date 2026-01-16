@@ -26,7 +26,7 @@ import BackwardFlowDemo from '../../components/demos/BackwardFlowDemo.astro';
             It starts with a trivial fact: the output's effect on itself is 1 (wiggle the output by a sliver and it
             changes by exactly that sliver). So we <strong>seed the output's gradient at 1</strong>, then walk
             backward. At each node we take the gradient sitting on its output and use the node's local gradient rule to
-            push the right amount onto each input. That "push" is one multiply — the chain rule, one edge at a time.
+            push the right amount onto each input. That "push" is one multiply, the chain rule, one edge at a time.
         </p>
     </section>
 

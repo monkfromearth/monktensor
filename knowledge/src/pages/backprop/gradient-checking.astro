@@ -22,7 +22,7 @@ import GradCheckDemo from '../../components/demos/GradCheckDemo.astro';
         <h2 class="text-xl font-bold mb-4">Two ways to get a gradient.</h2>
         <p class="text-mt-muted leading-relaxed mb-4">
             You now have a fast, exact way to get gradients: backprop. But fast and exact code can still have bugs. So
-            you keep a second, dead-simple way around to check it — the finite difference from lesson 0.3. Nudge one
+            you keep a second, dead-simple way around to check it, the finite difference from lesson 0.3. Nudge one
             parameter a tiny bit, see how the loss moves, divide:
         </p>
         <Formula caption="The two-sided finite difference: a slightly more accurate nudge, used only to check.">
@@ -31,7 +31,7 @@ import GradCheckDemo from '../../components/demos/GradCheckDemo.astro';
         <p class="text-mt-muted leading-relaxed">
             Run both. If your backprop says a parameter's gradient is <span class="font-mono">-3</span> and the nudge
             says <span class="font-mono">-2.9998</span>, you're correct (the tiny gap is just <span class="font-mono">&epsilon;</span>
-            rounding). If they disagree by a lot, you have a bug — almost always a wrong local gradient or a missing
+            rounding). If they disagree by a lot, you have a bug, almost always a wrong local gradient or a missing
             accumulation.
         </p>
     </section>
@@ -63,7 +63,7 @@ import GradCheckDemo from '../../components/demos/GradCheckDemo.astro';
             </div>
         </div>
         <p class="text-mt-muted leading-relaxed">
-            That gap — <span class="font-mono">N</span> passes versus one — is the entire reason automatic
+            That gap, <span class="font-mono">N</span> passes versus one, is the entire reason automatic
             differentiation exists, and why training billion-parameter models is even thinkable. Finite differences are
             the honest, slow ruler you measure against; backprop is the thing you actually run.
         </p>
@@ -85,7 +85,7 @@ import GradCheckDemo from '../../components/demos/GradCheckDemo.astro';
         <h2 class="text-xl font-bold mb-4">Key takeaways</h2>
         <div class="space-y-3">
             <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">1</span></div><p class="text-sm">Gradient checking compares backprop against a finite-difference nudge; they must match within a small tolerance.</p></div>
-            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">2</span></div><p class="text-sm">It's the single most important test of your engine — write it early and trust it.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">2</span></div><p class="text-sm">It's the single most important test of your engine, write it early and trust it.</p></div>
             <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">3</span></div><p class="text-sm">We don't train with finite differences because they cost ~N forward passes; backprop gets all N gradients in one.</p></div>
         </div>
     </section>

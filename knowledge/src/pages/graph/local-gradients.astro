@@ -20,7 +20,7 @@ import LocalGradientDemo from '../../components/demos/LocalGradientDemo.astro';
         <p class="text-mt-muted leading-relaxed mb-4">
             A <strong>local gradient</strong> is an operation's answer to the nudge question about <em>only itself</em>:
             "if I wiggle one of my inputs a hair, how does my output move?" It ignores the rest of the graph entirely.
-            A multiply node doesn't know or care what happens ten steps downstream — it only knows its own rule.
+            A multiply node doesn't know or care what happens ten steps downstream, it only knows its own rule.
         </p>
         <p class="text-mt-muted leading-relaxed mb-4">
             This is the per-operation derivative from lesson 0.3, now thought of as a property attached to each node.
@@ -47,8 +47,7 @@ import LocalGradientDemo from '../../components/demos/LocalGradientDemo.astro';
             </table>
         </div>
         <p class="text-mt-muted leading-relaxed">
-            Notice the multiply and add rules are exactly what we found by hand in lessons 0.1 and 0.5. Nothing new —
-            just collected in one place and labeled "local."
+            Notice the multiply and add rules are exactly what we found by hand in lessons 0.1 and 0.5. Nothing new, just collected in one place and labeled "local."
         </p>
     </section>
 
@@ -74,7 +73,7 @@ import LocalGradientDemo from '../../components/demos/LocalGradientDemo.astro';
         <h2 class="text-xl font-bold mb-4">The design this points to.</h2>
         <InsightBox>
             <p class="text-sm">Every node stores two things from the forward pass: its <strong>output value</strong> and
-            enough to compute its <strong>local gradients</strong>. Backprop then chains these together — multiply local
+            enough to compute its <strong>local gradients</strong>. Backprop then chains these together, multiply local
             gradients along each edge, add where paths merge (lesson 0.5). That single idea is the entire engine you'll
             build. The next unit turns "chain the locals together" into a concrete walk over the graph.</p>
         </InsightBox>
@@ -83,7 +82,7 @@ import LocalGradientDemo from '../../components/demos/LocalGradientDemo.astro';
     <section class="mb-14">
         <h2 class="text-xl font-bold mb-4">Key takeaways</h2>
         <div class="space-y-3">
-            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">1</span></div><p class="text-sm">A local gradient is one operation's "if my input wiggles, how does my output move?" — ignoring the rest of the graph.</p></div>
+            <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">1</span></div><p class="text-sm">A local gradient is one operation's "if my input wiggles, how does my output move?", ignoring the rest of the graph.</p></div>
             <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">2</span></div><p class="text-sm">You only need a handful of rules: add, multiply, power, and a couple of activations.</p></div>
             <div class="flex items-start gap-3"><div class="w-6 h-6 rounded-full bg-mt-accentLight flex items-center justify-center flex-shrink-0 mt-0.5"><span class="text-mt-accent font-bold text-xs">3</span></div><p class="text-sm">Each node stores its value and local gradients; backprop chains them with multiply-along, add-across.</p></div>
         </div>

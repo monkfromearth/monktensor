@@ -1,6 +1,6 @@
 ---
 /**
- * The capstone: press Train and watch the loop run — the loss falls, the decision
+ * The capstone: press Train and watch the loop run, the loss falls, the decision
  * boundary bends from a useless line into a curve that separates the moons, and the
  * five steps cycle. (Lesson 4.5.)
  */
@@ -20,7 +20,7 @@ const steps = ['forward', 'loss', 'zero', 'backward', 'step'];
 <div class="mt-demo mt-trainloop-demo my-6 bg-white border border-mt-border rounded-2xl p-6"
      data-w={W} data-h={H} data-pad={pad} data-dxmin={dxmin} data-dxmax={dxmax} data-dymin={dymin} data-dymax={dymax}
      data-bx={JSON.stringify(bx)} data-target={JSON.stringify(target)}>
-    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-3 text-center">Press Train &mdash; the loss falls and the boundary bends into place</p>
+    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-3 text-center">Press Train, the loss falls and the boundary bends into place</p>
 
     <svg viewBox={`0 0 ${W} ${H}`} class="w-full max-w-md mx-auto block" role="img" aria-label="moons with a decision boundary that curves as training runs, plus a loss curve">
         <!-- decision boundary -->
@@ -50,7 +50,7 @@ const steps = ['forward', 'loss', 'zero', 'backward', 'step'];
         <button data-train class="px-4 py-2 rounded-lg bg-mt-accent text-white text-sm font-semibold hover:opacity-90 transition">Train</button>
         <button data-reset class="px-4 py-2 rounded-lg bg-stone-100 text-mt-muted text-sm hover:bg-stone-200 transition">Reset</button>
     </div>
-    <p class="text-center text-xs text-mt-muted mt-3">forward &rarr; loss &rarr; zero grads &rarr; backward &rarr; step, a few hundred times &mdash; that loop is all of training</p>
+    <p class="text-center text-xs text-mt-muted mt-3">forward &rarr; loss &rarr; zero grads &rarr; backward &rarr; step, a few hundred times, that loop is all of training</p>
 </div>
 
 <script>

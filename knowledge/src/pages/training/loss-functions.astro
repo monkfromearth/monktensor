@@ -19,7 +19,7 @@ import LossShapesDemo from '../../components/demos/LossShapesDemo.astro';
         <h2 class="text-xl font-bold mb-4">One number that defines "good."</h2>
         <p class="text-mt-muted leading-relaxed mb-4">
             From lesson 0.2: the loss scores how wrong the predictions are, as a single number, so learning has a target
-            to push down. The loss <em>defines what you're optimizing</em> — pick the wrong loss and the model
+            to push down. The loss <em>defines what you're optimizing</em>, pick the wrong loss and the model
             cheerfully gets good at the wrong thing. Crucially, the loss is just one more node at the end of the graph,
             so backprop flows through it like any other operation.
         </p>
@@ -29,15 +29,15 @@ import LossShapesDemo from '../../components/demos/LossShapesDemo.astro';
         <h2 class="text-xl font-bold mb-4">A few common ones.</h2>
         <div class="space-y-3 mb-4">
             <div class="bg-white border border-mt-border rounded-xl px-5 py-4">
-                <p class="font-semibold text-sm">Mean squared error (MSE) &mdash; for predicting numbers</p>
+                <p class="font-semibold text-sm">Mean squared error (MSE), for predicting numbers</p>
                 <p class="text-mt-muted text-sm">Take the gap between prediction and truth, square it, average over examples. Squaring makes big misses hurt much more than small ones and keeps the loss smooth. Used for regression (predicting a quantity), not our task, but the simplest to picture.</p>
             </div>
             <div class="bg-white border border-mt-border rounded-xl px-5 py-4">
-                <p class="font-semibold text-sm">Hinge / max-margin loss &mdash; for classification</p>
+                <p class="font-semibold text-sm">Hinge / max-margin loss, for classification</p>
                 <p class="text-mt-muted text-sm">Wants the correct class to win by a clear <em>margin</em>, not just barely. If the right answer already wins comfortably, no penalty; otherwise, penalty proportional to how short it falls. This is the loss micrograd's make_moons demo uses.</p>
             </div>
             <div class="bg-white border border-mt-border rounded-xl px-5 py-4">
-                <p class="font-semibold text-sm">Cross-entropy &mdash; for probabilities</p>
+                <p class="font-semibold text-sm">Cross-entropy, for probabilities</p>
                 <p class="text-mt-muted text-sm">Treats the output as a probability and punishes confident wrong answers hardest. The standard loss for modern classifiers. For two classes it's "binary cross-entropy."</p>
             </div>
         </div>

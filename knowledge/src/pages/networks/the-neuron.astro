@@ -47,7 +47,7 @@ import NeuronDemo from '../../components/demos/NeuronDemo.astro';
 
         <NeuronDemo />
         <p class="text-mt-muted leading-relaxed">
-            Every piece here — each multiply, each add, the tanh — is one of the operations from Unit 1. So a neuron is
+            Every piece here, each multiply, each add, the tanh, is one of the operations from Unit 1. So a neuron is
             just a small computation graph, and the backward pass you already understand computes the gradient of every
             weight and the bias for free.
         </p>
@@ -56,7 +56,7 @@ import NeuronDemo from '../../components/demos/NeuronDemo.astro';
     <section class="mb-14">
         <h2 class="text-xl font-bold mb-4">The neuron's parameters.</h2>
         <InsightBox>
-            <p class="text-sm">A neuron's <strong>weights and bias are its parameters</strong> — the knobs from lesson
+            <p class="text-sm">A neuron's <strong>weights and bias are its parameters</strong>, the knobs from lesson
             1.3. Learning a neuron means adjusting exactly those numbers. The inputs <span class="font-mono">x</span> are
             data (fixed); the output is an activation (computed). When you build it, a neuron holds a small list of
             learnable values and knows how to produce its output from them.</p>
