@@ -46,7 +46,7 @@ import LineFitDemo from '../../components/demos/LineFitDemo.astro';
         <p class="text-mt-muted leading-relaxed mb-4">
             A simple loss: take each example, find the gap between your prediction and the true answer, square it so
             misses in either direction count as bad, and average over all examples. One example off by 2 contributes
-            4; off by 0 contributes nothing. Add them up — that's your score for the current knob settings.
+            4; off by 0 contributes nothing. Average them — that's your score for the current knob settings.
         </p>
     </section>
 
@@ -62,6 +62,8 @@ import LineFitDemo from '../../components/demos/LineFitDemo.astro';
 
         <LineFitDemo />
         <p class="text-mt-muted leading-relaxed mb-4">
+            Dragging the line's two ends is the same as choosing the two knobs: the slope
+            <span class="font-mono">w</span> and the height <span class="font-mono">b</span>.
             Pick <span class="font-mono">w = 0, b = 0</span> and the line is flat on the floor — terrible fit, high
             loss. Nudge <span class="font-mono">w</span> up and the line tilts to follow the points; the loss drops.
             Overshoot and it climbs again. If you plotted the loss against <span class="font-mono">w</span>, you'd see

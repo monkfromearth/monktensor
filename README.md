@@ -36,21 +36,21 @@ gradient is visible, then climbs toward tensors and a compiler.
 
 ## The two stages
 
-| Stage | What it is | Status |
-|-------|-----------|--------|
-| **v1 — Autograd Engine** | A scalar automatic-differentiation engine + a tiny neural-net library, trained on the two-moons dataset. Small in lines, deep in ideas. | In progress |
-| **v2 — Tensor Framework** | Tensors and broadcasting, then lazy evaluation and kernel fusion. | Planned |
+| Stage                     | What it is                                                                                                                              | Status      |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| **v1 — Autograd Engine**  | A scalar automatic-differentiation engine + a tiny neural-net library, trained on the two-moons dataset. Small in lines, deep in ideas. | In progress |
+| **v2 — Tensor Framework** | Tensors and broadcasting, then lazy evaluation and kernel fusion.                                                                       | Planned     |
 
 Full detail: [docs/roadmap/](./docs/roadmap/index.md).
 
 ## Tech stack
 
-| Part | Stack |
-|------|-------|
-| **`monktensor-scalar` (v1)** | Pure Python, **zero runtime dependencies** — the scalar autograd engine, every step visible. Dev tooling: [uv](https://docs.astral.sh/uv/), pytest, ruff. |
-| **`monktensor` (v2)** | Python + numpy for tensors, then a lazy graph and a fusing compiler backend. The production, pip-installable package. |
-| **Examples** | scikit-learn (`make_moons`) and matplotlib, isolated in `examples/` so the engines stay dependency-free. |
-| **Knowledge course** | [Astro](https://astro.build) + [Tailwind CSS](https://tailwindcss.com) + [GSAP](https://gsap.com) for the demos, built with [bun](https://bun.sh). Deployed to GitHub Pages. |
+| Part                         | Stack                                                                                                                                                                        |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`monktensor-scalar` (v1)** | Pure Python, **zero runtime dependencies** — the scalar autograd engine, every step visible. Dev tooling: [uv](https://docs.astral.sh/uv/), pytest, ruff.                    |
+| **`monktensor` (v2)**        | Python + numpy for tensors, then a lazy graph and a fusing compiler backend. The production, pip-installable package.                                                        |
+| **Examples**                 | scikit-learn (`make_moons`) and matplotlib, isolated in `examples/` so the engines stay dependency-free.                                                                     |
+| **Knowledge course**         | [Astro](https://astro.build) + [Tailwind CSS](https://tailwindcss.com) + [GSAP](https://gsap.com) for the demos, built with [bun](https://bun.sh). Deployed to GitHub Pages. |
 
 The two engines are separate packages in one [uv workspace](https://docs.astral.sh/uv/concepts/workspaces/), so v1 stays pure while v2 carries numpy — neither contaminates the other.
 
@@ -105,5 +105,5 @@ MIT (see [`LICENSE`](./LICENSE)).
 ---
 
 <div align="center">
-  <sub>Built by <a href="https://github.com/monkfromearth">Sameer</a> · part of the monk family of projects</sub>
+  <sub>Built by <a href="https://monkfrom.earth">Sameer Khan (@monkfromearth)</a> · part of the <a href="https://github.com/monkfromearth">monk</a> family of projects</sub>
 </div>

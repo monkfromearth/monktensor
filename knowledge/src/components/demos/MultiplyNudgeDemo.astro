@@ -9,7 +9,7 @@ interface Props {
 const { b = 3 } = Astro.props;
 const domain = 12;     // both bars share this scale, so c visibly outruns a
 const aMax = domain / b; // keep c on-screen (c = b*a <= domain)
-const aStart = 1.5;
+const aStart = 2;
 ---
 
 <div class="mt-multiply-demo my-6 bg-white border border-mt-border rounded-2xl p-6"
@@ -77,19 +77,19 @@ const aStart = 1.5;
         }
 
         let dragging = false;
+        const STEP = 0.5; // discrete, easy-to-land values (a = 0, 0.5, 1.0, …)
         const fromEvent = (clientX: number) => {
             const r = track.getBoundingClientRect();
             const frac = Math.min(1, Math.max(0, (clientX - r.left) / r.width));
-            a = Math.min(aMax, Math.max(0, frac * domain));
+            a = Math.min(aMax, Math.max(0, Math.round((frac * domain) / STEP) * STEP));
             render();
         };
         track.addEventListener('pointerdown', (e) => { dragging = true; track.setPointerCapture(e.pointerId); fromEvent(e.clientX); });
         track.addEventListener('pointermove', (e) => { if (dragging) fromEvent(e.clientX); });
         track.addEventListener('pointerup', () => { dragging = false; });
         track.addEventListener('keydown', (e) => {
-            const step = 0.1;
-            if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { a = Math.min(aMax, a + step); render(); e.preventDefault(); }
-            if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { a = Math.max(0, a - step); render(); e.preventDefault(); }
+            if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { a = Math.min(aMax, a + STEP); render(); e.preventDefault(); }
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { a = Math.max(0, a - STEP); render(); e.preventDefault(); }
         });
         render();
     });
