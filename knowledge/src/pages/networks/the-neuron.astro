@@ -6,6 +6,7 @@ import LessonNav from '../../components/LessonNav.astro';
 import InsightBox from '../../components/InsightBox.astro';
 import Formula from '../../components/Formula.astro';
 import TagBadge from '../../components/TagBadge.astro';
+import NeuronDemo from '../../components/demos/NeuronDemo.astro';
 ---
 
 <LessonLayout title="The Neuron" lessonNumber="3.1" section="Networks">
@@ -43,6 +44,8 @@ import TagBadge from '../../components/TagBadge.astro';
             <div>sum = 2&times;1 + (-1)&times;1 + 0.5 = 1.5</div>
             <div>out = tanh(1.5) &asymp; <strong>0.905</strong></div>
         </div>
+
+        <NeuronDemo />
         <p class="text-mt-muted leading-relaxed">
             Every piece here — each multiply, each add, the tanh — is one of the operations from Unit 1. So a neuron is
             just a small computation graph, and the backward pass you already understand computes the gradient of every

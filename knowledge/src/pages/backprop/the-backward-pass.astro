@@ -5,6 +5,7 @@ import LessonHeader from '../../components/LessonHeader.astro';
 import LessonNav from '../../components/LessonNav.astro';
 import InsightBox from '../../components/InsightBox.astro';
 import TagBadge from '../../components/TagBadge.astro';
+import BackwardFlowDemo from '../../components/demos/BackwardFlowDemo.astro';
 ---
 
 <LessonLayout title="The Backward Pass" lessonNumber="2.1" section="Backpropagation">
@@ -45,6 +46,8 @@ import TagBadge from '../../components/TagBadge.astro';
         <div class="bg-white border border-mt-border rounded-xl p-5 mb-4 font-mono text-sm">
             a.grad = -3 &nbsp;&middot;&nbsp; b.grad = 2 &nbsp;&middot;&nbsp; c.grad = 1
         </div>
+
+        <BackwardFlowDemo />
         <p class="text-mt-muted leading-relaxed">
             Sanity check <span class="font-mono">c</span>: raising it by 1 raises <span class="font-mono">e = d + c</span>
             by exactly 1, so <span class="font-mono">c.grad = 1</span>. Correct. And <span class="font-mono">a.grad = -3</span>

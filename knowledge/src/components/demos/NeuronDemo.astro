@@ -1,0 +1,100 @@
+---
+/**
+ * A live neuron. Drag the inputs (left) and the weight knobs; each wire thickens with
+ * |w*x| and turns coral (+) or blue (-); the soma sums; tanh squashes; the output fires.
+ * (Lesson 3.1.)
+ */
+---
+
+<div class="mt-demo mt-neuron-demo my-6 bg-white border border-mt-border rounded-2xl p-6">
+    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-1 text-center">Drag the inputs and weights &mdash; watch the neuron fire</p>
+    <p class="text-center text-xs text-mt-muted mb-3">wire thickness = how strongly that input pushes (<span class="font-mono">|w&middot;x|</span>); coral pushes up, blue pushes down</p>
+
+    <svg viewBox="0 0 380 230" class="w-full max-w-md mx-auto block" role="img" aria-label="a neuron: inputs and weights feed a soma through an activation to an output">
+        <!-- wires (drawn first, behind) -->
+        <line data-wire="1" x1="56" y1="70" x2="232" y2="98" stroke="#C96F5A" stroke-width="4" stroke-linecap="round" />
+        <line data-wire="2" x1="56" y1="160" x2="232" y2="122" stroke="#C96F5A" stroke-width="4" stroke-linecap="round" />
+        <line x1="288" y1="110" x2="340" y2="110" stroke="#E8E4DF" stroke-width="3" />
+
+        <!-- input tracks + draggable dots -->
+        <g font-family="JetBrains Mono, monospace" font-size="10" fill="#6B6560">
+            <line x1="56" y1="40" x2="56" y2="100" stroke="#EFE8E2" stroke-width="6" stroke-linecap="round" />
+            <line x1="56" y1="130" x2="56" y2="190" stroke="#EFE8E2" stroke-width="6" stroke-linecap="round" />
+            <text x="30" y="44">x&#8321;</text><text x="30" y="134">x&#8322;</text>
+            <text data-out="x1" x="64" y="44">1.0</text><text data-out="x2" x="64" y="134">1.0</text>
+            <!-- weight tracks -->
+            <line x1="140" y1="40" x2="140" y2="100" stroke="#ECEAF6" stroke-width="6" stroke-linecap="round" />
+            <line x1="140" y1="130" x2="140" y2="190" stroke="#ECEAF6" stroke-width="6" stroke-linecap="round" />
+            <text x="148" y="44" fill="#7E7FBC">w&#8321;</text><text x="148" y="134" fill="#7E7FBC">w&#8322;</text>
+            <text data-out="w1" x="148" y="56" fill="#7E7FBC">1.0</text><text data-out="w2" x="148" y="146" fill="#7E7FBC">-1.0</text>
+        </g>
+
+        <!-- soma -->
+        <circle cx="260" cy="110" r="30" fill="#F0F0FB" stroke="#7E7FBC" stroke-width="2" />
+        <text x="260" y="106" text-anchor="middle" class="font-mono" font-size="8" fill="#6B6560">sum</text>
+        <text data-out="sum" x="260" y="120" text-anchor="middle" class="font-mono" font-size="12" font-weight="bold" fill="#7E7FBC">0.0</text>
+
+        <!-- output (axon end) -->
+        <circle data-fire cx="348" cy="110" r="8" fill="#5E80C9" opacity="0.5" />
+        <text x="348" y="135" text-anchor="middle" class="font-mono" font-size="9" fill="#6B6560">out</text>
+
+        <!-- draggable handles (on top) -->
+        <circle data-drag="x1" cx="56" cy="70" r="9" fill="#fff" stroke="#C96F5A" stroke-width="3" class="mt-grab" />
+        <circle data-drag="x2" cx="56" cy="160" r="9" fill="#fff" stroke="#C96F5A" stroke-width="3" class="mt-grab" />
+        <circle data-drag="w1" cx="140" cy="70" r="9" fill="#fff" stroke="#7E7FBC" stroke-width="3" class="mt-grab" />
+        <circle data-drag="w2" cx="140" cy="160" r="9" fill="#fff" stroke="#7E7FBC" stroke-width="3" class="mt-grab" />
+    </svg>
+
+    <p class="text-center text-sm font-mono mt-2">out = tanh(w&#8321;x&#8321; + w&#8322;x&#8322; + b) = <span data-out="result" class="text-mt-blue font-bold">0.00</span></p>
+    <p class="text-center text-xs text-mt-muted mt-2">when the squashed sum is near &plusmn;1, the neuron is firing; near 0 it's quiet</p>
+</div>
+
+<script>
+    import { gsap, draggable, clamp, REDUCED } from '../../lib/interact';
+
+    document.querySelectorAll<HTMLElement>('.mt-neuron-demo').forEach((root) => {
+        const svg = root.querySelector<SVGSVGElement>('svg')!;
+        const out = (k: string) => root.querySelector<SVGTextElement | HTMLElement>(`[data-out="${k}"]`)!;
+        const wire = (k: string) => root.querySelector<SVGLineElement>(`[data-wire="${k}"]`)!;
+        const fire = root.querySelector<SVGCircleElement>('[data-fire]')!;
+        // tracks: drag y in [top, bot] maps to value in [+2, -2]
+        const tracks: Record<string, { top: number; bot: number }> = {
+            x1: { top: 40, bot: 100 }, w1: { top: 40, bot: 100 },
+            x2: { top: 130, bot: 190 }, w2: { top: 130, bot: 190 },
+        };
+        const state: Record<string, number> = { x1: 1, x2: 1, w1: 1.5, w2: -0.5 };
+        const b = 0;
+        const yFor = (k: string, v: number) => { const t = tracks[k]; return t.bot - ((v + 2) / 4) * (t.bot - t.top); };
+        const vFor = (k: string, y: number) => clamp(2 - ((y - tracks[k].top) / (tracks[k].bot - tracks[k].top)) * 4, -2, 2);
+
+        function render() {
+            (['x1', 'x2', 'w1', 'w2'] as const).forEach((k) => (out(k).textContent = state[k].toFixed(1)));
+            // wire k: thickness ~ |w*x|, color by sign
+            (['1', '2'] as const).forEach((i) => {
+                const wx = state['w' + i] * state['x' + i];
+                const w = wire(i);
+                w.setAttribute('stroke-width', String(clamp(Math.abs(wx) * 3 + 1.5, 1.5, 16)));
+                w.setAttribute('stroke', wx >= 0 ? '#C96F5A' : '#5E80C9');
+            });
+            const sum = state.w1 * state.x1 + state.w2 * state.x2 + b;
+            const o = Math.tanh(sum);
+            out('sum').textContent = sum.toFixed(1);
+            out('result').textContent = o.toFixed(2);
+            fire.setAttribute('r', String(6 + Math.abs(o) * 12));
+            fire.setAttribute('fill', o >= 0 ? '#C96F5A' : '#5E80C9');
+            fire.setAttribute('opacity', String(0.25 + Math.abs(o) * 0.6));
+            // keep handles and input-side wire endpoints in sync with state
+            (['x1', 'x2', 'w1', 'w2'] as const).forEach((k) =>
+                root.querySelector<SVGCircleElement>(`[data-drag="${k}"]`)!.setAttribute('cy', String(yFor(k, state[k]))));
+            wire('1').setAttribute('y1', String(yFor('x1', state.x1)));
+            wire('2').setAttribute('y1', String(yFor('x2', state.x2)));
+        }
+
+        (['x1', 'x2', 'w1', 'w2'] as const).forEach((k) => {
+            const handle = root.querySelector<SVGCircleElement>(`[data-drag="${k}"]`)!;
+            draggable(svg, handle, (_x, y) => { state[k] = vFor(k, y); render(); });
+        });
+        render();
+        if (!REDUCED) gsap.from(fire, { attr: { r: 0 }, duration: 0.4 });
+    });
+</script>

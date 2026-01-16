@@ -1,0 +1,92 @@
+---
+/**
+ * Animated backward pass over e = (a x b) + c. Press Run and watch the gradient
+ * seed at the output (1) and flow backward, each node's grad filling in as a packet
+ * arrives. The chain rule, made visible. (Lesson 2.1.)
+ */
+const nodes = [
+  { id: 'a', cx: 52, cy: 46, val: '2', grad: '-3', color: '#C96F5A', light: '#FBEEE9' },
+  { id: 'b', cx: 52, cy: 112, val: '-3', grad: '2', color: '#C96F5A', light: '#FBEEE9' },
+  { id: 'c', cx: 52, cy: 178, val: '10', grad: '1', color: '#C96F5A', light: '#FBEEE9' },
+  { id: 'd', cx: 178, cy: 79, val: '-6', grad: '1', color: '#7E7FBC', light: '#F0F0FB', op: '×' },
+  { id: 'e', cx: 300, cy: 120, val: '4', grad: '1', color: '#5E80C9', light: '#EEF3FC', op: '+' },
+];
+const edges = [['a', 'd'], ['b', 'd'], ['d', 'e'], ['c', 'e']];
+const at = (id: string) => nodes.find((n) => n.id === id)!;
+---
+
+<div class="mt-demo mt-backward-demo my-6 bg-white border border-mt-border rounded-2xl p-6">
+    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-1 text-center">The backward pass of <span class="font-mono">e = (a &times; b) + c</span></p>
+    <p class="text-center text-xs text-mt-muted mb-3">seed the output at 1, then let the gradient flow <span class="text-mt-blue font-semibold">backward</span></p>
+
+    <svg viewBox="0 0 360 240" class="w-full max-w-md mx-auto block" role="img" aria-label="computation graph with gradients flowing backward">
+        {edges.map(([s, t]) => <line x1={at(s).cx} y1={at(s).cy} x2={at(t).cx} y2={at(t).cy} stroke="#E8E4DF" stroke-width="2" data-edge={`${s}${t}`} />)}
+        {nodes.map((n) => (
+            <g>
+                <circle cx={n.cx} cy={n.cy} r="22" fill={n.light} stroke={n.color} stroke-width="2" />
+                <text x={n.cx} y={n.cy + 1} text-anchor="middle" dominant-baseline="middle" class="font-mono" font-size="13" fill={n.color}>{n.op ?? n.id}</text>
+                {n.op && <text x={n.cx} y={n.cy + 36} text-anchor="middle" class="font-mono" font-size="9" fill="#6B6560">{n.id}</text>}
+                <!-- grad pill, hidden until the gradient reaches this node -->
+                <g data-grad={n.id} opacity="0">
+                    <rect x={n.cx - 26} y={n.cy + 26} width="52" height="18" rx="9" fill={n.color} />
+                    <text x={n.cx} y={n.cy + 38} text-anchor="middle" class="font-mono" font-size="10" fill="#fff">grad <tspan data-gradval>0</tspan></text>
+                </g>
+            </g>
+        ))}
+        <circle data-packet cx="300" cy="120" r="6" fill="#5E80C9" opacity="0" />
+    </svg>
+
+    <div class="flex items-center justify-center gap-3 mt-2">
+        <button data-run class="px-4 py-2 rounded-lg bg-mt-blue text-white text-sm font-semibold hover:opacity-90 transition">Run backward</button>
+        <button data-reset class="px-4 py-2 rounded-lg bg-stone-100 text-mt-muted text-sm hover:bg-stone-200 transition">Reset</button>
+    </div>
+    <p class="text-center text-xs text-mt-muted mt-3" data-caption>each node hands its inputs (their local gradient) &times; (the gradient that arrived) &mdash; multiply along, add across</p>
+</div>
+
+<script>
+    import { gsap, REDUCED } from '../../lib/interact';
+
+    const NODES: Record<string, { cx: number; cy: number; grad: number }> = {
+        a: { cx: 52, cy: 46, grad: -3 }, b: { cx: 52, cy: 112, grad: 2 }, c: { cx: 52, cy: 178, grad: 1 },
+        d: { cx: 178, cy: 79, grad: 1 }, e: { cx: 300, cy: 120, grad: 4 - 4 + 1 }, // e.grad = 1
+    };
+
+    document.querySelectorAll<HTMLElement>('.mt-backward-demo').forEach((root) => {
+        const packet = root.querySelector<SVGCircleElement>('[data-packet]')!;
+        const gradGroup = (id: string) => root.querySelector<SVGGElement>(`[data-grad="${id}"]`)!;
+        const gradVal = (id: string) => gradGroup(id).querySelector<SVGTSpanElement>('[data-gradval]')!;
+        const edge = (e: string) => root.querySelector<SVGLineElement>(`[data-edge="${e}"]`)!;
+
+        function reset() {
+            gsap.killTweensOf('*');
+            ['a', 'b', 'c', 'd', 'e'].forEach((id) => gsap.set(gradGroup(id), { opacity: 0 }));
+            gsap.set(packet, { opacity: 0 });
+            ['ad', 'bd', 'de', 'ce'].forEach((e) => gsap.set(edge(e), { stroke: '#E8E4DF', strokeWidth: 2 }));
+        }
+        function showGrad(id: string) {
+            gradVal(id).textContent = String(NODES[id].grad);
+            gsap.fromTo(gradGroup(id), { opacity: 0, scale: 0.6, transformOrigin: 'center' }, { opacity: 1, scale: 1, duration: 0.3 });
+        }
+        // a gradient packet travels backward from node `to` toward node `from`
+        function flow(tl: gsap.core.Timeline, fromId: string, toId: string, edgeId: string) {
+            const f = NODES[fromId], t = NODES[toId];
+            tl.set(packet, { attr: { cx: t.cx, cy: t.cy }, opacity: 1 })
+              .to(edge(edgeId), { stroke: '#5E80C9', strokeWidth: 3.5, duration: 0.2 }, '<')
+              .to(packet, { attr: { cx: f.cx, cy: f.cy }, duration: 0.5, ease: 'power1.inOut' })
+              .add(() => showGrad(fromId))
+              .to(packet, { opacity: 0, duration: 0.15 });
+        }
+        function run() {
+            reset();
+            const tl = gsap.timeline({ defaults: { duration: REDUCED ? 0 : undefined } });
+            tl.add(() => showGrad('e'));            // seed the output at 1
+            flow(tl, 'd', 'e', 'de');               // + passes 1 back to d
+            flow(tl, 'c', 'e', 'ce');               // + passes 1 back to c
+            flow(tl, 'a', 'd', 'ad');               // x sends b=-3 to a
+            flow(tl, 'b', 'd', 'bd');               // x sends a=2 to b
+        }
+        root.querySelector('[data-run]')!.addEventListener('click', run);
+        root.querySelector('[data-reset]')!.addEventListener('click', reset);
+        reset();
+    });
+</script>

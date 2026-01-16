@@ -19,6 +19,11 @@ pre.astro-code {
   margin-bottom: 1rem;
 }
 
+/* Demo interaction cursors */
+.mt-grab { cursor: grab; }
+.mt-grabbing { cursor: grabbing !important; }
+.mt-demo svg { touch-action: none; }
+
 /* Callout boxes */
 .insight-box { border-left: 3px solid #C96F5A; }
 .exercise-box { border-left: 3px solid #4F9D7B; }
