@@ -7,6 +7,7 @@ import InsightBox from '../../components/InsightBox.astro';
 import ExerciseBox from '../../components/ExerciseBox.astro';
 import Formula from '../../components/Formula.astro';
 import TagBadge from '../../components/TagBadge.astro';
+import GradCheckDemo from '../../components/demos/GradCheckDemo.astro';
 ---
 
 <LessonLayout title="Gradient Checking" lessonNumber="2.4" section="Backpropagation">
@@ -69,6 +70,8 @@ import TagBadge from '../../components/TagBadge.astro';
     </section>
 
     <section class="mb-14">
+        <GradCheckDemo />
+
         <ExerciseBox title="Check it by hand">
             <p class="text-sm text-mt-muted">For <span class="font-mono">e = (a &times; b) + c</span> at
             <span class="font-mono">a = 2, b = -3, c = 10</span>, backprop gave <span class="font-mono">a.grad = -3</span>.

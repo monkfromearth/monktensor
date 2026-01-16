@@ -1,0 +1,84 @@
+---
+/**
+ * Why not start all weights equal: identical neurons get identical gradients and stay
+ * clones forever. Random init breaks the symmetry so they specialize. (Lesson 4.4.)
+ */
+const neurons = [0, 1, 2, 3];
+---
+
+<div class="mt-demo mt-symmetry-demo my-6 bg-white border border-mt-border rounded-2xl p-6">
+    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-3 text-center">Four neurons &mdash; do they ever become different?</p>
+
+    <div class="flex items-center justify-center gap-2 mb-4">
+        <div class="inline-flex rounded-lg border border-mt-border overflow-hidden text-sm">
+            <button data-mode="equal" class="px-3 py-1.5 bg-mt-accent text-white font-semibold">start all equal</button>
+            <button data-mode="random" class="px-3 py-1.5 bg-white text-mt-muted">start random</button>
+        </div>
+    </div>
+
+    <div class="flex items-end justify-center gap-4" style="height:130px">
+        {neurons.map((i) => (
+            <div class="flex flex-col items-center justify-end h-full">
+                <div class="w-10 bg-mt-bg rounded-t-md relative" style="height:100px">
+                    <div data-bar={i} class="absolute bottom-0 left-0 right-0 bg-mt-lav rounded-t-md" style="height:50%"></div>
+                </div>
+                <span class="text-[11px] font-mono text-mt-muted mt-1">n{i + 1}</span>
+            </div>
+        ))}
+    </div>
+
+    <div class="flex items-center justify-center gap-3 mt-4">
+        <button data-step class="px-4 py-2 rounded-lg bg-mt-lav text-white text-sm font-semibold hover:opacity-90 transition">Train a step</button>
+        <button data-reset class="px-4 py-2 rounded-lg bg-stone-100 text-mt-muted text-sm hover:bg-stone-200 transition">Reset</button>
+        <span class="text-xs text-mt-muted">step <span data-steps>0</span></span>
+    </div>
+    <p class="text-center text-xs text-mt-muted mt-3" data-cap>all equal: identical gradients, so they move together and stay clones &mdash; the layer never spreads out</p>
+</div>
+
+<script>
+    import { gsap, REDUCED } from '../../lib/interact';
+
+    document.querySelectorAll<HTMLElement>('.mt-symmetry-demo').forEach((root) => {
+        const bars = [0, 1, 2, 3].map((i) => root.querySelector<HTMLElement>(`[data-bar="${i}"]`)!);
+        const cap = root.querySelector<HTMLElement>('[data-cap]')!;
+        const stepsEl = root.querySelector<HTMLElement>('[data-steps]')!;
+        let mode: 'equal' | 'random' = 'equal';
+        let w: number[] = [];
+        let steps = 0;
+        const equalStart = [0.5, 0.5, 0.5, 0.5];
+        const randomStart = [0.32, 0.61, 0.45, 0.74];
+        const equalDelta = [0.07, 0.07, 0.07, 0.07];      // identical gradients
+        const randomDelta = [0.03, 0.11, 0.06, 0.14];     // different gradients
+
+        const draw = () => bars.forEach((b, i) => {
+            const h = Math.max(4, Math.min(100, w[i] * 100));
+            REDUCED ? (b.style.height = h + '%') : gsap.to(b, { height: h + '%', duration: 0.3, ease: 'power2.out' });
+        });
+        function reset() {
+            steps = 0; stepsEl.textContent = '0';
+            w = [...(mode === 'equal' ? equalStart : randomStart)];
+            cap.textContent = mode === 'equal'
+                ? 'all equal: identical gradients, so they move together and stay clones — the layer never spreads out'
+                : 'random: different gradients, so the neurons drift apart and learn different features';
+            draw();
+        }
+        function step() {
+            const d = mode === 'equal' ? equalDelta : randomDelta;
+            w = w.map((v, i) => { let nv = v + d[i]; if (nv > 0.95) nv = 0.2; return nv; });
+            steps++; stepsEl.textContent = String(steps); draw();
+        }
+        root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach((b) =>
+            b.addEventListener('click', () => {
+                mode = b.dataset.mode as 'equal' | 'random';
+                root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach((o) => {
+                    const on = o === b;
+                    o.classList.toggle('bg-mt-accent', on); o.classList.toggle('text-white', on);
+                    o.classList.toggle('bg-white', !on); o.classList.toggle('text-mt-muted', !on);
+                });
+                reset();
+            }));
+        root.querySelector('[data-step]')!.addEventListener('click', step);
+        root.querySelector('[data-reset]')!.addEventListener('click', reset);
+        reset();
+    });
+</script>

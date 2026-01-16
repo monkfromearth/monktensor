@@ -1,0 +1,71 @@
+---
+/**
+ * Two ideas in one: backprop and a finite-difference nudge agree (the check), and
+ * backprop gets ALL gradients in one pass while nudging needs one per parameter. (Lesson 2.4.)
+ */
+const cost = Array.from({ length: 8 }); // 8 "parameters" for the cost race
+---
+
+<div class="mt-demo mt-gradcheck-demo my-6 bg-white border border-mt-border rounded-2xl p-6">
+    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-4 text-center">Do they agree? And what do they cost?</p>
+
+    <!-- agreement -->
+    <div class="bg-white border border-mt-border rounded-xl p-4 mb-4">
+        <div class="flex items-center justify-center gap-4 font-mono text-sm">
+            <span class="px-3 py-1 rounded-lg bg-mt-accentLight text-mt-accent">backprop: <span data-bp>-3.00</span></span>
+            <span data-check class="text-mt-green font-bold opacity-0">= ✓</span>
+            <span class="px-3 py-1 rounded-lg bg-mt-lavLight text-mt-lav">nudge: <span data-fd>0.00</span></span>
+        </div>
+        <p class="text-center text-[11px] text-mt-muted mt-2">the nudge (finite difference) converges on the exact answer &mdash; that's how you trust the engine</p>
+    </div>
+
+    <!-- cost race -->
+    <div class="grid grid-cols-2 gap-4 text-xs">
+        <div>
+            <p class="font-semibold text-mt-accent mb-2">backprop &mdash; 1 pass</p>
+            <div class="flex gap-1"><span data-bpbox class="w-5 h-5 rounded bg-stone-100"></span></div>
+            <p class="text-mt-muted mt-1" data-bptime>&nbsp;</p>
+        </div>
+        <div>
+            <p class="font-semibold text-mt-lav mb-2">nudging &mdash; 1 pass per parameter</p>
+            <div class="flex gap-1 flex-wrap">{cost.map(() => <span data-fdbox class="w-5 h-5 rounded bg-stone-100"></span>)}</div>
+            <p class="text-mt-muted mt-1" data-fdtime>&nbsp;</p>
+        </div>
+    </div>
+
+    <div class="flex items-center justify-center mt-4">
+        <button data-run class="px-4 py-2 rounded-lg bg-mt-accent text-white text-sm font-semibold hover:opacity-90 transition">Run the comparison</button>
+    </div>
+    <p class="text-center text-xs text-mt-muted mt-3">a million parameters &rarr; a million forward passes for nudging, but still one backward pass. That gap is why autograd exists.</p>
+</div>
+
+<script>
+    import { gsap, REDUCED } from '../../lib/interact';
+
+    document.querySelectorAll<HTMLElement>('.mt-gradcheck-demo').forEach((root) => {
+        const bp = root.querySelector<HTMLElement>('[data-bp]')!;
+        const fd = root.querySelector<HTMLElement>('[data-fd]')!;
+        const check = root.querySelector<HTMLElement>('[data-check]')!;
+        const bpbox = root.querySelector<HTMLElement>('[data-bpbox]')!;
+        const fdboxes = Array.from(root.querySelectorAll<HTMLElement>('[data-fdbox]'));
+        const bptime = root.querySelector<HTMLElement>('[data-bptime]')!;
+        const fdtime = root.querySelector<HTMLElement>('[data-fdtime]')!;
+
+        function run() {
+            gsap.killTweensOf('*');
+            check.style.opacity = '0'; fd.textContent = '0.00';
+            bpbox.style.background = '#FAF8F5'; fdboxes.forEach((b) => (b.style.background = '#FAF8F5'));
+            bptime.textContent = ' '; fdtime.textContent = ' ';
+
+            // 1) agreement: nudge value converges to -3 then a check
+            const o = { v: 0 };
+            gsap.to(o, { v: -3, duration: REDUCED ? 0 : 0.8, onUpdate: () => (fd.textContent = o.v.toFixed(2)), onComplete: () => gsap.to(check, { opacity: 1, duration: 0.2 }) });
+
+            // 2) cost: backprop fills its 1 box at once; nudging fills its boxes one by one
+            gsap.to(bpbox, { background: '#C96F5A', duration: REDUCED ? 0 : 0.2, delay: REDUCED ? 0 : 0.9, onComplete: () => (bptime.textContent = 'done in 1') });
+            fdboxes.forEach((b, i) =>
+                gsap.to(b, { background: '#7E7FBC', duration: 0.01, delay: REDUCED ? 0 : 0.9 + i * 0.22, onComplete: i === fdboxes.length - 1 ? () => (fdtime.textContent = `done in ${fdboxes.length}`) : undefined }));
+        }
+        root.querySelector('[data-run]')!.addEventListener('click', run);
+    });
+</script>

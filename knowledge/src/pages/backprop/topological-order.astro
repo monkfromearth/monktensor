@@ -5,6 +5,7 @@ import LessonHeader from '../../components/LessonHeader.astro';
 import LessonNav from '../../components/LessonNav.astro';
 import InsightBox from '../../components/InsightBox.astro';
 import TagBadge from '../../components/TagBadge.astro';
+import TopoOrderDemo from '../../components/demos/TopoOrderDemo.astro';
 ---
 
 <LessonLayout title="Topological Order" lessonNumber="2.3" section="Backpropagation">
@@ -33,6 +34,8 @@ import TagBadge from '../../components/TagBadge.astro';
         <div class="bg-white border border-mt-border rounded-xl p-5 mb-4 font-mono text-sm text-center">
             a, &nbsp; b, &nbsp; d, &nbsp; c, &nbsp; e
         </div>
+
+        <TopoOrderDemo />
         <p class="text-mt-muted leading-relaxed mb-4">
             For the backward pass you walk this <strong>in reverse</strong>: <span class="font-mono">e, c, d, b, a</span>.
             Going in reverse guarantees that by the time you reach any node, every node that consumes it has already run

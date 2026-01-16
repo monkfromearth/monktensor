@@ -1,0 +1,75 @@
+---
+/**
+ * Scalars vs tensors: one operation on one number, or the same operation on a whole
+ * grid of numbers at once. (Lesson 5.1.)
+ */
+const grid = Array.from({ length: 36 });
+---
+
+<div class="mt-demo mt-tensor-demo my-6 bg-white border border-mt-border rounded-2xl p-6">
+    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-3 text-center">One operation &mdash; on one number, or on many at once</p>
+
+    <div class="flex items-center justify-center gap-2 mb-5">
+        <div class="inline-flex rounded-lg border border-mt-border overflow-hidden text-sm">
+            <button data-mode="scalar" class="px-3 py-1.5 bg-mt-accent text-white font-semibold">scalar</button>
+            <button data-mode="tensor" class="px-3 py-1.5 bg-white text-mt-muted">tensor</button>
+        </div>
+    </div>
+
+    <!-- scalar view -->
+    <div data-view="scalar" class="flex items-center justify-center gap-3" style="min-height:110px">
+        <div data-cell class="w-12 h-12 rounded-lg bg-mt-lavLight border border-mt-lav/40"></div>
+        <span class="font-mono text-sm text-mt-muted">&rarr; tanh &rarr;</span>
+        <div class="w-12 h-12 rounded-lg bg-mt-accentLight border border-mt-accent/40"></div>
+    </div>
+
+    <!-- tensor view -->
+    <div data-view="tensor" class="hidden flex-col items-center" style="min-height:110px">
+        <div class="grid grid-cols-6 gap-1">
+            {grid.map(() => <div data-tcell class="w-4 h-4 rounded-sm bg-mt-lavLight border border-mt-lav/30"></div>)}
+        </div>
+    </div>
+
+    <div class="flex items-center justify-center gap-3 mt-4">
+        <button data-apply class="px-4 py-2 rounded-lg bg-mt-lav text-white text-sm font-semibold hover:opacity-90 transition">Apply tanh</button>
+        <span class="font-mono text-xs px-3 py-1 rounded-lg bg-stone-100 text-mt-muted">values per op: <span data-count>1</span></span>
+    </div>
+    <p class="text-center text-xs text-mt-muted mt-3">a tensor runs the same operation across a whole array in one go &mdash; that's what makes a framework fast</p>
+</div>
+
+<script>
+    import { gsap, REDUCED } from '../../lib/interact';
+
+    document.querySelectorAll<HTMLElement>('.mt-tensor-demo').forEach((root) => {
+        let mode: 'scalar' | 'tensor' = 'scalar';
+        const views = { scalar: root.querySelector<HTMLElement>('[data-view="scalar"]')!, tensor: root.querySelector<HTMLElement>('[data-view="tensor"]')! };
+        const cell = root.querySelector<HTMLElement>('[data-cell]')!;
+        const tcells = Array.from(root.querySelectorAll<HTMLElement>('[data-tcell]'));
+        const count = root.querySelector<HTMLElement>('[data-count]')!;
+
+        function setMode(m: 'scalar' | 'tensor') {
+            mode = m;
+            views.scalar.classList.toggle('hidden', m !== 'scalar');
+            views.scalar.classList.toggle('flex', m === 'scalar');
+            views.tensor.classList.toggle('hidden', m !== 'tensor');
+            views.tensor.classList.toggle('flex', m === 'tensor');
+            count.textContent = m === 'scalar' ? '1' : '36';
+            root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach((b) => {
+                const on = b.dataset.mode === m;
+                b.classList.toggle('bg-mt-accent', on); b.classList.toggle('text-white', on);
+                b.classList.toggle('bg-white', !on); b.classList.toggle('text-mt-muted', !on);
+            });
+        }
+        function apply() {
+            if (mode === 'scalar') {
+                gsap.fromTo(cell, { backgroundColor: '#F0F0FB' }, { backgroundColor: '#C2A4CD', duration: REDUCED ? 0 : 0.3, yoyo: true, repeat: 1 });
+            } else {
+                // all cells light up together — one operation, many values
+                gsap.fromTo(tcells, { backgroundColor: '#F0F0FB' }, { backgroundColor: '#C2A4CD', duration: REDUCED ? 0 : 0.35, yoyo: true, repeat: 1, stagger: REDUCED ? 0 : { each: 0.004, from: 'center' } });
+            }
+        }
+        root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach((b) => b.addEventListener('click', () => setMode(b.dataset.mode as 'scalar' | 'tensor')));
+        root.querySelector('[data-apply]')!.addEventListener('click', apply);
+        setMode('scalar');
+    });
+</script>

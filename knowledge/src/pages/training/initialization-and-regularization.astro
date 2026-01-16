@@ -5,6 +5,7 @@ import LessonHeader from '../../components/LessonHeader.astro';
 import LessonNav from '../../components/LessonNav.astro';
 import InsightBox from '../../components/InsightBox.astro';
 import TagBadge from '../../components/TagBadge.astro';
+import SymmetryDemo from '../../components/demos/SymmetryDemo.astro';
 ---
 
 <LessonLayout title="Initialization & Regularization" lessonNumber="4.4" section="Training">
@@ -22,6 +23,8 @@ import TagBadge from '../../components/TagBadge.astro';
             the same thing, all receive the same gradient, and so update identically forever. They stay clones; the
             layer never spreads out to learn different features. This is the <strong>symmetry</strong> problem.
         </p>
+
+        <SymmetryDemo />
         <p class="text-mt-muted leading-relaxed mb-4">
             The fix is to start weights <strong>small and random</strong>. Random breaks the symmetry so neurons can
             specialize; small keeps the early activations away from the flat, saturated tails (lesson 3.3) where

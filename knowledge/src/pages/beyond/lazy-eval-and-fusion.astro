@@ -5,6 +5,7 @@ import LessonHeader from '../../components/LessonHeader.astro';
 import LessonNav from '../../components/LessonNav.astro';
 import InsightBox from '../../components/InsightBox.astro';
 import TagBadge from '../../components/TagBadge.astro';
+import FusionDemo from '../../components/demos/FusionDemo.astro';
 ---
 
 <LessonLayout title="Lazy Evaluation & Fusion" lessonNumber="5.2" section="Beyond v1">
@@ -26,6 +27,8 @@ import TagBadge from '../../components/TagBadge.astro';
             until you actually ask for a result (tinygrad spells this <span class="font-mono">.realize()</span>). Now the
             framework holds the entire plan — the whole op graph — before running anything.
         </p>
+
+        <FusionDemo />
     </section>
 
     <section class="mb-14">

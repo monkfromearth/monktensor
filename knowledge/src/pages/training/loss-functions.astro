@@ -5,6 +5,7 @@ import LessonHeader from '../../components/LessonHeader.astro';
 import LessonNav from '../../components/LessonNav.astro';
 import InsightBox from '../../components/InsightBox.astro';
 import TagBadge from '../../components/TagBadge.astro';
+import LossShapesDemo from '../../components/demos/LossShapesDemo.astro';
 ---
 
 <LessonLayout title="Loss Functions" lessonNumber="4.2" section="Training">
@@ -45,6 +46,8 @@ import TagBadge from '../../components/TagBadge.astro';
             toward small numeric error, hinge toward confident separation, cross-entropy toward calibrated probabilities.
             Same machinery, different definition of "good."
         </p>
+
+        <LossShapesDemo />
     </section>
 
     <section class="mb-14">

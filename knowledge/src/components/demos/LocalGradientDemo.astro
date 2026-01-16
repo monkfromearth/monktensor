@@ -1,0 +1,91 @@
+---
+/**
+ * A microscope on a single operation. Pick +, x, or tanh; drag the inputs; see the
+ * output and its LOCAL gradient (how the output moves if you nudge each input). (Lesson 1.4.)
+ */
+---
+
+<div class="mt-demo mt-localgrad-demo my-6 bg-white border border-mt-border rounded-2xl p-6">
+    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-3 text-center">One operation, up close &mdash; drag the inputs</p>
+
+    <div class="flex items-center justify-center gap-2 mb-4">
+        {['+', '×', 'tanh'].map((op, i) => (
+            <button data-op={op} class={`px-3 py-1.5 rounded-lg text-sm font-mono ${i === 1 ? 'bg-mt-lav text-white' : 'bg-stone-100 text-mt-muted'}`}>{op}</button>
+        ))}
+    </div>
+
+    <svg viewBox="0 0 360 150" class="w-full max-w-md mx-auto block" role="img" aria-label="a single operation with draggable inputs and its local gradients">
+        <!-- input a -->
+        <line x1="40" y1="30" x2="40" y2="90" stroke="#EFE8E2" stroke-width="6" stroke-linecap="round" />
+        <text x="40" y="110" text-anchor="middle" class="font-mono" font-size="11" fill="#C96F5A">a=<tspan data-val="a">2.0</tspan></text>
+        <circle data-drag="a" cx="40" cy="50" r="11" fill="#fff" stroke="#C96F5A" stroke-width="2.5" class="mt-grab" />
+        <!-- input b (hidden for unary ops) -->
+        <g data-bgroup>
+            <line x1="40" y1="100" x2="40" y2="120" stroke="#EFE8E2" stroke-width="6" stroke-linecap="round" opacity="0" />
+            <line x1="110" y1="30" x2="110" y2="90" stroke="#EFE8E2" stroke-width="6" stroke-linecap="round" />
+            <text x="110" y="110" text-anchor="middle" class="font-mono" font-size="11" fill="#C96F5A">b=<tspan data-val="b">-3.0</tspan></text>
+            <circle data-drag="b" cx="110" cy="70" r="11" fill="#fff" stroke="#C96F5A" stroke-width="2.5" class="mt-grab" />
+        </g>
+        <!-- op + output -->
+        <circle cx="210" cy="60" r="26" fill="#F0F0FB" stroke="#7E7FBC" stroke-width="2" />
+        <text data-opsym x="210" y="65" text-anchor="middle" class="font-mono" font-size="16" fill="#7E7FBC">×</text>
+        <line x1="236" y1="60" x2="290" y2="60" stroke="#E8E4DF" stroke-width="2" />
+        <circle cx="316" cy="60" r="24" fill="#EEF3FC" stroke="#5E80C9" stroke-width="2.5" />
+        <text x="316" y="50" text-anchor="middle" font-size="8" fill="#6B6560" class="font-mono">out</text>
+        <text data-out x="316" y="66" text-anchor="middle" class="font-mono" font-size="13" font-weight="bold" fill="#5E80C9">-6</text>
+    </svg>
+
+    <div class="flex items-center justify-center gap-3 font-mono text-xs mt-2">
+        <span class="px-3 py-1 rounded-lg bg-mt-accentLight text-mt-accent">∂out/∂a = <span data-ga>-3</span></span>
+        <span data-gbpill class="px-3 py-1 rounded-lg bg-mt-accentLight text-mt-accent">∂out/∂b = <span data-gb>2</span></span>
+    </div>
+    <p class="text-center text-xs text-mt-muted mt-3">the local gradient is just "if I nudge this input, how fast does the output move?" &mdash; ignoring the rest of any graph</p>
+</div>
+
+<script>
+    import { svgPoint, clamp } from '../../lib/interact';
+
+    document.querySelectorAll<HTMLElement>('.mt-localgrad-demo').forEach((root) => {
+        const svg = root.querySelector<SVGSVGElement>('svg')!;
+        let op = '×';
+        const v: Record<string, number> = { a: 2, b: -3 };
+        const opsym = root.querySelector<SVGTextElement>('[data-opsym]')!;
+        const bgroup = root.querySelector<SVGGElement>('[data-bgroup]')!;
+        const gbpill = root.querySelector<HTMLElement>('[data-gbpill]')!;
+
+        function compute() {
+            if (op === '+') return { out: v.a + v.b, ga: 1, gb: 1, unary: false };
+            if (op === '×') return { out: v.a * v.b, ga: v.b, gb: v.a, unary: false };
+            const t = Math.tanh(v.a); return { out: t, ga: 1 - t * t, gb: 0, unary: true };
+        }
+        function render() {
+            opsym.textContent = op;
+            const r = compute();
+            bgroup.style.display = r.unary ? 'none' : '';
+            gbpill.style.display = r.unary ? 'none' : '';
+            root.querySelector<HTMLElement>('[data-val="a"]')!.textContent = v.a.toFixed(1);
+            root.querySelector<HTMLElement>('[data-val="b"]')!.textContent = v.b.toFixed(1);
+            root.querySelector<HTMLElement>('[data-out]')!.textContent = r.out.toFixed(2);
+            root.querySelector<HTMLElement>('[data-ga]')!.textContent = r.ga.toFixed(2);
+            root.querySelector<HTMLElement>('[data-gb]')!.textContent = r.gb.toFixed(2);
+        }
+        root.querySelectorAll<HTMLButtonElement>('[data-op]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                op = btn.dataset.op!;
+                root.querySelectorAll<HTMLButtonElement>('[data-op]').forEach((b) => {
+                    const on = b === btn;
+                    b.classList.toggle('bg-mt-lav', on); b.classList.toggle('text-white', on);
+                    b.classList.toggle('bg-stone-100', !on); b.classList.toggle('text-mt-muted', !on);
+                });
+                render();
+            });
+        });
+        (['a', 'b'] as const).forEach((k) => {
+            const h = root.querySelector<SVGCircleElement>(`[data-drag="${k}"]`)!;
+            const set = (e: PointerEvent) => { v[k] = clamp(Math.round((5 - (svgPoint(svg, e).y / 90) * 10) * 10) / 10, -5, 5); render(); };
+            h.addEventListener('pointerdown', (e) => { h.setPointerCapture(e.pointerId); set(e); });
+            h.addEventListener('pointermove', (e) => { if (h.hasPointerCapture(e.pointerId)) set(e); });
+        });
+        render();
+    });
+</script>

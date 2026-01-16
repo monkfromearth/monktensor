@@ -1,0 +1,72 @@
+---
+/**
+ * Why backprop needs an order: a node can't be finished until every node that uses it
+ * has reported back. Play the valid (reverse) order, or try a wrong one. (Lesson 2.3.)
+ */
+const N = {
+  a: { cx: 52, cy: 46, t: 'a', c: '#C96F5A', l: '#FBEEE9' },
+  b: { cx: 52, cy: 112, t: 'b', c: '#C96F5A', l: '#FBEEE9' },
+  c: { cx: 52, cy: 178, t: 'c', c: '#C96F5A', l: '#FBEEE9' },
+  d: { cx: 178, cy: 79, t: '×', c: '#7E7FBC', l: '#F0F0FB' },
+  e: { cx: 300, cy: 120, t: '+', c: '#5E80C9', l: '#EEF3FC' },
+};
+type K = keyof typeof N;
+const edges: [K, K][] = [['a', 'd'], ['b', 'd'], ['d', 'e'], ['c', 'e']];
+---
+
+<div class="mt-demo mt-topo-demo my-6 bg-white border border-mt-border rounded-2xl p-6">
+    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-1 text-center">Backward needs the right order</p>
+    <p class="text-center text-xs text-mt-muted mb-3">a node is only done once everything that uses it has reported &mdash; socks before shoes</p>
+
+    <svg viewBox="0 0 360 215" class="w-full max-w-md mx-auto block" role="img" aria-label="graph showing valid backward processing order">
+        {edges.map(([s, t]) => <line x1={N[s].cx} y1={N[s].cy} x2={N[t].cx} y2={N[t].cy} stroke="#E8E4DF" stroke-width="2" />)}
+        {(Object.keys(N) as K[]).map((k) => (
+            <g data-node={k}>
+                <circle data-ring={k} cx={N[k].cx} cy={N[k].cy} r="22" fill={N[k].l} stroke={N[k].c} stroke-width="2" />
+                <text x={N[k].cx} y={N[k].cy + 1} text-anchor="middle" dominant-baseline="middle" class="font-mono" font-size="13" fill={N[k].c}>{N[k].t}</text>
+                <text data-mark={k} x={N[k].cx + 17} y={N[k].cy - 14} text-anchor="middle" font-size="14" opacity="0"></text>
+            </g>
+        ))}
+    </svg>
+
+    <div class="flex items-center justify-center gap-3 mt-1">
+        <button data-valid class="px-4 py-2 rounded-lg bg-mt-green text-white text-sm font-semibold hover:opacity-90 transition">Play valid order</button>
+        <button data-wrong class="px-4 py-2 rounded-lg bg-stone-100 text-mt-muted text-sm hover:bg-stone-200 transition">Try a wrong order</button>
+    </div>
+    <p class="text-center text-xs text-mt-muted mt-3" data-cap>reverse topological order: output first, then inward</p>
+</div>
+
+<script>
+    import { gsap, REDUCED } from '../../lib/interact';
+
+    document.querySelectorAll<HTMLElement>('.mt-topo-demo').forEach((root) => {
+        const ring = (k: string) => root.querySelector<SVGCircleElement>(`[data-ring="${k}"]`)!;
+        const mark = (k: string) => root.querySelector<SVGTextElement>(`[data-mark="${k}"]`)!;
+        const cap = root.querySelector<HTMLElement>('[data-cap]')!;
+        const all = ['a', 'b', 'c', 'd', 'e'];
+        const reset = () => { all.forEach((k) => { gsap.set(ring(k), { stroke: '#E8E4DF' }); gsap.set(mark(k), { opacity: 0 }); mark(k).textContent = ''; }); };
+
+        function valid() {
+            reset(); cap.textContent = 'output first, then its inputs — each node done only after its users';
+            const order = ['e', 'd', 'c', 'b', 'a'];
+            const tl = gsap.timeline();
+            order.forEach((k) => {
+                tl.add(() => { mark(k).textContent = '✓'; mark(k).setAttribute('fill', '#4F9D7B'); })
+                  .to(ring(k), { stroke: '#4F9D7B', duration: REDUCED ? 0 : 0.2 })
+                  .to(mark(k), { opacity: 1, duration: REDUCED ? 0 : 0.2 }, '<')
+                  .to({}, { duration: REDUCED ? 0 : 0.35 });
+            });
+        }
+        function wrong() {
+            reset(); cap.textContent = "processing d first is too early — its user e hasn't reported, so d's gradient is incomplete";
+            // try d before e
+            const tl = gsap.timeline();
+            tl.add(() => { mark('d').textContent = '✕'; mark('d').setAttribute('fill', '#E5484D'); })
+              .to(ring('d'), { stroke: '#E5484D', duration: REDUCED ? 0 : 0.2 })
+              .to(mark('d'), { opacity: 1, duration: REDUCED ? 0 : 0.2 }, '<')
+              .to(ring('d'), { stroke: '#E5484D', repeat: REDUCED ? 0 : 3, yoyo: true, duration: 0.15, opacity: 1 });
+        }
+        root.querySelector('[data-valid]')!.addEventListener('click', valid);
+        root.querySelector('[data-wrong]')!.addEventListener('click', wrong);
+    });
+</script>

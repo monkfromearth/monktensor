@@ -1,0 +1,82 @@
+---
+/**
+ * Parameters vs activations as a control panel: you turn the knobs (weights); the
+ * gauges (activations) just follow. The optimizer only ever turns the knobs. (Lesson 1.3.)
+ */
+---
+
+<div class="mt-demo mt-knobs-demo my-6 bg-white border border-mt-border rounded-2xl p-6">
+    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-4 text-center">Turn the <span class="text-mt-accent">knobs</span> &mdash; the <span class="text-mt-lav">gauges</span> follow</p>
+
+    <div class="grid grid-cols-2 gap-6 items-center">
+        <!-- knobs (parameters) -->
+        <div>
+            <p class="text-xs font-semibold text-mt-accent mb-3 text-center">knobs you turn<br><span class="text-mt-muted font-normal">parameters (weights)</span></p>
+            <svg viewBox="0 0 200 120" class="w-full" role="img" aria-label="two draggable weight knobs">
+                {[['w1', 50], ['w2', 150]].map(([id, cx]) => (
+                    <g>
+                        <circle cx={cx} cy="50" r="30" fill="#FBEEE9" stroke="#C96F5A" stroke-width="2" />
+                        <line data-ind={id} x1={cx} y1="50" x2={cx} y2="26" stroke="#C96F5A" stroke-width="3" stroke-linecap="round" />
+                        <circle data-drag={id} cx={cx} cy="50" r="30" fill="transparent" class="mt-grab" />
+                        <text x={cx} y="100" text-anchor="middle" class="font-mono" font-size="11" fill="#C96F5A">{id}=<tspan data-val={id}>1.0</tspan></text>
+                    </g>
+                ))}
+            </svg>
+            <p class="text-center text-[11px] text-mt-muted mt-1">drag a knob up/down</p>
+        </div>
+        <!-- gauges (activations) -->
+        <div>
+            <p class="text-xs font-semibold text-mt-lav mb-3 text-center">gauges that follow<br><span class="text-mt-muted font-normal">activations (computed)</span></p>
+            <div class="space-y-2 font-mono text-xs">
+                {[['h1', 'w1·x1'], ['h2', 'w2·x2'], ['out', 'tanh(h1+h2)']].map(([id, expr]) => (
+                    <div>
+                        <div class="flex justify-between text-mt-muted"><span>{expr}</span><span data-g={id}>0.0</span></div>
+                        <div class="h-3 rounded-full bg-mt-bg relative overflow-hidden"><div data-bar={id} class="absolute top-0 bottom-0 bg-mt-lav rounded-full" style="left:50%;width:0%"></div></div>
+                    </div>
+                ))}
+                <p class="text-[11px] text-mt-muted pt-1">data: x1=1.5, x2=-1 (fixed)</p>
+            </div>
+        </div>
+    </div>
+    <p class="text-center text-xs text-mt-muted mt-4">backprop gives <em>every</em> value a gradient &mdash; but a training step only turns the knobs</p>
+</div>
+
+<script>
+    import { svgPoint, clamp } from '../../lib/interact';
+
+    document.querySelectorAll<HTMLElement>('.mt-knobs-demo').forEach((root) => {
+        const svg = root.querySelector<SVGSVGElement>('svg')!;
+        const x1 = 1.5, x2 = -1;
+        const w: Record<string, number> = { w1: 1, w2: 1 };
+        // signed bar: center at 50%, grow left (negative) or right (positive), max |val|~4
+        const bar = (id: string, v: number) => {
+            const el = root.querySelector<HTMLElement>(`[data-bar="${id}"]`)!;
+            const frac = clamp(v / 4, -1, 1) * 50;
+            el.style.left = frac >= 0 ? '50%' : `${50 + frac}%`;
+            el.style.width = Math.abs(frac) + '%';
+            el.style.background = v >= 0 ? '#7E7FBC' : '#C96F5A';
+        };
+        function render() {
+            (['w1', 'w2'] as const).forEach((k) => {
+                root.querySelector<HTMLElement>(`[data-val="${k}"]`)!.textContent = w[k].toFixed(1);
+                const ind = root.querySelector<SVGLineElement>(`[data-ind="${k}"]`)!;
+                const cx = k === 'w1' ? 50 : 150, ang = (w[k] / 2) * 135 * (Math.PI / 180);
+                ind.setAttribute('x2', String(cx + 24 * Math.sin(ang)));
+                ind.setAttribute('y2', String(50 - 24 * Math.cos(ang)));
+            });
+            const h1 = w.w1 * x1, h2 = w.w2 * x2, out = Math.tanh(h1 + h2);
+            const vals: Record<string, number> = { h1, h2, out };
+            (['h1', 'h2', 'out'] as const).forEach((id) => {
+                root.querySelector<HTMLElement>(`[data-g="${id}"]`)!.textContent = vals[id].toFixed(2);
+                bar(id, vals[id]);
+            });
+        }
+        (['w1', 'w2'] as const).forEach((k) => {
+            const h = root.querySelector<SVGCircleElement>(`[data-drag="${k}"]`)!;
+            const set = (e: PointerEvent) => { w[k] = clamp(2 - (svgPoint(svg, e).y / 100) * 4, -2, 2); render(); };
+            h.addEventListener('pointerdown', (e) => { h.setPointerCapture(e.pointerId); set(e); });
+            h.addEventListener('pointermove', (e) => { if (h.hasPointerCapture(e.pointerId)) set(e); });
+        });
+        render();
+    });
+</script>

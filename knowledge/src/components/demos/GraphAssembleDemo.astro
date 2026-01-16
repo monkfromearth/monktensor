@@ -1,0 +1,74 @@
+---
+/**
+ * Watch the graph assemble itself as the expression e = (a x b) + c is built,
+ * one operation at a time — the meaning of "define-by-run". (Lesson 1.1.)
+ */
+const N = {
+  a: { cx: 52, cy: 46, t: 'a', c: '#C96F5A', l: '#FBEEE9' },
+  b: { cx: 52, cy: 112, t: 'b', c: '#C96F5A', l: '#FBEEE9' },
+  c: { cx: 52, cy: 178, t: 'c', c: '#C96F5A', l: '#FBEEE9' },
+  d: { cx: 178, cy: 79, t: '×', c: '#7E7FBC', l: '#F0F0FB' },
+  e: { cx: 300, cy: 120, t: '+', c: '#5E80C9', l: '#EEF3FC' },
+};
+type K = keyof typeof N;
+const edges: [K, K][] = [['a', 'd'], ['b', 'd'], ['d', 'e'], ['c', 'e']];
+// reveal order: inputs a,b -> the multiply d -> input c -> the add e
+const reveal: { node?: K; edges?: [K, K][] }[] = [
+  { node: 'a' }, { node: 'b' }, { node: 'd', edges: [['a', 'd'], ['b', 'd']] },
+  { node: 'c' }, { node: 'e', edges: [['d', 'e'], ['c', 'e']] },
+];
+---
+
+<div class="mt-demo mt-assemble-demo my-6 bg-white border border-mt-border rounded-2xl p-6">
+    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-1 text-center">Build <span class="font-mono">e = (a &times; b) + c</span></p>
+    <p class="text-center text-xs text-mt-muted mb-3">each operation adds itself to the graph as it runs &mdash; define-by-run</p>
+
+    <svg viewBox="0 0 360 215" class="w-full max-w-md mx-auto block" role="img" aria-label="a computation graph assembling step by step">
+        {edges.map(([s, t]) => <line data-edge={`${s}${t}`} x1={N[s].cx} y1={N[s].cy} x2={N[t].cx} y2={N[t].cy} stroke="#E8E4DF" stroke-width="2" opacity="0" />)}
+        {(Object.keys(N) as K[]).map((k) => (
+            <g data-node={k} opacity="0">
+                <circle cx={N[k].cx} cy={N[k].cy} r="22" fill={N[k].l} stroke={N[k].c} stroke-width="2" />
+                <text x={N[k].cx} y={N[k].cy + 1} text-anchor="middle" dominant-baseline="middle" class="font-mono" font-size="13" fill={N[k].c}>{N[k].t}</text>
+            </g>
+        ))}
+    </svg>
+
+    <div class="flex items-center justify-center gap-3 mt-1">
+        <button data-build class="px-4 py-2 rounded-lg bg-mt-lav text-white text-sm font-semibold hover:opacity-90 transition">Build it</button>
+        <button data-reset class="px-4 py-2 rounded-lg bg-stone-100 text-mt-muted text-sm hover:bg-stone-200 transition">Reset</button>
+    </div>
+    <p class="text-center text-xs text-mt-muted mt-3" data-cap>you write ordinary math; the graph records itself underneath</p>
+</div>
+
+<script>
+    import { gsap, REDUCED } from '../../lib/interact';
+    const STEPS = [
+        { node: 'a', edges: [] }, { node: 'b', edges: [] },
+        { node: 'd', edges: ['ad', 'bd'] }, { node: 'c', edges: [] },
+        { node: 'e', edges: ['de', 'ce'] },
+    ];
+
+    document.querySelectorAll<HTMLElement>('.mt-assemble-demo').forEach((root) => {
+        const node = (k: string) => root.querySelector<SVGGElement>(`[data-node="${k}"]`)!;
+        const edge = (k: string) => root.querySelector<SVGLineElement>(`[data-edge="${k}"]`)!;
+        const allNodes = ['a', 'b', 'c', 'd', 'e'], allEdges = ['ad', 'bd', 'de', 'ce'];
+
+        function reset() {
+            gsap.killTweensOf('*');
+            allNodes.forEach((k) => gsap.set(node(k), { opacity: 0, scale: 0.5, transformOrigin: 'center' }));
+            allEdges.forEach((k) => gsap.set(edge(k), { opacity: 0 }));
+        }
+        function build() {
+            reset();
+            const tl = gsap.timeline();
+            STEPS.forEach((s) => {
+                tl.to(node(s.node), { opacity: 1, scale: 1, duration: REDUCED ? 0 : 0.35, ease: 'back.out(2)' });
+                s.edges.forEach((e) => tl.to(edge(e), { opacity: 1, duration: REDUCED ? 0 : 0.25 }, '<'));
+                tl.to({}, { duration: REDUCED ? 0 : 0.25 });
+            });
+        }
+        root.querySelector('[data-build]')!.addEventListener('click', build);
+        root.querySelector('[data-reset]')!.addEventListener('click', reset);
+        build();
+    });
+</script>

@@ -1,86 +1,99 @@
 ---
 /**
- * Interactive: x is used in two places, so two gradients flow back to it and
- * must be ADDED. Run the backward pass and watch x.grad accumulate. (Lesson 2.2.)
+ * Fan-out as two streams pouring into one bucket. x is used twice, so two gradients
+ * flow back and ADD (+=). Flip to Overwrite (=) and watch a path get lost. (Lesson 2.2.)
  */
 ---
 
-<div class="mt-accumulate-demo my-6 bg-white border border-mt-border rounded-2xl p-6">
+<div class="mt-demo mt-accumulate-demo my-6 bg-white border border-mt-border rounded-2xl p-6">
     <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-1 text-center">Backward pass of <span class="font-mono">y = x &times; x</span></p>
-    <p class="text-center text-xs text-mt-muted mb-5">x is used twice, so two gradients come back &mdash; they add</p>
+    <p class="text-center text-xs text-mt-muted mb-4">x feeds two slots, so two gradients (each = x) come back to it</p>
 
-    <div class="relative grid grid-cols-2 gap-6 items-center mb-5" style="min-height:120px">
-        <!-- accumulator -->
-        <div class="text-center">
-            <div class="inline-block px-4 py-3 rounded-xl bg-mt-accentLight border border-mt-accent/30">
-                <div class="text-xs text-mt-muted">x.grad</div>
-                <div class="font-mono text-2xl font-bold text-mt-accent" data-grad>0.0</div>
-            </div>
-            <div class="text-xs text-mt-muted mt-1 font-mono">x = <span data-x>3</span></div>
+    <svg viewBox="0 0 360 170" class="w-full max-w-md mx-auto block" role="img" aria-label="two gradient streams pouring into x's bucket">
+        <!-- two source pipes -->
+        <text x="300" y="34" text-anchor="middle" class="font-mono" font-size="10" fill="#7E7FBC">slot 1: +<tspan data-xval>3</tspan></text>
+        <text x="300" y="140" text-anchor="middle" class="font-mono" font-size="10" fill="#5E80C9">slot 2: +<tspan data-xval2>3</tspan></text>
+        <path d="M300 42 Q 200 50 150 78" fill="none" stroke="#ECEAF6" stroke-width="6" />
+        <path d="M300 128 Q 200 120 150 96" fill="none" stroke="#EAF0FB" stroke-width="6" />
+
+        <!-- the bucket (x.grad accumulator) -->
+        <rect x="70" y="40" width="64" height="90" rx="8" fill="#FAF8F5" stroke="#C96F5A" stroke-width="2" />
+        <rect data-fill x="72" y="128" width="60" height="0" rx="6" fill="#C96F5A" opacity="0.8" />
+        <text x="102" y="32" text-anchor="middle" class="font-mono" font-size="10" fill="#6B6560">x.grad</text>
+        <text data-grad x="102" y="90" text-anchor="middle" class="font-mono" font-size="18" font-weight="bold" fill="#C96F5A">0</text>
+
+        <!-- droplets -->
+        <circle data-drop="1" cx="300" cy="42" r="6" fill="#7E7FBC" opacity="0" />
+        <circle data-drop="2" cx="300" cy="128" r="6" fill="#5E80C9" opacity="0" />
+    </svg>
+
+    <div class="flex flex-wrap items-center justify-center gap-2 mt-2">
+        <div class="inline-flex rounded-lg border border-mt-border overflow-hidden text-sm">
+            <button data-mode="add" class="px-3 py-1.5 bg-mt-accent text-white font-semibold">add (+=)</button>
+            <button data-mode="set" class="px-3 py-1.5 bg-white text-mt-muted">overwrite (=)</button>
         </div>
-        <!-- contributions -->
-        <div class="space-y-3">
-            <div class="px-3 py-2 rounded-lg bg-mt-lavLight border border-mt-lav/30 font-mono text-sm text-mt-lav" data-chip="0">path 1: +<span data-c0>3</span></div>
-            <div class="px-3 py-2 rounded-lg bg-mt-blueLight border border-mt-blue/30 font-mono text-sm text-mt-blue" data-chip="1">path 2: +<span data-c1>3</span></div>
-        </div>
+        <button data-run class="px-4 py-2 rounded-lg bg-mt-lav text-white text-sm font-semibold hover:opacity-90 transition">Run backward</button>
+        <span class="text-xs text-mt-muted">x:</span>
+        <button data-x="-1" class="w-7 h-7 rounded-lg bg-stone-100 text-mt-muted">&minus;</button>
+        <button data-x="1" class="w-7 h-7 rounded-lg bg-stone-100 text-mt-muted">+</button>
     </div>
-
-    <div class="flex items-center justify-center gap-3 mb-4">
-        <button data-run class="px-4 py-2 rounded-lg bg-mt-accent text-white text-sm font-semibold hover:opacity-90 transition">Run backward</button>
-        <button data-reset class="px-4 py-2 rounded-lg bg-stone-100 text-mt-muted text-sm hover:bg-stone-200 transition">Reset</button>
-    </div>
-
-    <div class="flex items-center justify-center gap-2 text-xs mb-2">
-        <span class="text-mt-muted">x:</span>
-        <input type="range" min="1" max="5" step="1" value="3" data-x-slider class="accent-mt-accent cursor-pointer w-40" aria-label="value of x" />
-    </div>
-
-    <p class="text-center text-xs text-mt-muted mt-3" data-msg>each path gives <span class="font-mono">x</span>; added, that's <span class="font-mono">2x</span>. Overwrite instead of add and you'd wrongly get just <span class="font-mono">x</span>.</p>
+    <p class="text-center text-xs text-mt-muted mt-3" data-verdict>add both paths &rarr; <span class="font-mono">2x</span>, the right answer. Overwrite and the second path replaces the first &mdash; a path is lost.</p>
 </div>
 
 <script>
-    import { gsap } from 'gsap';
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    import { gsap, REDUCED } from '../../lib/interact';
 
     document.querySelectorAll<HTMLElement>('.mt-accumulate-demo').forEach((root) => {
-        const gradEl = root.querySelector<HTMLElement>('[data-grad]')!;
-        const chips = [root.querySelector<HTMLElement>('[data-chip="0"]')!, root.querySelector<HTMLElement>('[data-chip="1"]')!];
-        const xSlider = root.querySelector<HTMLInputElement>('[data-x-slider]')!;
-        const xEl = root.querySelector<HTMLElement>('[data-x]')!;
-        const c0 = root.querySelector<HTMLElement>('[data-c0]')!;
-        const c1 = root.querySelector<HTMLElement>('[data-c1]')!;
-        const runBtn = root.querySelector<HTMLButtonElement>('[data-run]')!;
-        const resetBtn = root.querySelector<HTMLButtonElement>('[data-reset]')!;
-
-        let x = 3;
+        let x = 3, mode: 'add' | 'set' = 'add';
+        const gradEl = root.querySelector<SVGTextElement>('[data-grad]')!;
+        const fill = root.querySelector<SVGRectElement>('[data-fill]')!;
+        const verdict = root.querySelector<HTMLElement>('[data-verdict]')!;
+        const drop = (i: string) => root.querySelector<SVGCircleElement>(`[data-drop="${i}"]`)!;
+        const maxH = 88, maxGrad = 10;
         const proxy = { v: 0 };
-        function render() { gradEl.textContent = proxy.v.toFixed(1); }
-
-        function reset() {
-            gsap.killTweensOf(proxy); proxy.v = 0; render();
-            gsap.set(chips, { x: 0, opacity: 1 });
-        }
-        function syncX() {
-            x = Number(xSlider.value);
-            xEl.textContent = String(x); c0.textContent = String(x); c1.textContent = String(x);
-            reset();
-        }
-        function addContribution(i: number, delay: number) {
-            if (reduce) { proxy.v += x; render(); return; }
-            const tl = gsap.timeline({ delay });
-            tl.to(chips[i], { x: -60, opacity: 0.2, duration: 0.5, ease: 'power2.in' })
-              .to(proxy, { v: proxy.v + x, duration: 0.3, onUpdate: render }, '<0.1')
-              .set(chips[i], { x: 0, opacity: 1, delay: 0.2 });
-        }
+        const draw = () => {
+            gradEl.textContent = String(Math.round(proxy.v));
+            const h = Math.min(proxy.v / maxGrad, 1) * maxH;
+            fill.setAttribute('height', String(h));
+            fill.setAttribute('y', String(128 - h));
+        };
+        const syncX = () => {
+            root.querySelector<HTMLElement>('[data-xval]')!.textContent = String(x);
+            root.querySelector<HTMLElement>('[data-xval2]')!.textContent = String(x);
+            verdict.innerHTML = mode === 'add'
+                ? `both paths add &rarr; <span class="font-mono">x + x = ${2 * x}</span> = 2x. Correct.`
+                : `overwrite: the second path replaces the first &rarr; <span class="font-mono">${x}</span> = x. A path is lost.`;
+        };
+        const reset = () => { gsap.killTweensOf([proxy, drop('1'), drop('2')]); proxy.v = 0; draw(); gsap.set([drop('1'), drop('2')], { opacity: 0 }); };
+        const pour = (i: string, sx: number, sy: number, delay: number, target: number) => {
+            const d = drop(i);
+            if (REDUCED) return;
+            gsap.timeline({ delay })
+                .set(d, { attr: { cx: sx, cy: sy }, opacity: 1 })
+                .to(d, { attr: { cx: 102, cy: 122 }, duration: 0.5, ease: 'power1.in' })
+                .to(proxy, { v: target, duration: 0.25, onUpdate: draw }, '>-0.05')
+                .to(d, { opacity: 0, duration: 0.1 });
+        };
         function run() {
             reset();
-            addContribution(0, 0);
-            addContribution(1, 0.8);
+            const t1 = x, t2 = mode === 'add' ? 2 * x : x; // explicit targets per slot
+            pour('1', 300, 42, 0, t1);
+            pour('2', 300, 128, 0.8, t2);
+            if (REDUCED) { proxy.v = t2; draw(); }
         }
-
-        runBtn.addEventListener('click', run);
-        resetBtn.addEventListener('click', reset);
-        xSlider.addEventListener('input', syncX);
-        syncX();
+        root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach((b) =>
+            b.addEventListener('click', () => {
+                mode = b.dataset.mode as 'add' | 'set';
+                root.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach((o) => {
+                    const on = o === b;
+                    o.classList.toggle('bg-mt-accent', on); o.classList.toggle('text-white', on);
+                    o.classList.toggle('bg-white', !on); o.classList.toggle('text-mt-muted', !on);
+                });
+                syncX(); reset();
+            }));
+        root.querySelectorAll<HTMLButtonElement>('[data-x]').forEach((b) =>
+            b.addEventListener('click', () => { x = Math.max(1, Math.min(5, x + Number(b.dataset.x))); syncX(); reset(); }));
+        root.querySelector('[data-run]')!.addEventListener('click', run);
+        syncX(); reset();
     });
 </script>

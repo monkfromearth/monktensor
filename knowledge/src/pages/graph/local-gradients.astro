@@ -5,6 +5,7 @@ import LessonHeader from '../../components/LessonHeader.astro';
 import LessonNav from '../../components/LessonNav.astro';
 import InsightBox from '../../components/InsightBox.astro';
 import TagBadge from '../../components/TagBadge.astro';
+import LocalGradientDemo from '../../components/demos/LocalGradientDemo.astro';
 ---
 
 <LessonLayout title="Local Gradients" lessonNumber="1.4" section="The Graph">
@@ -61,6 +62,8 @@ import TagBadge from '../../components/TagBadge.astro';
             <div>&part;d/&part;a = b = -3 &nbsp; <span class="font-sans text-mt-muted">(wiggle a, d moves at rate -3)</span></div>
             <div>&part;d/&part;b = a = &nbsp;2 &nbsp; <span class="font-sans text-mt-muted">(wiggle b, d moves at rate 2)</span></div>
         </div>
+
+        <LocalGradientDemo />
         <p class="text-mt-muted leading-relaxed">
             The node can produce these from the values it already remembered during the forward pass. It needs nothing
             else.

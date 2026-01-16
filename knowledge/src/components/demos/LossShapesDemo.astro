@@ -1,0 +1,78 @@
+---
+/**
+ * Drag the prediction; the true answer is fixed at +1. Each loss penalizes being wrong
+ * with a different shape — squared, a hinge, a log. (Lesson 4.2.)
+ */
+const W = 140, H = 130, pad = 18;
+const pmin = -3, pmax = 3;
+const sx = (p: number) => pad + ((p - pmin) / (pmax - pmin)) * (W - 2 * pad);
+const sy = (v: number, vmax: number) => (H - pad) - (Math.min(v, vmax) / vmax) * (H - 2 * pad);
+const losses = [
+  { name: 'MSE', vmax: 9, color: '#C96F5A' },
+  { name: 'hinge', vmax: 4, color: '#7E7FBC' },
+  { name: 'cross-entropy', vmax: 3.2, color: '#5E80C9' },
+];
+const evalL = (name: string, p: number) =>
+  name === 'MSE' ? (p - 1) ** 2 : name === 'hinge' ? Math.max(0, 1 - p) : Math.log(1 + Math.exp(-p));
+const panels = losses.map((l) => {
+  const pts: string[] = [];
+  for (let p = pmin; p <= pmax + 1e-9; p += 0.2) pts.push(`${sx(p).toFixed(1)},${sy(evalL(l.name, p), l.vmax).toFixed(1)}`);
+  return { ...l, curve: pts.join(' '), truex: sx(1) };
+});
+const startP = -1;
+---
+
+<div class="mt-demo mt-loss-demo my-6 bg-white border border-mt-border rounded-2xl p-6"
+     data-w={W} data-h={H} data-pad={pad} data-pmin={pmin} data-pmax={pmax}>
+    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-1 text-center">Drag the prediction &mdash; truth is fixed at <span class="font-mono">+1</span></p>
+    <p class="text-center text-xs text-mt-muted mb-4">each loss says "how wrong" with a different shape; all hit zero at the right answer</p>
+
+    <div class="grid grid-cols-3 gap-3">
+        {panels.map((l) => (
+            <div class="text-center" data-panel data-name={l.name} data-vmax={l.vmax}>
+                <svg viewBox={`0 0 ${W} ${H}`} class="w-full" role="img" aria-label={l.name + " penalty, drag the prediction"}>
+                    <line x1={l.truex} y1={pad} x2={l.truex} y2={H - pad} stroke="#CDE8D7" stroke-width="2" stroke-dasharray="3 3" />
+                    <polyline points={l.curve} fill="none" stroke={l.color} stroke-width="2.5" stroke-linecap="round" />
+                    <circle data-dot cx={sx(startP)} cy={sy(evalL(l.name, startP), l.vmax)} r="6" fill={l.color} stroke="#fff" stroke-width="2" class="mt-grab" />
+                </svg>
+                <div class="font-mono text-xs mt-1" style={`color:${l.color}`}>{l.name}</div>
+                <div class="font-mono text-xs text-mt-muted">penalty = <span data-out>0.00</span></div>
+            </div>
+        ))}
+    </div>
+    <p class="text-center text-xs text-mt-muted mt-3">the green dashed line is the right answer &mdash; drag a dot toward it and every penalty falls to 0</p>
+</div>
+
+<script>
+    import { gsap, svgPoint, clamp } from '../../lib/interact';
+    const evalL = (name: string, p: number) =>
+        name === 'MSE' ? (p - 1) ** 2 : name === 'hinge' ? Math.max(0, 1 - p) : Math.log(1 + Math.exp(-p));
+
+    document.querySelectorAll<HTMLElement>('.mt-loss-demo').forEach((root) => {
+        const W = Number(root.dataset.w), H = Number(root.dataset.h), pad = Number(root.dataset.pad);
+        const pmin = Number(root.dataset.pmin), pmax = Number(root.dataset.pmax);
+        const sx = (p: number) => pad + ((p - pmin) / (pmax - pmin)) * (W - 2 * pad);
+        const sy = (v: number, vmax: number) => (H - pad) - (Math.min(v, vmax) / vmax) * (H - 2 * pad);
+        const invP = (px: number) => clamp(pmin + ((px - pad) / (W - 2 * pad)) * (pmax - pmin), pmin, pmax);
+        const panels = Array.from(root.querySelectorAll<HTMLElement>('[data-panel]'));
+        let p = -1;
+
+        function render() {
+            panels.forEach((panel) => {
+                const name = panel.dataset.name!, vmax = Number(panel.dataset.vmax);
+                const v = evalL(name, p);
+                panel.querySelector<HTMLElement>('[data-out]')!.textContent = v.toFixed(2);
+                gsap.to(panel.querySelector('[data-dot]'), { attr: { cx: sx(p), cy: sy(v, vmax) }, duration: 0.15, overwrite: true });
+            });
+        }
+        panels.forEach((panel) => {
+            const svg = panel.querySelector<SVGSVGElement>('svg')!;
+            const dot = panel.querySelector<SVGCircleElement>('[data-dot]')!;
+            const set = (e: PointerEvent) => { p = invP(svgPoint(svg, e).x); render(); };
+            dot.addEventListener('pointerdown', (e) => { dot.setPointerCapture(e.pointerId); set(e); });
+            dot.addEventListener('pointermove', (e) => { if (dot.hasPointerCapture(e.pointerId)) set(e); });
+            svg.addEventListener('pointerdown', (e) => { if (e.target !== dot) set(e); });
+        });
+        render();
+    });
+</script>

@@ -5,6 +5,7 @@ import LessonHeader from '../../components/LessonHeader.astro';
 import LessonNav from '../../components/LessonNav.astro';
 import InsightBox from '../../components/InsightBox.astro';
 import TagBadge from '../../components/TagBadge.astro';
+import ScalarToTensorDemo from '../../components/demos/ScalarToTensorDemo.astro';
 ---
 
 <LessonLayout title="Scalars to Tensors" lessonNumber="5.1" section="Beyond v1">
@@ -26,6 +27,8 @@ import TagBadge from '../../components/TagBadge.astro';
             tensor operation does what thousands of scalar ones would, and it maps onto hardware (CPU vector units, GPUs)
             built exactly for bulk number-crunching.
         </p>
+
+        <ScalarToTensorDemo />
     </section>
 
     <section class="mb-14">

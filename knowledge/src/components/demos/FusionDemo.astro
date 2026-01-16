@@ -1,0 +1,53 @@
+---
+/**
+ * Kernel fusion: five small ops run as five separate trips to memory (eager), or fuse
+ * into one trip when the whole graph is known (lazy). (Lesson 5.2.)
+ */
+const ops = ['+', '×', 'relu', '+', '×'];
+---
+
+<div class="mt-demo mt-fusion-demo my-6 bg-white border border-mt-border rounded-2xl p-6">
+    <p class="text-xs uppercase tracking-wide text-mt-muted font-semibold mb-4 text-center">Five operations &mdash; five trips to memory, or one</p>
+
+    <div data-eager class="flex items-center justify-center gap-2 flex-wrap" style="min-height:80px">
+        {ops.map((op, i) => (
+            <>
+                <div data-opbox class="w-12 h-12 rounded-lg bg-mt-lavLight border border-mt-lav/40 flex items-center justify-center font-mono text-sm text-mt-lav">{op}</div>
+                {i < ops.length - 1 && <span class="text-mt-muted">&rarr;</span>}
+            </>
+        ))}
+    </div>
+    <div data-fused class="hidden items-center justify-center" style="min-height:80px">
+        <div class="px-6 h-12 rounded-lg bg-mt-accentLight border border-mt-accent/40 flex items-center justify-center font-mono text-sm text-mt-accent font-semibold">one fused kernel</div>
+    </div>
+
+    <div class="flex items-center justify-center gap-3 mt-4">
+        <button data-fuse class="px-4 py-2 rounded-lg bg-mt-accent text-white text-sm font-semibold hover:opacity-90 transition">Fuse</button>
+        <button data-unfuse class="px-4 py-2 rounded-lg bg-stone-100 text-mt-muted text-sm hover:bg-stone-200 transition">Unfuse</button>
+        <span class="font-mono text-xs px-3 py-1 rounded-lg bg-stone-100 text-mt-muted">memory trips: <span data-trips>5</span></span>
+    </div>
+    <p class="text-center text-xs text-mt-muted mt-3">eager runs each op separately; a lazy graph lets the compiler fuse them into one pass &mdash; far fewer trips to memory</p>
+</div>
+
+<script>
+    import { gsap, REDUCED } from '../../lib/interact';
+
+    document.querySelectorAll<HTMLElement>('.mt-fusion-demo').forEach((root) => {
+        const eager = root.querySelector<HTMLElement>('[data-eager]')!;
+        const fused = root.querySelector<HTMLElement>('[data-fused]')!;
+        const boxes = Array.from(root.querySelectorAll<HTMLElement>('[data-opbox]'));
+        const trips = root.querySelector<HTMLElement>('[data-trips]')!;
+
+        function show(fusedView: boolean) {
+            eager.classList.toggle('hidden', fusedView); eager.classList.toggle('flex', !fusedView);
+            fused.classList.toggle('hidden', !fusedView); fused.classList.toggle('flex', fusedView);
+            trips.textContent = fusedView ? '1' : '5';
+        }
+        root.querySelector('[data-fuse]')!.addEventListener('click', () => {
+            if (REDUCED) { show(true); return; }
+            gsap.to(boxes, { x: (i) => (2 - i) * 12, opacity: 0.3, duration: 0.4, ease: 'power2.in', onComplete: () => { gsap.set(boxes, { x: 0, opacity: 1 }); show(true); } });
+        });
+        root.querySelector('[data-unfuse]')!.addEventListener('click', () => show(false));
+        show(false);
+    });
+</script>
